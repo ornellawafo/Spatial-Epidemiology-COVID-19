@@ -21,3 +21,9 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r}
+patient.df <- read.csv("PatientInfo.csv")
+covariates.df <- read.csv("Demographic.csv")
+case.coords.df <- read.csv("Case.Coords.csv")
+```
+
