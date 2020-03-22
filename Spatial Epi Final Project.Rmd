@@ -26,5 +26,12 @@ knitr::opts_chunk$set(
 patient.df <- read.csv("PatientInfo.csv")
 covariates.df <- read.csv("Demographic.csv")
 case.coords.df <- read.csv("Case.Coords.csv")
+
+head(patient.df)
+head(covariates.df)
+head(case.coords.df)
+
+
+
 ```
 
