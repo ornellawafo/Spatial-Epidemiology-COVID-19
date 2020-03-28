@@ -23,14 +23,125 @@ knitr::opts_chunk$set(
 
 
 ```{r}
-patient.df <- read.csv("PatientInfo.csv")
-covariates.df <- read.csv("Demographic.csv")
-case.coords.df <- read.csv("Case.Coords.csv")
+covariates <- read.csv("Hong Kong Covariates.csv", sep=",")
+head(covariates)
+str(covariates)
+summary(covariates)
+ncol(covariates)
 
-head(patient.df)
-head(covariates.df)
-head(case.coords.df)
+```
 
+
+#Boxplots by district and region
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+library(ggthemes)
+library(pander)
+
+#Plots of variables by Region
+
+
+# create graphing function
+HK.district.boxplots <- function(df, na.rm = TRUE, ...){
+  
+  # create for loop to produce ggplot2 graphs 
+  for (i in seq_along(names(df[,3:ncol(df)]))) { 
+    
+    # create plot for each district in df 
+    plot <- 
+      ggplot(df,
+             aes(Region, df[,i],group = District, colour = Region)) + 
+      
+      geom_boxplot(size=6, notch = T) +
+      
+      theme_pander() +
+      theme(legend.position="none") + 
+      labs(y="Value")+
+      
+      ggtitle(paste(names(covariates[i]), '\n', 
+                    "By Region \n",
+                    sep=''))
+
+    # print plots to screen
+    print(plot)
+  }
+}
+
+# run graphing function on long df
+HK.district.boxplots(covariates)
+
+
+```
+
+
+# Boxplot by region
+```{r}
+
+
+# create graphing function
+HK.region.boxplots <- function(df, na.rm = TRUE, ...){
+  
+  # create for loop to produce ggplot2 graphs 
+  for (i in seq_along(names(df[,3:ncol(df)]))) { 
+    
+    # create plot for each district in df 
+    plot <- 
+      ggplot(df,
+             aes( x=Region, y=df[,i], fill = Region)) + 
+      
+      geom_boxplot(size=1, notch = F) +
+      
+      theme_pander() +
+      theme(legend.position="none") + 
+      labs(y="Value")
+      
+      ggtitle(paste(names(covariates[i]), '\n', 
+                    "By Region \n",
+                    sep=''))
+
+    # print plots to screen
+    print(plot)
+  }
+}
+
+# run graphing function on long df
+HK.region.boxplots(covariates)
+
+
+```
+
+# Histograms
+
+```{r}
+
+# create graphing function
+HK.histogram <- function(df, na.rm = TRUE, ...){
+  
+  # create for loop to produce ggplot2 graphs 
+  for (i in seq_along(names(df[,3:ncol(df)]))) { 
+    
+    # create plot for each district in df 
+    plot <- 
+      ggplot(df, aes(df[,i])) + 
+
+      geom_bar(position="dodge", aes(fill=Region, size=2) )+
+      #facet_wrap(~Region)
+      theme_pander() +
+      theme(legend.position="none") + 
+      labs(y="Value", x= paste(names(covariates[i])))+
+      
+      ggtitle(paste(names(covariates[i]), '\n', 
+                    "By Region \n",
+                    sep=''))
+    # print plots to screen
+    print(plot)
+  }
+}
+
+# run graphing function on long df
+HK.histogram(covariates)
 
 
 ```
