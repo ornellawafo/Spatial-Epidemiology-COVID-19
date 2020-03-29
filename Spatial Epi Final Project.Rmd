@@ -21,20 +21,105 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Abstract (1 page)
 
-```{r}
+# Introduction (1 page)
+
+# Analysis Plan (2 pages)
+
+**State the methods used**
+
+**Explain why those methods were chosen**
+
+
+# Descriptive and Univariate Analyses (3 pages)
+
+**Basic descriptive analyses:** means, medians, percentages, etc. 
+
+**Graphics:** histograms, scatter plots, etc. 
+You do not need to be complete here, aim for including the descriptive results which best set up the inferential analyses which are to follow.
+
+## Data Cleaning
+
+```{r, echo = F}
+# Loading packages
+library(dplyr)
+```
+
+**Hong Kong line list of COVID-19**
+
+```{r, echo = F}
+# Read in the COVID-19 line list from HK
+linelist <- read.csv("Hong Kong Line List.csv", header = T)
+# summary(linelist)
+
+# Create binary variables to prepare for aggregationn
+linelist <- linelist %>%
+              mutate(
+                Male = ifelse(Gender == "M", 1, 0),
+                # Age.0.14 = ifelse(Age >= 0 & Age < 15, 1, 0),
+                # Age.15.24 = ifelse(Age >= 15 & Age < 25, 1, 0),
+                # Age.25.64 = ifelse(Age >= 25 & Age < 65, 1, 0),
+                # Age.65 = ifelse(Age >= 65, 1, 0),
+                Cases = 1,
+                Deaths = ifelse(linelist$Outcomes == "Deceased", 1, 0),
+                Imported = ifelse(linelist$Case.classification == "Imported", 1, 0), # Note: disregarded other categories
+                Resident = ifelse(linelist$HK.residents == "HK resident", 1, 0), # Note: there were 2 unknowns
+                Proxy = ifelse(linelist$Proxy == "Yes", 1, 0) # Note: hospital location used as proxy
+              )
+
+# Rearrange dataframe to prepare for aggregation
+linelist <- linelist %>%
+              select(Case.ID, Region, District, Male, Age, # Age.0.14, Age.15.24, Age.25.64, Age.65,
+                     Cases, Deaths, Proxy, Imported, Resident)
+
+# Aggregate dataframe by Region, District, Gender
+linelist.agg <- linelist %>%
+                  group_by(Region, District) %>%
+                  summarise(Cases = sum(Cases),
+                            Deaths = sum(Deaths),
+                            # P.age.0.14 = sum(Age.0.14)/sum(Cases),
+                            # P.age.15.24 = sum(Age.15.24)/sum(Cases),
+                            # P.age.25.64 = sum(Age.25.64)/sum(Cases),
+                            # P.age.65 = sum(Age.65)/sum(Cases),
+                            Age = mean(Age),
+                            P.male = sum(Male)/sum(Cases),
+                            Proxy = sum(Proxy),
+                            Imported = sum(Imported),
+                            Resident = sum(Resident))
+
+# Summary of cleaned and aggregated data
+summary(linelist.agg)
+```
+
+**Hong Kong covariates dataset**
+
+```{r, echo = F}
+# Old covariates dataset
 covariates <- read.csv("Hong Kong Covariates.csv", sep=",")
-head(covariates)
-str(covariates)
-summary(covariates)
-ncol(covariates)
+# head(covariates)
+# str(covariates)
+# summary(covariates)
+# ncol(covariates)
+
+# Updated covariates dataset
+Covariates <- read.csv("Hong Kong Covariates V2.csv")
+```
+
+**Merging case dataset with covariates dataset**
+
+```{r, echo = F}
+# Merging the datasets by district
+data <- merge(x = linelist.agg, y = Covariates, by = "District")
+summary(data)
+
+# Selecting which covariates to include
 
 ```
 
+## Boxplots by district and region
 
-#Boxplots by district and region
-
-```{r}
+```{r, echo = F}
 library(ggplot2)
 library(gridExtra)
 library(ggthemes)
@@ -75,9 +160,9 @@ HK.district.boxplots(covariates)
 
 ```
 
+## Boxplot by region
 
-# Boxplot by region
-```{r}
+```{r, echo = F}
 
 
 # create graphing function
@@ -112,9 +197,9 @@ HK.region.boxplots(covariates)
 
 ```
 
-# Histograms
+## Histograms
 
-```{r}
+```{r, echo = F}
 
 # create graphing function
 HK.histogram <- function(df, na.rm = TRUE, ...){
@@ -146,3 +231,8 @@ HK.histogram(covariates)
 
 ```
 
+# Summary of Inferential Results (3 pages)
+
+# Conclusion (1 page)
+
+# Appendix

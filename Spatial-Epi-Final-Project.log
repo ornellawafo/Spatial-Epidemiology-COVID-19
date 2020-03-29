@@ -1,5 +1,0 @@
-
-
-! kpathsea: Running mktexfmt pdflatex.fmt
-! Can't locate mktexlsr.pl in @INC (@INC contains: /Users/ornellanoubissiewafo/Library/TinyTeX/tlpkg /Users/ornellanoubissiewafo/Library/TinyTeX/texmf-dist/scripts/texlive /Library/Perl/5.18/darwin-thread-multi-2level /Library/Perl/5.18 /Network/Library/Perl/5.18/darwin-thread-multi-2level /Network/Library/Perl/5.18 /Library/Perl/Updates/5.18.4 /System/Library/Perl/5.18/darwin-thread-multi-2level /System/Library/Perl/5.18 /System/Library/Perl/Extras/5.18/darwin-thread-multi-2level /System/Library/Perl/Extras/5.18 .) at /Library/TeX/texbin/mktexfmt line 23.
-! BEGIN failed--compilation aborted at /Library/TeX/texbin/mktexfmt line 25.
