@@ -34,28 +34,28 @@
 202,19/03/2020,14/03/2020,F,19,North District Hospital,North District Hospital,New Territories,North,Yes,Hospitalised,HK resident,Imported,Confirmed
 365,24/03/2020,11/03/2020,M,44,North District Hospital,North District Hospital,New Territories,North,Yes,Hospitalised,HK resident,Imported,Confirmed
 376,24/03/2020,20/03/2020,F,40,North District Hospital,North District Hospital,New Territories,North,Yes,Hospitalised,HK resident,Imported,Confirmed
-23,06/02/2020,26/01/2020,F,63,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Local case,Confirmed
-29,09/02/2020,01/02/2020,F,91,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
-32,09/02/2020,04/02/2020,M,22,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
-34,09/02/2020,30/01/2020,F,25,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
-35,09/02/2020,04/02/2020,F,51,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
-38,10/02/2020,30/01/2020,M,69,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Hospitalised,HK resident,Close contact of local case,Confirmed
-39,10/02/2020,30/01/2020,F,63,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-40,10/02/2020,28/01/2020,F,86,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Local case,Confirmed
-41,10/02/2020,08/02/2020,M,52,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
-43,11/02/2020,02/02/2020,M,59,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Local case,Confirmed
-54,14/02/2020,03/02/2020,F,41,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-57,16/02/2020,07/02/2020,M,54,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
-60,17/02/2020,08/02/2020,F,46,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
-61,18/02/2020,02/02/2020,F,32,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-70,22/02/2020,13/02/2020,F,96,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Hospitalised,HK resident,Close contact of local case,Confirmed
-73,23/02/2020,08/02/2020,F,80,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Local case,Confirmed
-74,23/02/2020,13/02/2020,F,76,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-86,26/02/2020,18/02/2020,F,49,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-89,26/02/2020,25/02/2020,M,80,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Deceased,HK resident,Close contact of local case,Confirmed
-102,04/03/2020,Asymptomatic,M,43,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Hospitalised,HK resident,Close contact of local case,Confirmed
-104,04/03/2020,Asymptomatic,F,62,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-101,02/03/2020,Asymptomatic,M,63,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Kong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+23,06/02/2020,26/01/2020,F,63,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Local case,Confirmed
+29,09/02/2020,01/02/2020,F,91,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
+32,09/02/2020,04/02/2020,M,22,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
+34,09/02/2020,30/01/2020,F,25,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
+35,09/02/2020,04/02/2020,F,51,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
+38,10/02/2020,30/01/2020,M,69,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Hospitalised,HK resident,Close contact of local case,Confirmed
+39,10/02/2020,30/01/2020,F,63,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+40,10/02/2020,28/01/2020,F,86,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Local case,Confirmed
+41,10/02/2020,08/02/2020,M,52,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
+43,11/02/2020,02/02/2020,M,59,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Local case,Confirmed
+54,14/02/2020,03/02/2020,F,41,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+57,16/02/2020,07/02/2020,M,54,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
+60,17/02/2020,08/02/2020,F,46,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
+61,18/02/2020,02/02/2020,F,32,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+70,22/02/2020,13/02/2020,F,96,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Hospitalised,HK resident,Close contact of local case,Confirmed
+73,23/02/2020,08/02/2020,F,80,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Local case,Confirmed
+74,23/02/2020,13/02/2020,F,76,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+86,26/02/2020,18/02/2020,F,49,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+89,26/02/2020,25/02/2020,M,80,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Deceased,HK resident,Close contact of local case,Confirmed
+102,04/03/2020,Asymptomatic,M,43,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Hospitalised,HK resident,Close contact of local case,Confirmed
+104,04/03/2020,Asymptomatic,F,62,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+101,02/03/2020,Asymptomatic,M,63,Pamela Youde Nethersole Eastern Hospital,Pamela Youde Nethersole Eastern Hospital,Hong Kong Island,Eastern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
 24,06/02/2020,28/01/2020,F,65,Prince of Wales Hospital,Prince of Wales Hospital,New Territories,Sha Tin,Yes,Discharged,HK resident,Local case,Confirmed
 26,07/02/2020,03/02/2020,M,42,Prince of Wales Hospital,Prince of Wales Hospital,New Territories,Sha Tin,Yes,Discharged,HK resident,Imported,Confirmed
 37,10/02/2020,30/01/2020,F,55,Prince of Wales Hospital,Prince of Wales Hospital,New Territories,Sha Tin,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
@@ -81,42 +81,42 @@
 164,17/03/2020,10/03/2020,M,21,Queen Elizabeth Hospital,Queen Elizabeth Hospital,Kowloon,Yau Tsim Mong,Yes,Hospitalised,HK resident,Imported,Confirmed
 329,23/03/2020,17/03/2020,M,21,Queen Elizabeth Hospital,Queen Elizabeth Hospital,Kowloon,Yau Tsim Mong,Yes,Hospitalised,HK resident,Imported,Confirmed
 357,23/03/2020,21/03/2020,F,18,Queen Elizabeth Hospital,Queen Elizabeth Hospital,Kowloon,Yau Tsim Mong,Yes,Hospitalised,HK resident,Imported,Confirmed
-46,11/02/2020,03/02/2020,M,75,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-52,13/02/2020,31/01/2020,F,67,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-53,13/02/2020,08/02/2020,M,37,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-56,14/02/2020,12/02/2020,F,61,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Local case,Confirmed
-64,19/02/2020,12/02/2020,M,68,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-65,19/02/2020,12/02/2020,F,70,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-77,24/02/2020,19/02/2020,F,68,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-78,24/02/2020,24/02/2020,F,59,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
-79,24/02/2020,04/02/2020,F,58,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
-80,24/02/2020,Asymptomatic,M,57,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
-81,24/02/2020,Asymptomatic,F,57,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
-87,26/02/2020,12/02/2020,F,21,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
-88,26/02/2020,17/02/2020,M,16,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
-94,28/02/2020,Asymptomatic,F,61,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
-96,01/03/2020,16/02/2020,F,68,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
-97,01/03/2020,Asymptomatic,M,56,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Probable
-103,04/03/2020,Asymptomatic,F,57,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-107,06/03/2020,28/02/2020,M,84,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
-108,06/03/2020,Asymptomatic,M,69,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Hospitalised,HK resident,Close contact of imported case,Confirmed
-111,08/03/2020,23/02/2020,M,76,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
-179,18/03/2020,16/03/2020,M,63,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Hospitalised,HK resident,Possibly local,Confirmed
-364,24/03/2020,14/03/2020,M,21,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Hospitalised,HK resident,Imported,Confirmed
-85,25/02/2020,12/02/2020,F,60,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Local case,Confirmed
-110,07/03/2020,Asymptomatic,F,73,Queen Mary Hospital,Queen Mary Hospital,Kong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
-27,09/02/2020,30/01/2020,M,24,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Discharged,HK resident,Possibly local,Confirmed
-30,09/02/2020,29/01/2020,M,68,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
-31,09/02/2020,28/01/2020,F,57,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
-33,09/02/2020,02/02/2020,F,50,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
-36,09/02/2020,07/02/2020,M,23,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
-44,11/02/2020,01/02/2020,F,60,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
-83,25/02/2020,17/02/2020,F,55,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-114,08/03/2020,06/03/2020,M,41,Queen Elizabeth Hospital,Envoy Garden,Kong Kong Island,Wan Chai,No,Discharged,HK resident,Possibly local,Confirmed
-84,25/02/2020,Asymptomatic,M,24,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-90,26/02/2020,16/02/2020,F,29,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-117,10/03/2020,09/03/2020,F,52,Queen Mary Hospital,"Block 28, Baguio Villa",Kong Kong Island,Southern,No,Discharged,HK resident,Close contact of imported case,Confirmed
-118,10/03/2020,04/03/2020,F,48,Queen Mary Hospital,"Block 28, Baguio Villa",Kong Kong Island,Southern,No,Hospitalised,HK resident,Close contact of imported case,Confirmed
+46,11/02/2020,03/02/2020,M,75,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+52,13/02/2020,31/01/2020,F,67,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+53,13/02/2020,08/02/2020,M,37,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+56,14/02/2020,12/02/2020,F,61,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Local case,Confirmed
+64,19/02/2020,12/02/2020,M,68,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+65,19/02/2020,12/02/2020,F,70,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+77,24/02/2020,19/02/2020,F,68,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+78,24/02/2020,24/02/2020,F,59,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
+79,24/02/2020,04/02/2020,F,58,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
+80,24/02/2020,Asymptomatic,M,57,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
+81,24/02/2020,Asymptomatic,F,57,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
+87,26/02/2020,12/02/2020,F,21,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
+88,26/02/2020,17/02/2020,M,16,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
+94,28/02/2020,Asymptomatic,F,61,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
+96,01/03/2020,16/02/2020,F,68,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
+97,01/03/2020,Asymptomatic,M,56,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Probable
+103,04/03/2020,Asymptomatic,F,57,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+107,06/03/2020,28/02/2020,M,84,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
+108,06/03/2020,Asymptomatic,M,69,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Hospitalised,HK resident,Close contact of imported case,Confirmed
+111,08/03/2020,23/02/2020,M,76,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
+179,18/03/2020,16/03/2020,M,63,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Hospitalised,HK resident,Possibly local,Confirmed
+364,24/03/2020,14/03/2020,M,21,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Hospitalised,HK resident,Imported,Confirmed
+85,25/02/2020,12/02/2020,F,60,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Local case,Confirmed
+110,07/03/2020,Asymptomatic,F,73,Queen Mary Hospital,Queen Mary Hospital,Hong Kong Island,Southern,Yes,Discharged,HK resident,Imported,Confirmed
+27,09/02/2020,30/01/2020,M,24,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Discharged,HK resident,Possibly local,Confirmed
+30,09/02/2020,29/01/2020,M,68,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
+31,09/02/2020,28/01/2020,F,57,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
+33,09/02/2020,02/02/2020,F,50,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
+36,09/02/2020,07/02/2020,M,23,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
+44,11/02/2020,01/02/2020,F,60,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of possibly local case,Confirmed
+83,25/02/2020,17/02/2020,F,55,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+114,08/03/2020,06/03/2020,M,41,Queen Elizabeth Hospital,Envoy Garden,Hong Kong Island,Wan Chai,No,Discharged,HK resident,Possibly local,Confirmed
+84,25/02/2020,Asymptomatic,M,24,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+90,26/02/2020,16/02/2020,F,29,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+117,10/03/2020,09/03/2020,F,52,Queen Mary Hospital,"Block 28, Baguio Villa",Hong Kong Island,Southern,No,Discharged,HK resident,Close contact of imported case,Confirmed
+118,10/03/2020,04/03/2020,F,48,Queen Mary Hospital,"Block 28, Baguio Villa",Hong Kong Island,Southern,No,Hospitalised,HK resident,Close contact of imported case,Confirmed
 119,10/03/2020,07/03/2020,M,59,Alice Ho Miu Ling Nethersole Hospital,"Heng Tai House, Fu Heng Estate",New Territories,Tai Po,No,Hospitalised,HK resident,Imported,Confirmed
 120,10/03/2020,07/03/2020,M,59,Tuen Mun Hospital,"On Hei House, Siu Hei Court",New Territories,Tuen Mun,No,Hospitalised,HK resident,Imported,Confirmed
 121,10/03/2020,07/03/2020,F,59,Tuen Mun Hospital,"On Hei House, Siu Hei Court",New Territories,Tuen Mun,No,Hospitalised,HK resident,Imported,Confirmed
@@ -126,65 +126,65 @@
 125,11/03/2020,10/03/2020,M,23,United Christian Hospital,"Block T, Telford Gardens",Kowloon,Kwun Tong,No,Hospitalised,HK resident,Imported,Confirmed
 126,11/03/2020,10/03/2020,M,63,United Christian Hospital,"Block 26, Phase 2, Laguna City",Kowloon,Kwun Tong,No,Hospitalised,HK resident,Imported,Confirmed
 127,11/03/2020,10/03/2020,F,63,United Christian Hospital,"Block 26, Phase 2, Laguna City",Kowloon,Kwun Tong,No,Hospitalised,HK resident,Imported,Confirmed
-105,04/03/2020,23/02/2020,F,69,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Hospitalised,HK resident,Imported,Confirmed
-116,09/03/2020,07/03/2020,M,44,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
+105,04/03/2020,23/02/2020,F,69,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Hospitalised,HK resident,Imported,Confirmed
+116,09/03/2020,07/03/2020,M,44,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
 130,11/03/2020,03/03/2020,F,31,Princess Margaret Hospital,iPlace,New Territories,Kwai Tsing,No,Hospitalised,HK resident,Imported,Confirmed
 131,12/03/2020,03/03/2020,M,37,Princess Margaret Hospital,iPlace,New Territories,Kwai Tsing,No,Hospitalised,HK resident,Imported,Confirmed
-132,12/03/2020,08/03/2020,M,31,Tuen Mun Hospital,"Serene Court, 35 Sai Ning Street",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+132,12/03/2020,08/03/2020,M,31,Tuen Mun Hospital,"Serene Court, 35 Sai Ning Street",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
 133,13/03/2020,12/03/2020,M,1,Princess Margaret Hospital,iPlace,New Territories,Kwai Tsing,No,Hospitalised,HK resident,Imported,Confirmed
 134,13/03/2020,10/03/2020,M,67,Prince of Wales Hospital,"Ng Tung Chai, Lam Tsuen",New Territories,Tai Po,No,Hospitalised,HK resident,Possibly local,Confirmed
-135,13/03/2020,08/03/2020,F,30,Queen Mary Hospital,View Villa,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
-136,13/03/2020,07/03/2020,M,61,Pamela Youde Nethersole Eastern Hospital,18 Stanley Main Street,Kong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
-137,13/03/2020,06/03/2020,F,54,Pamela Youde Nethersole Eastern Hospital,"Block A, Tai Hang Terrace",Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+135,13/03/2020,08/03/2020,F,30,Queen Mary Hospital,View Villa,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
+136,13/03/2020,07/03/2020,M,61,Pamela Youde Nethersole Eastern Hospital,18 Stanley Main Street,Hong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
+137,13/03/2020,06/03/2020,F,54,Pamela Youde Nethersole Eastern Hospital,"Block A, Tai Hang Terrace",Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
 138,13/03/2020,Asymptomatic,M,66,Princess Margaret Hospital,iPlace,New Territories,Kwai Tsing,No,Discharged,HK resident,Close contact of imported case,Confirmed
-139,14/03/2020,12/03/2020,F,39,Ruttonjee Hospital,Cornell Centre,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+139,14/03/2020,12/03/2020,F,39,Ruttonjee Hospital,Cornell Centre,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
 140,14/03/2020,10/03/2020,M,59,Prince of Wales Hospital,"Heng Tai House, Fu Heng Estate",New Territories,Tai Po,No,Hospitalised,HK resident,Local case,Confirmed
 141,14/03/2020,12/03/2020,F,28,United Christian Hospital,684 Clear Water Bay Road,New Territories,Sai Kung,No,Hospitalised,HK resident,Imported,Confirmed
 142,14/03/2020,02/03/2020,M,59,Princess Margaret Hospital,Tivoli Garden,New Territories,Kwai Tsing,No,Hospitalised,HK resident,Imported,Confirmed
 143,15/03/2020,11/03/2020,M,35,North District Hospital,"Lai Ming House, Wah Ming Estate",New Territories,North,No,Hospitalised,HK resident,Imported,Confirmed
-144,15/03/2020,11/03/2020,M,29,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Hospitalised,HK resident,Imported,Confirmed
+144,15/03/2020,11/03/2020,M,29,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Hospitalised,HK resident,Imported,Confirmed
 145,15/03/2020,10/03/2020,M,37,Tseung Kwan O Hospital,The Palisades,New Territories,Sai Kung,No,Hospitalised,HK resident,Imported,Confirmed
-146,15/03/2020,13/03/2020,M,39,Queen Mary Hospital,Fort Mansion,Kong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
-147,15/03/2020,10/03/2020,F,61,Ruttonjee Hospital,"Kellett View Town Houses, 65 Mount Kellett Road",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
-148,15/03/2020,10/03/2020,M,58,Ruttonjee Hospital,"Kellett View Town Houses, 65 Mount Kellett Road",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
-149,15/03/2020,14/03/2020,M,32,Queen Mary Hospital,"Wah Cheong House, Wah Fu 2 Estate",Kong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
+146,15/03/2020,13/03/2020,M,39,Queen Mary Hospital,Fort Mansion,Hong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
+147,15/03/2020,10/03/2020,F,61,Ruttonjee Hospital,"Kellett View Town Houses, 65 Mount Kellett Road",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+148,15/03/2020,10/03/2020,M,58,Ruttonjee Hospital,"Kellett View Town Houses, 65 Mount Kellett Road",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+149,15/03/2020,14/03/2020,M,32,Queen Mary Hospital,"Wah Cheong House, Wah Fu 2 Estate",Hong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
 150,16/03/2020,13/03/2020,M,37,Queen Elizabeth Hospital,Hotel ICON,Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Imported,Confirmed
 151,16/03/2020,08/03/2020,M,30,Queen Elizabeth Hospital,"Block A, Chungking Mansions",Kowloon,Yau Tsim Mong,No,Hospitalised,Non-HK resident,Imported,Confirmed
 152,16/03/2020,13/03/2020,M,73,Tuen Mun Hospital,"Tower 1, Oceania Heights",New Territories,Tuen Mun,No,Hospitalised,HK resident,Possibly local,Confirmed
 153,16/03/2020,15/03/2020,F,26,Prince of Wales Hospital,"Block 10, Pristine Villa",New Territories,Sha Tin,No,Hospitalised,HK resident,Imported,Confirmed
 154,16/03/2020,11/03/2020,F,42,Queen Elizabeth Hospital,8 Hok Ling Street,Kowloon,Kowloon City,No,Hospitalised,HK resident,Possibly local,Confirmed
 155,16/03/2020,15/03/2020,M,58,North District Hospital,"Lung Chu House, Lung Poon Court",Kowloon,Wong Tai Sin,No,Hospitalised,HK resident,Close contact of imported case,Confirmed
-156,16/03/2020,09/03/2020,M,59,Queen Mary Hospital,Island Shangri-La,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+156,16/03/2020,09/03/2020,M,59,Queen Mary Hospital,Island Shangri-La,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
 157,16/03/2020,15/03/2020,F,42,Pamela Youde Nethersole Eastern Hospital,"Block 16, Mayfair By The Sea",New Territories,Tai Po,No,Hospitalised,HK resident,Imported,Confirmed
 158,16/03/2020,Asymptomatic,F,41,Pamela Youde Nethersole Eastern Hospital,"Block 16, Mayfair By The Sea",New Territories,Tai Po,No,Hospitalised,HK resident,Imported,Confirmed
 159,17/03/2020,15/03/2020,M,69,Queen Elizabeth Hospital,Sino Cheer Plaza (non-residential),Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Possibly local,Confirmed
-160,17/03/2020,09/03/2020,F,18,Pamela Youde Nethersole Eastern Hospital,The Redhill Peninsula,Kong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
+160,17/03/2020,09/03/2020,F,18,Pamela Youde Nethersole Eastern Hospital,The Redhill Peninsula,Hong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
 161,17/03/2020,12/03/2020,F,37,United Christian Hospital,"Block 4, Tuen Mun Town Plaza",New Territories,Tuen Mun,No,Hospitalised,HK resident,Imported,Confirmed
 162,17/03/2020,12/03/2020,M,36,Queen Elizabeth Hospital,"Tower 7, the Coronation",Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Close contact of imported case,Confirmed
-163,17/03/2020,10/03/2020,F,30,Queen Mary Hospital,"Emerald Garden, 86 Pok Fu Lam Road",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
-248,20/03/2020,14/03/2020,M,33,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Hospitalised,HK resident,Local case,Confirmed
-76,24/02/2020,08/02/2020,F,57,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-91,26/02/2020,20/02/2020,M,26,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+163,17/03/2020,10/03/2020,F,30,Queen Mary Hospital,"Emerald Garden, 86 Pok Fu Lam Road",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
+248,20/03/2020,14/03/2020,M,33,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Hospitalised,HK resident,Local case,Confirmed
+76,24/02/2020,08/02/2020,F,57,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of local case,Confirmed
+91,26/02/2020,20/02/2020,M,26,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Discharged,HK resident,Close contact of local case,Confirmed
 167,17/03/2020,Asymptomatic,M,25,United Christian Hospital,"Choi Wah House, Choi Fai Estate",Kowloon,Wong Tai Sin,No,Hospitalised,HK resident,Close contact of imported case,Confirmed
-168,17/03/2020,09/03/2020,M,43,Prince of Wales Hospital,"Tower 2, the Zenith",Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
-169,18/03/2020,16/03/2020,M,34,Ruttonjee Hospital,Hyatt Centric Victoria Harbour Hong Kong,Kong Kong Island,Eastern,No,Hospitalised,HK resident,Possibly local,Confirmed
-170,18/03/2020,14/03/2020,M,36,Pamela Youde Nethersole Eastern Hospital,"Block 2, Island Resort",Kong Kong Island,Eastern,No,Hospitalised,HK resident,Possibly local,Confirmed
+168,17/03/2020,09/03/2020,M,43,Prince of Wales Hospital,"Tower 2, the Zenith",Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+169,18/03/2020,16/03/2020,M,34,Ruttonjee Hospital,Hyatt Centric Victoria Harbour Hong Kong,Hong Kong Island,Eastern,No,Hospitalised,HK resident,Possibly local,Confirmed
+170,18/03/2020,14/03/2020,M,36,Pamela Youde Nethersole Eastern Hospital,"Block 2, Island Resort",Hong Kong Island,Eastern,No,Hospitalised,HK resident,Possibly local,Confirmed
 171,18/03/2020,17/03/2020,M,27,Prince of Wales Hospital,"Block 8, Saddle Ridge Garden",New Territories,Sha Tin,No,Hospitalised,HK resident,Possibly local,Confirmed
 172,18/03/2020,15/03/2020,M,28,Alice Ho Miu Ling Nethersole Hospital,Hong Kong Sports Institute Athletes' Hostel,New Territories,Sha Tin,No,Hospitalised,HK resident,Imported,Confirmed
 173,18/03/2020,17/03/2020,M,55,Queen Elizabeth Hospital,"Oi Wai House, Tsz Oi Court",Kowloon,Wong Tai Sin,No,Hospitalised,HK resident,Possibly local,Confirmed
 174,18/03/2020,09/03/2020,M,31,Queen Elizabeth Hospital,"Tower 3, Hampton Place",Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Imported,Confirmed
 175,18/03/2020,13/03/2020,M,29,United Christian Hospital,"Ying Lai House, Yau Lai Estate",Kowloon,Kwun Tong,No,Hospitalised,HK resident,Imported,Confirmed
 176,18/03/2020,15/03/2020,F,29,United Christian Hospital,"Ying Lai House, Yau Lai Estate",Kowloon,Kwun Tong,No,Hospitalised,HK resident,Imported,Confirmed
-177,18/03/2020,16/03/2020,F,28,Queen Mary Hospital,Rich View Terrace,Kong Kong Island,Central and Western,No,Discharged,Non-HK resident,Imported,Confirmed
-178,18/03/2020,16/03/2020,M,29,Queen Mary Hospital,Rich View Terrace,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
-106,06/03/2020,04/03/2020,M,56,Ruttonjee Hospital,Ruttonjee Hospital,Kong Kong Island,Wan Chai,Yes,Discharged,HK resident,Possibly local,Confirmed
-180,18/03/2020,16/03/2020,M,38,Tseung Kwan O Hospital,3A Tregunter Path,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
-181,18/03/2020,15/03/2020,F,63,Princess Margaret Hospital,Sakura Court,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+177,18/03/2020,16/03/2020,F,28,Queen Mary Hospital,Rich View Terrace,Hong Kong Island,Central and Western,No,Discharged,Non-HK resident,Imported,Confirmed
+178,18/03/2020,16/03/2020,M,29,Queen Mary Hospital,Rich View Terrace,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+106,06/03/2020,04/03/2020,M,56,Ruttonjee Hospital,Ruttonjee Hospital,Hong Kong Island,Wan Chai,Yes,Discharged,HK resident,Possibly local,Confirmed
+180,18/03/2020,16/03/2020,M,38,Tseung Kwan O Hospital,3A Tregunter Path,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+181,18/03/2020,15/03/2020,F,63,Princess Margaret Hospital,Sakura Court,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
 182,18/03/2020,11/03/2020,F,50,United Christian Hospital,Tai Mong Tsai Road,New Territories,Sai Kung,No,Hospitalised,HK resident,Close contact of local case,Confirmed
-183,18/03/2020,12/03/2020,F,24,Yan Chai Hospital,"Seymour Place,60 Robinson Road",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
-184,18/03/2020,12/03/2020,F,64,Alice Ho Miu Ling Nethersole Hospital,"Block 47, Baguio Villa",Kong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
-185,18/03/2020,12/03/2020,M,23,Ruttonjee Hospital,"King Cheung Mansion, 5 King Kwong Street",Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
-186,18/03/2020,02/03/2020,F,46,Ruttonjee Hospital,"Block 1, Island Resort",Kong Kong Island,Eastern,No,Hospitalised,HK resident,Possibly local,Confirmed
+183,18/03/2020,12/03/2020,F,24,Yan Chai Hospital,"Seymour Place,60 Robinson Road",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
+184,18/03/2020,12/03/2020,F,64,Alice Ho Miu Ling Nethersole Hospital,"Block 47, Baguio Villa",Hong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
+185,18/03/2020,12/03/2020,M,23,Ruttonjee Hospital,"King Cheung Mansion, 5 King Kwong Street",Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+186,18/03/2020,02/03/2020,F,46,Ruttonjee Hospital,"Block 1, Island Resort",Hong Kong Island,Eastern,No,Hospitalised,HK resident,Possibly local,Confirmed
 47,11/02/2020,31/01/2020,M,66,Tuen Mun Hospital,Tuen Mun Hospital,New Territories,Tuen Mun,Yes,Discharged,HK resident,Close contact of local case,Confirmed
 51,13/02/2020,29/01/2020,M,43,Tuen Mun Hospital,Tuen Mun Hospital,New Territories,Tuen Mun,Yes,Discharged,HK resident,Local case,Confirmed
 63,19/02/2020,14/02/2020,F,83,Tuen Mun Hospital,Tuen Mun Hospital,New Territories,Tuen Mun,Yes,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
@@ -192,7 +192,7 @@
 191,18/03/2020,16/03/2020,F,34,Prince of Wales Hospital,"Block C, Sunshine City",New Territories,Sha Tin,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
 192,18/03/2020,11/03/2020,F,46,Queen Elizabeth Hospital,Hang Yue Court,Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Local case,Confirmed
 193,18/03/2020,11/03/2020,F,33,United Christian Hospital,Pentahotel Hong Kong,New Territories,Tuen Mun,No,Hospitalised,HK resident,Possibly local,Confirmed
-194,19/03/2020,15/03/2020,M,44,Princess Margaret Hospital,Conway Mansion,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
+194,19/03/2020,15/03/2020,M,44,Princess Margaret Hospital,Conway Mansion,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
 195,19/03/2020,17/03/2020,M,29,Kwong Wah Hospital,Hang Tak Yuen,Kowloon,Kowloon City,No,Hospitalised,HK resident,Close contact of local case,Confirmed
 196,19/03/2020,13/03/2020,F,48,Princess Margaret Hospital,"Kwai On House, Kwai Fong Estate",New Territories,Kwai Tsing,No,Hospitalised,HK resident,Possibly local,Confirmed
 66,20/02/2020,25/01/2020,M,75,Tuen Mun Hospital,Tuen Mun Hospital,New Territories,Tuen Mun,Yes,Discharged,HK resident,Possibly local,Confirmed
@@ -201,55 +201,55 @@
 200,19/03/2020,16/03/2020,M,22,Queen Elizabeth Hospital,Imperial Hotel,Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Imported,Confirmed
 201,19/03/2020,18/03/2020,M,35,Tuen Mun Hospital,Pak Sha Tsuen,New Territories,Yuen Long,No,Hospitalised,HK resident,Possibly local,Confirmed
 75,23/02/2020,19/02/2020,M,35,Tuen Mun Hospital,Tuen Mun Hospital,New Territories,Tuen Mun,Yes,Discharged,HK resident,Possibly local,Confirmed
-203,19/03/2020,18/03/2020,M,29,Queen Mary Hospital,"Block 4, Repulse Bay Garden",Kong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
+203,19/03/2020,18/03/2020,M,29,Queen Mary Hospital,"Block 4, Repulse Bay Garden",Hong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
 204,19/03/2020,18/03/2020,F,43,Prince of Wales Hospital,"Court B, Tower 3, Dragons Range",New Territories,Sha Tin,No,Hospitalised,HK resident,Imported,Confirmed
 205,19/03/2020,16/03/2020,M,35,Tseung Kwan O Hospital,"Tower 2, The Capitol, Lohas Park",New Territories,Sai Kung,No,Hospitalised,HK resident,Imported,Confirmed
-206,19/03/2020,13/03/2020,M,40,Queen Mary Hospital,46 Island Road,Kong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
-207,19/03/2020,16/03/2020,F,32,Queen Mary Hospital,"Tower 1, Hillsborough Court",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
-208,19/03/2020,18/03/2020,M,44,Queen Mary Hospital,20 Square Street,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
+206,19/03/2020,13/03/2020,M,40,Queen Mary Hospital,46 Island Road,Hong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
+207,19/03/2020,16/03/2020,F,32,Queen Mary Hospital,"Tower 1, Hillsborough Court",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+208,19/03/2020,18/03/2020,M,44,Queen Mary Hospital,20 Square Street,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
 209,19/03/2020,12/03/2020,M,51,Queen Mary Hospital,K11 ARTUS,Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Imported,Confirmed
-210,20/03/2020,12/03/2020,M,46,Queen Elizabeth Hospital,"Tower 1, Hoover Tower",Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Possibly local,Confirmed
-211,20/03/2020,14/03/2020,F,33,Tuen Mun Hospital,Tower 3 The Avenue,Kong Kong Island,Wan Chai,No,Hospitalised,Unknown,Imported,Confirmed
+210,20/03/2020,12/03/2020,M,46,Queen Elizabeth Hospital,"Tower 1, Hoover Tower",Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Possibly local,Confirmed
+211,20/03/2020,14/03/2020,F,33,Tuen Mun Hospital,Tower 3 The Avenue,Hong Kong Island,Wan Chai,No,Hospitalised,Unknown,Imported,Confirmed
 212,20/03/2020,16/03/2020,F,44,Princess Margaret Hospital,"Block 5, Tung Chung Crescent",New Territories,Islands,No,Hospitalised,HK resident,Imported,Confirmed
-213,20/03/2020,Asymptomatic,F,4,United Christian Hospital,Envoy Garden,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
-214,20/03/2020,17/03/2020,M,41,Tuen Mun Hospital,Tower 3 The Avenue,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
-215,20/03/2020,Asymptomatic,M,61,Prince of Wales Hospital,Sakura Court,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
-216,20/03/2020,12/03/2020,M,21,Pamela Youde Nethersole Eastern Hospital,Villa Monte Rosa,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
-217,20/03/2020,13/03/2020,M,35,Pamela Youde Nethersole Eastern Hospital,1 High Street,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
-218,20/03/2020,18/03/2020,M,54,Princess Margaret Hospital,"Block A, Viking Villas",Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+213,20/03/2020,Asymptomatic,F,4,United Christian Hospital,Envoy Garden,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
+214,20/03/2020,17/03/2020,M,41,Tuen Mun Hospital,Tower 3 The Avenue,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+215,20/03/2020,Asymptomatic,M,61,Prince of Wales Hospital,Sakura Court,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+216,20/03/2020,12/03/2020,M,21,Pamela Youde Nethersole Eastern Hospital,Villa Monte Rosa,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+217,20/03/2020,13/03/2020,M,35,Pamela Youde Nethersole Eastern Hospital,1 High Street,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
+218,20/03/2020,18/03/2020,M,54,Princess Margaret Hospital,"Block A, Viking Villas",Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
 219,20/03/2020,16/03/2020,F,13,Princess Margaret Hospital,"Block 5, The Summit Terrace",New Territories,Tsuen Wan,No,Hospitalised,HK resident,Imported,Confirmed
 220,20/03/2020,11/03/2020,M,57,Princess Margaret Hospital,Tower 1 Vision City,New Territories,Tsuen Wan,No,Hospitalised,HK resident,Possibly local,Confirmed
 221,20/03/2020,16/03/2020,M,62,Caritas Medical Centre,"Yee Kok Court, Yee Tai House",Kowloon,Sham Shui Po,No,Hospitalised,HK resident,Local case,Confirmed
 222,20/03/2020,18/03/2020,F,31,Caritas Medical Centre,"Tower 3, Hampton Place",Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Close contact of imported case,Confirmed
 223,20/03/2020,18/03/2020,F,31,Queen Mary Hospital,"Block 12, Charming Garden",Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Imported,Confirmed
-224,20/03/2020,09/03/2020,M,38,Alice Ho Miu Ling Nethersole Hospital,May Tower,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
-225,20/03/2020,17/03/2020,M,61,United Christian Hospital,No. 4 Stanley Village Road,Kong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
-226,20/03/2020,19/03/2020,M,17,Prince of Wales Hospital,"Tower 3, The Repulse Bay",Kong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
+224,20/03/2020,09/03/2020,M,38,Alice Ho Miu Ling Nethersole Hospital,May Tower,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
+225,20/03/2020,17/03/2020,M,61,United Christian Hospital,No. 4 Stanley Village Road,Hong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
+226,20/03/2020,19/03/2020,M,17,Prince of Wales Hospital,"Tower 3, The Repulse Bay",Hong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
 227,20/03/2020,17/03/2020,M,28,Queen Elizabeth Hospital,"Tower 3, Green Wood Laguna Verde",Kowloon,Kowloon City,No,Hospitalised,HK resident,Close contact of local case,Confirmed
 228,20/03/2020,18/03/2020,M,50,United Christian Hospital,8 Hok Ling Street,Kowloon,Kowloon City,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
 229,20/03/2020,16/03/2020,M,40,Tuen Mun Hospital,"Block C, Luk Yeung Sun Chuen",New Territories,Tsuen Wan,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
-230,20/03/2020,16/03/2020,F,23,Prince of Wales Hospital,Tower 3 The Avenue,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+230,20/03/2020,16/03/2020,F,23,Prince of Wales Hospital,Tower 3 The Avenue,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
 231,20/03/2020,19/03/2020,F,24,Tuen Mun Hospital,"Shui Lam House, Tin Shui Estate",New Territories,Yuen Long,No,Hospitalised,HK resident,Possibly local,Confirmed
 232,20/03/2020,18/03/2020,F,16,Alice Ho Miu Ling Nethersole Hospital,"Tower 1, Green Code",New Territories,North,No,Hospitalised,HK resident,Imported,Confirmed
 233,20/03/2020,18/03/2020,M,31,Princess Margaret Hospital,"Hong Ping House, Cheung Hong Estate",New Territories,Kwai Tsing,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
-234,20/03/2020,17/03/2020,F,52,Queen Mary Hospital,"South Bay Road, Repulse Bay",Kong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
-235,20/03/2020,17/03/2020,M,18,Queen Mary Hospital,The Redhill Peninsula,Kong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
-236,20/03/2020,18/03/2020,M,32,Ruttonjee Hospital,The Emperor Hotel,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Possibly local,Confirmed
-237,20/03/2020,18/03/2020,F,29,Pamela Youde Nethersole Eastern Hospital,Tung Lam Court,Kong Kong Island,Eastern,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
-238,20/03/2020,18/03/2020,F,69,Pamela Youde Nethersole Eastern Hospital,"Evergreen Tower, Western Garden",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+234,20/03/2020,17/03/2020,F,52,Queen Mary Hospital,"South Bay Road, Repulse Bay",Hong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
+235,20/03/2020,17/03/2020,M,18,Queen Mary Hospital,The Redhill Peninsula,Hong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
+236,20/03/2020,18/03/2020,M,32,Ruttonjee Hospital,The Emperor Hotel,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Possibly local,Confirmed
+237,20/03/2020,18/03/2020,F,29,Pamela Youde Nethersole Eastern Hospital,Tung Lam Court,Hong Kong Island,Eastern,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
+238,20/03/2020,18/03/2020,F,69,Pamela Youde Nethersole Eastern Hospital,"Evergreen Tower, Western Garden",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
 239,20/03/2020,09/03/2020,M,50,Prince of Wales Hospital,31 Wo Tong Kong,New Territories,Sai Kung,No,Hospitalised,HK resident,Possibly local,Confirmed
 240,20/03/2020,13/03/2020,F,33,Prince of Wales Hospital,"Tower 1, BayshoreTowers",New Territories,Sha Tin,No,Hospitalised,HK resident,Imported,Confirmed
 112,08/03/2020,Asymptomatic,M,55,Tuen Mun Hospital,Tuen Mun Hospital,New Territories,Tuen Mun,Yes,Hospitalised,HK resident,Close contact of local case,Confirmed
 242,20/03/2020,15/03/2020,F,61,Queen Elizabeth Hospital,118 Tam Kung Road,Kowloon,Kowloon City,No,Hospitalised,HK resident,Imported,Confirmed
 243,20/03/2020,13/03/2020,F,25,Queen Elizabeth Hospital,"Phase 2, Village Gardens",Kowloon,Sham Shui Po,No,Hospitalised,HK resident,Close contact of imported case,Confirmed
 244,20/03/2020,19/03/2020,F,36,Tuen Mun Hospital,"Tip Sum House, Butterfly Estate",New Territories,Tuen Mun,No,Hospitalised,HK resident,Possibly local,Confirmed
-245,20/03/2020,09/03/2020,M,46,Queen Mary Hospital,"Po Hing Mansion, 20 Rutter Street",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
-246,20/03/2020,16/03/2020,M,58,Ruttonjee Hospital,"Block C, Beverly Hill, 6 Broadwood Road",Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
-247,20/03/2020,09/03/2020,F,34,Pamela Youde Nethersole Eastern Hospital,8 Ventris Road,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+245,20/03/2020,09/03/2020,M,46,Queen Mary Hospital,"Po Hing Mansion, 20 Rutter Street",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+246,20/03/2020,16/03/2020,M,58,Ruttonjee Hospital,"Block C, Beverly Hill, 6 Broadwood Road",Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+247,20/03/2020,09/03/2020,F,34,Pamela Youde Nethersole Eastern Hospital,8 Ventris Road,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
 259,21/03/2020,15/03/2020,F,35,Tuen Mun Hospital,Tuen Mun Hospital,New Territories,Tuen Mun,Yes,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
-249,20/03/2020,19/03/2020,M,19,Pamela Youde Nethersole Eastern Hospital,"Maple Mansion, Harbour View Gardens",Kong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
-250,20/03/2020,16/03/2020,F,27,Pamela Youde Nethersole Eastern Hospital,"Lai Wah Mansion, 867-881 King's Road",Kong Kong Island,Eastern,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
-251,20/03/2020,16/03/2020,M,38,Queen Mary Hospital,The Nova,Kong Kong Island,Central and Western,No,Hospitalised,Non-HK resident,Possibly local,Confirmed
+249,20/03/2020,19/03/2020,M,19,Pamela Youde Nethersole Eastern Hospital,"Maple Mansion, Harbour View Gardens",Hong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
+250,20/03/2020,16/03/2020,F,27,Pamela Youde Nethersole Eastern Hospital,"Lai Wah Mansion, 867-881 King's Road",Hong Kong Island,Eastern,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
+251,20/03/2020,16/03/2020,M,38,Queen Mary Hospital,The Nova,Hong Kong Island,Central and Western,No,Hospitalised,Non-HK resident,Possibly local,Confirmed
 252,20/03/2020,18/03/2020,M,23,Prince of Wales Hospital,"Tower 1, Ma On Shan Centre",New Territories,Sha Tin,No,Hospitalised,HK resident,Imported,Confirmed
 253,20/03/2020,17/03/2020,F,31,Prince of Wales Hospital,"Block D, The Grandville",New Territories,Sha Tin,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
 356,23/03/2020,21/03/2020,M,18,Tuen Mun Hospital,Tuen Mun Hospital,New Territories,Tuen Mun,Yes,Hospitalised,HK resident,Imported,Confirmed
@@ -258,138 +258,138 @@
 257,20/03/2020,18/03/2020,M,18,Tseung Kwan O Hospital,"Tower 9, Ocean Shores",New Territories,Sai Kung,No,Hospitalised,HK resident,Imported,Confirmed
 382,24/03/2020,02/03/2020,F,26,Tuen Mun Hospital,Tuen Mun Hospital,New Territories,Tuen Mun,Yes,Hospitalised,HK resident,Imported,Confirmed
 258,21/03/2020,18/03/2020,F,58,Tuen Mun Hospital,Tuen Mun Hospital,New Territories,Tuen Mun,Yes,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
-260,21/03/2020,19/03/2020,M,43,Princess Margaret Hospital,"Block A, Viking Villas",Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
-261,21/03/2020,16/03/2020,F,61,United Christian Hospital,"Shun On Building, 2 Sands Street",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+260,21/03/2020,19/03/2020,M,43,Princess Margaret Hospital,"Block A, Viking Villas",Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+261,21/03/2020,16/03/2020,F,61,United Christian Hospital,"Shun On Building, 2 Sands Street",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
 262,21/03/2020,13/03/2020,F,70,United Christian Hospital,Cheong Shing Court,Kowloon,Kowloon City,No,Hospitalised,HK resident,Imported,Confirmed
 263,21/03/2020,15/03/2020,F,50,Tuen Mun Hospital,"Yam Heng House, Shek Yum Estate",New Territories,Kwai Tsing,No,Discharged,HK resident,Local case,Confirmed
-264,21/03/2020,17/03/2020,M,28,Pamela Youde Nethersole Eastern Hospital,Sakura Court,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
-265,21/03/2020,Asymptomatic,F,20,Pamela Youde Nethersole Eastern Hospital,"Silvercrest, 24 Macdonnell Road",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
-266,21/03/2020,17/03/2020,M,48,Queen Elizabeth Hospital,Repulse Bay Garden,Kong Kong Island,Southern,No,Hospitalised,HK resident,Local case,Confirmed
-267,21/03/2020,13/03/2020,F,30,United Christian Hospital,SOHO 189,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
-268,21/03/2020,14/03/2020,F,60,Pamela Youde Nethersole Eastern Hospital,"Evergreen Tower, Western Garden",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
-269,21/03/2020,19/03/2020,F,15,Pamela Youde Nethersole Eastern Hospital,"Block Q, Kornhill",Kong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
+264,21/03/2020,17/03/2020,M,28,Pamela Youde Nethersole Eastern Hospital,Sakura Court,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+265,21/03/2020,Asymptomatic,F,20,Pamela Youde Nethersole Eastern Hospital,"Silvercrest, 24 Macdonnell Road",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+266,21/03/2020,17/03/2020,M,48,Queen Elizabeth Hospital,Repulse Bay Garden,Hong Kong Island,Southern,No,Hospitalised,HK resident,Local case,Confirmed
+267,21/03/2020,13/03/2020,F,30,United Christian Hospital,SOHO 189,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+268,21/03/2020,14/03/2020,F,60,Pamela Youde Nethersole Eastern Hospital,"Evergreen Tower, Western Garden",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+269,21/03/2020,19/03/2020,F,15,Pamela Youde Nethersole Eastern Hospital,"Block Q, Kornhill",Hong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
 270,21/03/2020,17/03/2020,F,35,Princess Margaret Hospital,"Block 23, Phase 1, Mei Foo Sun Cheun",Kowloon,Sham Shui Po,No,Hospitalised,HK resident,Possibly local,Confirmed
 271,21/03/2020,18/03/2020,F,51,Princess Margaret Hospital,"Tower 12, Caribbean Coast",New Territories,Islands,No,Hospitalised,HK resident,Possibly local,Confirmed
 272,21/03/2020,18/03/2020,M,11,Princess Margaret Hospital,"Block 4, Prosperous Garden",Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Possibly local,Confirmed
 273,21/03/2020,06/03/2020,M,36,Queen Elizabeth Hospital,"Block B, Hoi Lam House, Hoi Fu Court",Kowloon,Yau Tsim Mong,No,Hospitalised,Unknown,Possibly local,Confirmed
 274,21/03/2020,18/03/2020,F,36,United Christian Hospital,Dorsett Kwun Tong,Kowloon,Kwun Tong,No,Hospitalised,HK resident,Imported,Confirmed
 275,22/03/2020,18/03/2020,M,30,Kwong Wah Hospital,"Block 2, Kai Tak Garden",Kowloon,Wong Tai Sin,No,Hospitalised,HK resident,Local case,Confirmed
-276,22/03/2020,17/03/2020,M,29,Caritas Medical Centre,Hang Shun Mansions,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of local case,Confirmed
-277,22/03/2020,15/03/2020,F,27,Prince of Wales Hospital,307 Jaffe Road,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
-278,22/03/2020,18/03/2020,M,28,Tuen Mun Hospital,Tagus Residences,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Local case,Confirmed
+276,22/03/2020,17/03/2020,M,29,Caritas Medical Centre,Hang Shun Mansions,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of local case,Confirmed
+277,22/03/2020,15/03/2020,F,27,Prince of Wales Hospital,307 Jaffe Road,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
+278,22/03/2020,18/03/2020,M,28,Tuen Mun Hospital,Tagus Residences,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Local case,Confirmed
 279,22/03/2020,16/03/2020,M,30,Tuen Mun Hospital,"Woodland Court, Parkvale Village",New Territories,Islands,No,Hospitalised,HK resident,Imported,Confirmed
 28,09/02/2020,30/01/2020,M,70,United Christian Hospital,United Christian Hospital,Kowloon,Kwun Tong,Yes,Discharged,HK resident,Local case,Confirmed
-281,22/03/2020,19/03/2020,M,33,Caritas Medical Centre,Chi Residences 120,Kong Kong Island,Central and Western,No,Hospitalised,Non-HK resident,Imported,Confirmed
-282,22/03/2020,17/03/2020,F,39,Princess Margaret Hospital,208 Hollywood Road,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
-283,22/03/2020,16/03/2020,F,20,North District Hospital,L'Hoel Island South,Kong Kong Island,Southern,No,Hospitalised,Non-HK resident,Imported,Confirmed
+281,22/03/2020,19/03/2020,M,33,Caritas Medical Centre,Chi Residences 120,Hong Kong Island,Central and Western,No,Hospitalised,Non-HK resident,Imported,Confirmed
+282,22/03/2020,17/03/2020,F,39,Princess Margaret Hospital,208 Hollywood Road,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
+283,22/03/2020,16/03/2020,F,20,North District Hospital,L'Hoel Island South,Hong Kong Island,Southern,No,Hospitalised,Non-HK resident,Imported,Confirmed
 284,22/03/2020,17/03/2020,F,26,Tuen Mun Hospital,"Block 6, Bayshore Towers",New Territories,Sha Tin,No,Hospitalised,HK resident,Local case,Confirmed
 285,22/03/2020,20/03/2020,M,41,United Christian Hospital,"Tower 7, The Long Beach",Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Close contact of imported case,Confirmed
 286,22/03/2020,Asymtomatic,M,37,United Christian Hospital,Pak Kong Au Road,New Territories,Sai Kung,No,Hospitalised,HK resident,Imported,Confirmed
 287,22/03/2020,Asymtomatic,M,31,United Christian Hospital,Indi Home,New Territories,Tsuen Wan,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
-288,22/03/2020,14/03/2020,M,20,United Christian Hospital,"Block 6, Provident Centre",Kong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
-289,22/03/2020,16/03/2020,F,20,Queen Mary Hospital,"On Hiu Mansion, Lei King Wan",Kong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
-290,22/03/2020,19/03/2020,F,18,Pamela Youde Nethersole Eastern Hospital,Ovolo Southside,Kong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
-291,22/03/2020,18/03/2020,M,32,Pamela Youde Nethersole Eastern Hospital,"Chun Tak House, Lung Tak Court",Kong Kong Island,Southern,No,Hospitalised,HK resident,Close contact of local case,Confirmed
-292,22/03/2020,19/03/2020,M,17,Pamela Youde Nethersole Eastern Hospital,Rosedale Hotel Hong Kong,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
-293,22/03/2020,19/03/2020,M,36,Pamela Youde Nethersole Eastern Hospital,Monmouth Villa,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Possibly local,Confirmed
+288,22/03/2020,14/03/2020,M,20,United Christian Hospital,"Block 6, Provident Centre",Hong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
+289,22/03/2020,16/03/2020,F,20,Queen Mary Hospital,"On Hiu Mansion, Lei King Wan",Hong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
+290,22/03/2020,19/03/2020,F,18,Pamela Youde Nethersole Eastern Hospital,Ovolo Southside,Hong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
+291,22/03/2020,18/03/2020,M,32,Pamela Youde Nethersole Eastern Hospital,"Chun Tak House, Lung Tak Court",Hong Kong Island,Southern,No,Hospitalised,HK resident,Close contact of local case,Confirmed
+292,22/03/2020,19/03/2020,M,17,Pamela Youde Nethersole Eastern Hospital,Rosedale Hotel Hong Kong,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+293,22/03/2020,19/03/2020,M,36,Pamela Youde Nethersole Eastern Hospital,Monmouth Villa,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Possibly local,Confirmed
 294,22/03/2020,16/03/2020,M,30,Tuen Mun Hospital,"Heng Moon House, Tin Heng Estate",New Territories,Yuen Long,No,Hospitalised,HK resident,Imported,Confirmed
 295,22/03/2020,17/03/2020,M,31,Tuen Mun Hospital,"Block 1, City Point",New Territories,Tsuen Wan,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
 296,22/03/2020,03/03/2020,M,24,United Christian Hospital,Fanling Wai South,New Territories,North,No,Hospitalised,HK resident,Imported,Confirmed
-297,22/03/2020,12/03/2020,F,18,United Christian Hospital,Ramada Hong Kong Grand View,Kong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
+297,22/03/2020,12/03/2020,F,18,United Christian Hospital,Ramada Hong Kong Grand View,Hong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
 298,22/03/2020,20/03/2020,F,1,Alice Ho Miu Ling Nethersole Hospital,"Lai Ming House, Wah Ming Estate",New Territories,North,No,Hospitalised,HK resident,Close contact of imported case,Confirmed
 299,22/03/2020,14/03/2020,M,40,Queen Elizabeth Hospital,"Tower 3, Harbour View Horizon Hotel",Kowloon,Kowloon City,No,Hospitalised,HK resident,Possibly local,Confirmed
 300,22/03/2020,20/03/2020,M,36,Queen Elizabeth Hospital,Rosedale Hotel Kowloon,Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Imported,Confirmed
 301,22/03/2020,14/03/2020,F,72,Prince of Wales Hospital,"Fook Lam House, Kwong Lam Court",New Territories,Sha Tin,No,Hospitalised,HK resident,Imported,Confirmed
 302,22/03/2020,20/03/2020,M,19,Prince of Wales Hospital,Athlete's Hostel in HK Sports Institues,New Territories,Sha Tin,No,Hospitalised,HK resident,Imported,Confirmed
-303,22/03/2020,20/03/2020,F,1,Pamela Youde Nethersole Eastern Hospital,Tung Lam Court,Kong Kong Island,Eastern,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
-304,22/03/2020,18/03/2020,M,69,Pamela Youde Nethersole Eastern Hospital,Tung Lam Court,Kong Kong Island,Eastern,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
+303,22/03/2020,20/03/2020,F,1,Pamela Youde Nethersole Eastern Hospital,Tung Lam Court,Hong Kong Island,Eastern,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
+304,22/03/2020,18/03/2020,M,69,Pamela Youde Nethersole Eastern Hospital,Tung Lam Court,Hong Kong Island,Eastern,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
 45,11/02/2020,05/02/2020,M,71,United Christian Hospital,United Christian Hospital,Kowloon,Kwun Tong,Yes,Discharged,HK resident,Local case,Confirmed
-306,22/03/2020,03/03/2020,M,64,Tuen Mun Hospital,191-193 Shau Kei Wan Road,Kong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
+306,22/03/2020,03/03/2020,M,64,Tuen Mun Hospital,191-193 Shau Kei Wan Road,Hong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
 62,18/02/2020,11/02/2020,M,58,United Christian Hospital,United Christian Hospital,Kowloon,Kwun Tong,Yes,Discharged,HK resident,Close contact of imported case,Confirmed
 308,22/03/2020,19/03/2020,M,39,United Christian Hospital,"Tak Shui House, Tak Tin Estate",Kowloon,Kwun Tong,No,Hospitalised,HK resident,Possibly local,Confirmed
-309,22/03/2020,15/03/2020,M,56,Ruttonjee Hospital,"Celeste Court, Fung Fai Terrace",Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
-310,22/03/2020,19/03/2020,F,33,Queen Mary Hospital,Valiant Park,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
+309,22/03/2020,15/03/2020,M,56,Ruttonjee Hospital,"Celeste Court, Fung Fai Terrace",Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+310,22/03/2020,19/03/2020,F,33,Queen Mary Hospital,Valiant Park,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
 311,22/03/2020,19/03/2020,F,16,Queen Elizabeth Hospital,8 Hok Ling Street,Kowloon,Kowloon City,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
 312,22/03/2020,16/03/2020,F,56,Princess Margaret Hospital,"Kwai Yat House, Kwai Hong Court",New Territories,Kwai Tsing,No,Hospitalised,HK resident,Local case,Confirmed
 313,22/03/2020,18/03/2020,F,29,Caritas Medical Centre,Lyton Building,Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Imported,Confirmed
 314,22/03/2020,20/03/2020,M,28,Caritas Medical Centre,"Yee Tai House, Yee Kok Court",Kowloon,Sham Shui Po,No,Hospitalised,HK resident,Close contact of local case,Confirmed
-315,22/03/2020,20/03/2020,M,45,Yan Chai Hospital,Wise Mansion,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
-316,22/03/2020,16/03/2020,M,29,Queen Mary Hospital,Le Meridien Cyberport,Kong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
+315,22/03/2020,20/03/2020,M,45,Yan Chai Hospital,Wise Mansion,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
+316,22/03/2020,16/03/2020,M,29,Queen Mary Hospital,Le Meridien Cyberport,Hong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
 317,22/03/2020,16/03/2020,M,24,Prince of Wales Hospital,Marina Cov,New Territories,Sai Kung,No,Hospitalised,HK resident,Imported,Confirmed
-318,22/03/2020,16/03/2020,M,41,Princess Margaret Hospital,"Block 4, Aqua 33",Kong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
-319,23/03/2020,20/03/2020,F,25,Queen Mary Hospital,"Block 8, Hee Wong Terrace, Kennedy Town",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of local case,Confirmed
+318,22/03/2020,16/03/2020,M,41,Princess Margaret Hospital,"Block 4, Aqua 33",Hong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
+319,23/03/2020,20/03/2020,F,25,Queen Mary Hospital,"Block 8, Hee Wong Terrace, Kennedy Town",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of local case,Confirmed
 320,23/03/2020,19/03/2020,F,20,United Christian Hospital,"The Hillgrove, 9 Tsing Fat Lane, Tuen Mun",New Territories,Tuen Mun,No,Hospitalised,HK resident,Imported,Confirmed
 321,23/03/2020,20/03/2020,F,57,United Christian Hospital,"Novotel Citygate Hong Kong, Tung Chung",New Territories,Islands,No,Hospitalised,Non-HK resident,Imported,Confirmed
 322,23/03/2020,21/03/2020,F,61,Queen Elizabeth Hospital,25 Stafford Road,Kowloon,Kowloon City,No,Hospitalised,HK resident,Close contact of local case,Confirmed
 323,23/03/2020,20/03/2020,F,20,Queen Elizabeth Hospital,"Block 6, Parc Palais, 18 Wylie Road, King's Park",Kowloon,Kowloon City,No,Hospitalised,HK resident,Imported,Confirmed
 324,23/03/2020,19/03/2020,M,36,Queen Elizabeth Hospital,Rosedale Hotel Kowloon,Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Imported,Confirmed
-325,23/03/2020,20/03/2020,M,34,Queen Mary Hospital,"Vienna Court, Realty Gardens, Mid-levels",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
-326,23/03/2020,21/03/2020,M,48,Queen Mary Hospital,"Block D, The Manhattan, Tai Tam",Kong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
-327,23/03/2020,20/03/2020,F,51,Queen Mary Hospital,"Tower 1, Hillsborough Court, Mid-levels",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of imported case,Confirmed
+325,23/03/2020,20/03/2020,M,34,Queen Mary Hospital,"Vienna Court, Realty Gardens, Mid-levels",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
+326,23/03/2020,21/03/2020,M,48,Queen Mary Hospital,"Block D, The Manhattan, Tai Tam",Hong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
+327,23/03/2020,20/03/2020,F,51,Queen Mary Hospital,"Tower 1, Hillsborough Court, Mid-levels",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of imported case,Confirmed
 328,23/03/2020,16/03/2020,F,47,North District Hospital,"Tower 10, the Visionary, Tung Chung",New Territories,Islands,No,Hospitalised,HK resident,Possibly local,Confirmed
 67,20/02/2020,10/02/2020,F,38,United Christian Hospital,United Christian Hospital,Kowloon,Kwun Tong,Yes,Discharged,HK resident,Local case,Confirmed
 69,20/02/2020,18/02/2020,M,48,United Christian Hospital,United Christian Hospital,Kowloon,Kwun Tong,Yes,Discharged,HK resident,Local case,Confirmed
 72,23/02/2020,10/02/2020,M,62,United Christian Hospital,United Christian Hospital,Kowloon,Kwun Tong,Yes,Discharged,HK resident,Local case,Confirmed
 332,23/03/2020,Asymptomatic,M,32,Alice Ho Miu Ling Nethersole Hospital,"Block 8, Phase 4, Tai Po Centre",New Territories,Tai Po,No,Hospitalised,HK resident,Possibly local,Confirmed
 333,23/03/2020,22/03/2020,M,56,Alice Ho Miu Ling Nethersole Hospital,"Kadoorie Avenue Mansion, 207 Prince Edward Road West",Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Imported,Confirmed
-334,23/03/2020,Asymptomatic,M,18,Alice Ho Miu Ling Nethersole Hospital,"Braemar Hill Mansions, 15-43 Braemar Hill Road",Kong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
+334,23/03/2020,Asymptomatic,M,18,Alice Ho Miu Ling Nethersole Hospital,"Braemar Hill Mansions, 15-43 Braemar Hill Road",Hong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
 335,23/03/2020,15/03/2020,F,19,Queen Elizabeth Hospital,"Best Western Grand Hotel, Tsim Sha Tsui",Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Imported,Confirmed
 336,23/03/2020,18/03/2020,F,43,Queen Elizabeth Hospital,"152 Waterloo Road, Kowloon Tong",Kowloon,Kowloon City,No,Hospitalised,HK resident,Imported,Confirmed
 337,23/03/2020,13/03/2020,M,66,Princess Margaret Hospital,"Mai Ning Building, Kwai Chung",New Territories,Kwai Tsing,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
 338,23/03/2020,11/03/2020,M,62,Princess Margaret Hospital,"Chau Kwai House, Kwai Chung Estate",New Territories,Kwai Tsing,No,Hospitalised,HK resident,Possibly local,Confirmed
-339,23/03/2020,20/03/2020,M,32,Alice Ho Miu Ling Nethersole Hospital,"Wah Hei House, Tung Hei Court, Sai Wan Ho",Kong Kong Island,Eastern,No,Hospitalised,HK resident,Local case,Confirmed
-340,23/03/2020,19/03/2020,F,39,United Christian Hospital,"Sui Fat House, Siu Sai Wan Estate, Chai Wan",Kong Kong Island,Eastern,No,Hospitalised,HK resident,Possibly local,Confirmed
-341,23/03/2020,19/03/2020,M,54,Queen Elizabeth Hospital,"38 Broadwood Road, Happy Valley",Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Possibly local,Confirmed
-342,23/03/2020,Asymptomatic,M,41,Queen Elizabeth Hospital,"Tung Yip House, Lei Tung Estate, Ap Lei Chau",Kong Kong Island,Southern,No,Hospitalised,HK resident,Close contact of local case,Confirmed
-343,23/03/2020,21/03/2020,M,39,United Christian Hospital,"Island Building, Wan Chai",Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of local case,Confirmed
+339,23/03/2020,20/03/2020,M,32,Alice Ho Miu Ling Nethersole Hospital,"Wah Hei House, Tung Hei Court, Sai Wan Ho",Hong Kong Island,Eastern,No,Hospitalised,HK resident,Local case,Confirmed
+340,23/03/2020,19/03/2020,F,39,United Christian Hospital,"Sui Fat House, Siu Sai Wan Estate, Chai Wan",Hong Kong Island,Eastern,No,Hospitalised,HK resident,Possibly local,Confirmed
+341,23/03/2020,19/03/2020,M,54,Queen Elizabeth Hospital,"38 Broadwood Road, Happy Valley",Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Possibly local,Confirmed
+342,23/03/2020,Asymptomatic,M,41,Queen Elizabeth Hospital,"Tung Yip House, Lei Tung Estate, Ap Lei Chau",Hong Kong Island,Southern,No,Hospitalised,HK resident,Close contact of local case,Confirmed
+343,23/03/2020,21/03/2020,M,39,United Christian Hospital,"Island Building, Wan Chai",Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of local case,Confirmed
 344,23/03/2020,Asymptomatic,M,23,Tseung Kwan O Hospital,"Tower 4, Metro City Phase 1",New Territories,Sai Kung,No,Hospitalised,HK resident,Imported,Confirmed
-345,23/03/2020,13/03/2020,F,37,Ruttonjee Hospital,"Fairlane Tower, Mid-levels",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
-346,23/03/2020,11/03/2020,M,30,Ruttonjee Hospital,"Po Ming Building, Causeway Bay",Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
+345,23/03/2020,13/03/2020,F,37,Ruttonjee Hospital,"Fairlane Tower, Mid-levels",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Possibly local,Confirmed
+346,23/03/2020,11/03/2020,M,30,Ruttonjee Hospital,"Po Ming Building, Causeway Bay",Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Imported,Confirmed
 347,23/03/2020,22/03/2020,F,54,Prince of Wales Hospital,"Block 7, Villa Athena, Ma On Shan",New Territories,Sha Tin,No,Hospitalised,HK resident,Local case,Confirmed
-348,23/03/2020,20/03/2020,F,66,Pamela Youde Nethersole Eastern Hospital,"Block 3, Fullview Garden, Siu Sai Wan",Kong Kong Island,Eastern,No,Hospitalised,HK resident,Possibly local,Confirmed
+348,23/03/2020,20/03/2020,F,66,Pamela Youde Nethersole Eastern Hospital,"Block 3, Fullview Garden, Siu Sai Wan",Hong Kong Island,Eastern,No,Hospitalised,HK resident,Possibly local,Confirmed
 349,23/03/2020,19/03/2020,M,26,Prince of Wales Hospital,"Yiu Shun House, Yiu On Estate, Ma On Shan",New Territories,Sha Tin,No,Hospitalised,HK resident,Close contact of imported case,Confirmed
 350,23/03/2020,18/03/2020,F,57,Queen Mary Hospital,"Block 10, Treasure Spot Garden, Tai Po",New Territories,Tai Po,No,Hospitalised,HK resident,Imported,Confirmed
 351,23/03/2020,14/03/2020,M,58,Queen Mary Hospital,"Block 10, Treasure Spot Garden, Tai Po",New Territories,Tai Po,No,Hospitalised,HK resident,Imported,Confirmed
 352,23/03/2020,20/03/2020,M,43,Tseung Kwan O Hospital,"Sai Keng Village, Sai Sha Road, Sai Kung",New Territories,Sai Kung,No,Hospitalised,HK resident,Imported,Confirmed
 353,23/03/2020,21/03/2020,F,33,United Christian Hospital,"Dorsett Kwun Tong Hotel, Kwun Tong",Kowloon,Kwun Tong,No,Hospitalised,HK resident,Imported,Confirmed
-354,23/03/2020,18/03/2020,M,50,Ruttonjee Hospital,"53 Hollywood Road, Central",Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+354,23/03/2020,18/03/2020,M,50,Ruttonjee Hospital,"53 Hollywood Road, Central",Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
 82,25/02/2020,20/02/2020,M,33,United Christian Hospital,United Christian Hospital,Kowloon,Kwun Tong,Yes,Discharged,HK resident,Close contact of local case,Confirmed
 92,27/02/2020,13/02/2020,F,70,United Christian Hospital,United Christian Hospital,Kowloon,Kwun Tong,Yes,Discharged,HK resident,Close contact of local case,Confirmed
 95,29/02/2020,29/02/2020,F,46,United Christian Hospital,United Christian Hospital,Kowloon,Kwun Tong,Yes,Discharged,HK resident,Close contact of local case,Confirmed
-358,24/03/2020,22/03/2020,M,41,Pamela Youde Nethersole Eastern Hospital,"Kam Shan Mansion, Taikoo Shing",Kong Kong Island,Eastern,No,Hospitalised,HK resident,Possibly local,Confirmed
+358,24/03/2020,22/03/2020,M,41,Pamela Youde Nethersole Eastern Hospital,"Kam Shan Mansion, Taikoo Shing",Hong Kong Island,Eastern,No,Hospitalised,HK resident,Possibly local,Confirmed
 359,24/03/2020,21/03/2020,M,61,Queen Elizabeth Hospital,Stafford Road,Kowloon,Kowloon City,No,Hospitalised,HK resident,Close contact of local case,Confirmed
-360,24/03/2020,22/03/2020,F,30,Queen Mary Hospital,312 Queen's Road West,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of local case,Confirmed
-361,24/03/2020,16/03/2020,F,38,Queen Mary Hospital,Bohemian House,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
-362,24/03/2020,Asymptomatic,F,34,Queen Mary Hospital,Golden Valley Mansion,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of local case,Confirmed
-363,24/03/2020,20/03/2020,M,52,Queen Mary Hospital,"Block C, The Manhattan",Kong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
+360,24/03/2020,22/03/2020,F,30,Queen Mary Hospital,312 Queen's Road West,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of local case,Confirmed
+361,24/03/2020,16/03/2020,F,38,Queen Mary Hospital,Bohemian House,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+362,24/03/2020,Asymptomatic,F,34,Queen Mary Hospital,Golden Valley Mansion,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of local case,Confirmed
+363,24/03/2020,20/03/2020,M,52,Queen Mary Hospital,"Block C, The Manhattan",Hong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
 98,01/03/2020,12/02/2020,F,71,United Christian Hospital,United Christian Hospital,Kowloon,Kwun Tong,Yes,Hospitalised,HK resident,Close contact of local case,Confirmed
 241,20/03/2020,15/03/2020,M,60,United Christian Hospital,United Christian Hospital,Kowloon,Kwun Tong,Yes,Hospitalised,Non-HK resident,Imported,Confirmed
 366,24/03/2020,Asymptomatic,M,42,Prince of Wales Hospital,"Jade Heights, Belair Gardens",New Territories,Sha Tin,No,Hospitalised,HK resident,Possibly local,Confirmed
-367,24/03/2020,22/03/2020,M,38,Queen Mary Hospital,Golden Valley Mansion,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of local case,Confirmed
-368,24/03/2020,17/03/2020,F,32,Queen Mary Hospital,Four Seasons Hotel Hong Kong,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
-369,24/03/2020,19/03/2020,M,36,Queen Mary Hospital,Four Seasons Hotel Hong Kong,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
-370,24/03/2020,19/03/2020,F,26,Queen Mary Hospital,1 Ping On Lane,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+367,24/03/2020,22/03/2020,M,38,Queen Mary Hospital,Golden Valley Mansion,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of local case,Confirmed
+368,24/03/2020,17/03/2020,F,32,Queen Mary Hospital,Four Seasons Hotel Hong Kong,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+369,24/03/2020,19/03/2020,M,36,Queen Mary Hospital,Four Seasons Hotel Hong Kong,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+370,24/03/2020,19/03/2020,F,26,Queen Mary Hospital,1 Ping On Lane,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
 371,24/03/2020,15/03/2020,M,66,Princess Margaret Hospital,"Mun Wo House, Mun Tung Estate",New Territories,Islands,No,Hospitalised,HK resident,Possibly local,Confirmed
-372,24/03/2020,20/03/2020,M,54,Kwong Wah Hospital,"Block 12, South Horizons",Kong Kong Island,Southern,No,Hospitalised,HK resident,Close contact of local case,Confirmed
-373,24/03/2020,20/03/2020,M,33,Queen Elizabeth Hospital,Sing Kong Building,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
-374,24/03/2020,19/03/2020,F,60,Queen Mary Hospital,"Block 25, Baguio Villa",Kong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
-375,24/03/2020,Asymptomatic,M,39,Queen Elizabeth Hospital,Wise Mansiontai po,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
+372,24/03/2020,20/03/2020,M,54,Kwong Wah Hospital,"Block 12, South Horizons",Hong Kong Island,Southern,No,Hospitalised,HK resident,Close contact of local case,Confirmed
+373,24/03/2020,20/03/2020,M,33,Queen Elizabeth Hospital,Sing Kong Building,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
+374,24/03/2020,19/03/2020,F,60,Queen Mary Hospital,"Block 25, Baguio Villa",Hong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
+375,24/03/2020,Asymptomatic,M,39,Queen Elizabeth Hospital,Wise Mansiontai po,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
 331,23/03/2020,17/03/2020,F,21,United Christian Hospital,United Christian Hospital,Kowloon,Kwun Tong,Yes,Hospitalised,HK resident,Imported,Confirmed
 377,24/03/2020,19/03/2020,M,40,Alice Ho Miu Ling Nethersole Hospital,San Uk Ka,New Territories,Tai Po,No,Hospitalised,HK resident,Local case,Confirmed
-378,24/03/2020,21/03/2020,F,36,Pamela Youde Nethersole Eastern Hospital,Centre Place,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
+378,24/03/2020,21/03/2020,F,36,Pamela Youde Nethersole Eastern Hospital,Centre Place,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Close contact of possibly local case,Confirmed
 379,24/03/2020,20/03/2020,M,47,Queen Elizabeth Hospital,1 Oxford Road,Kowloon,Kowloon City,No,Hospitalised,HK resident,Imported,Confirmed
-380,24/03/2020,18/03/2020,M,42,Ruttonjee Hospital,6 Ming Yuen Western Street,Kong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
+380,24/03/2020,18/03/2020,M,42,Ruttonjee Hospital,6 Ming Yuen Western Street,Hong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
 381,24/03/2020,18/03/2020,F,15,Prince of Wales Hospital,Marina Cove,New Territories,Sai Kung,No,Hospitalised,HK resident,Imported,Confirmed
 129,11/03/2020,08/03/2020,F,52,Yan Chai Hospital,Yan Chai Hospital,New Territories,Tsuen Wan,Yes,Hospitalised,HK resident,Imported,Confirmed
 383,24/03/2020,22/03/2020,F,39,Alice Ho Miu Ling Nethersole Hospital,"Block 3, Uptown Plaza",New Territories,Tai Po,No,Hospitalised,HK resident,Imported,Confirmed
-384,24/03/2020,23/03/2020,F,26,Queen Mary Hospital,Hang Shun Mansion,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of local case,Confirmed
+384,24/03/2020,23/03/2020,F,26,Queen Mary Hospital,Hang Shun Mansion,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of local case,Confirmed
 385,24/03/2020,17/03/2020,M,50,Tseung Kwan O Hospital,"Kwong Cheong House, Kwong Ming Court",New Territories,Sai Kung,No,Hospitalised,HK resident,Possibly local,Confirmed
 386,24/03/2020,21/03/2020,M,48,Princess Margaret Hospital,"Ngan Yuet House, Ngan Wan Estate",New Territories,Islands,No,Hospitalised,HK resident,Close contact of local case,Confirmed
-387,24/03/2020,22/03/2020,M,38,Queen Elizabeth Hospital,Hang Shun Mansion,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of local case,Confirmed
+387,24/03/2020,22/03/2020,M,38,Queen Elizabeth Hospital,Hang Shun Mansion,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of local case,Confirmed
 388,25/03/2020,22/03/2020,M,36,United Christian Hospital,"King Min House, King Lam Estate",New Territories,Sai Kung,No,Hospitalised,HK resident,Local case,Confirmed
-389,25/03/2020,21/03/2020,M,43,Tuen Mun Hospital,Percival House,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of local case,Confirmed
-390,25/03/2020,22/03/2020,F,30,Ruttonjee Hospital,Rosedale Hotel Hong Kong,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Possibly local,Confirmed
-391,25/03/2020,19/03/2020,F,57,Pok Oi Hospital,1A Fung Fai Terrace,Kong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of local case,Confirmed
+389,25/03/2020,21/03/2020,M,43,Tuen Mun Hospital,Percival House,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of local case,Confirmed
+390,25/03/2020,22/03/2020,F,30,Ruttonjee Hospital,Rosedale Hotel Hong Kong,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Possibly local,Confirmed
+391,25/03/2020,19/03/2020,F,57,Pok Oi Hospital,1A Fung Fai Terrace,Hong Kong Island,Wan Chai,No,Hospitalised,HK resident,Close contact of local case,Confirmed
 392,25/03/2020,20/03/2020,F,33,Yan Chai Hospital,Tai Long Wan Village,New Territories,Islands,No,Hospitalised,HK resident,Possibly local,Confirmed
 393,25/03/2020,12/03/2020,F,18,Prince of Wales Hospital,Hong Lok Road East,New Territories,Tai Po,No,Hospitalised,HK resident,Imported,Confirmed
 394,25/03/2020,10/03/2020,M,28,North District Hospital,Full Shing Building,New Territories,Yuen Long,No,Hospitalised,HK resident,Local case,Confirmed
@@ -400,13 +400,13 @@
 399,25/03/2020,09/03/2020,F,21,United Christian Hospital,Sun Fung Wai,New Territories,Tuen Mun,No,Hospitalised,HK resident,Imported,Confirmed
 400,25/03/2020,Asymptomatic,M,11,Queen Elizabeth Hospital,Holiday Inn Golden Mile,Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Imported,Confirmed
 401,25/03/2020,Asymptomatic,F,51,Queen Elizabeth Hospital,Holiday Inn Golden Mile,Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Imported,Confirmed
-402,25/03/2020,13/03/2020,M,26,Ruttonjee Hospital,Welley Building,Kong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
-403,25/03/2020,23/03/2020,M,45,Queen Elizabeth Hospital,"Block A, Park Place",Kong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
-404,25/03/2020,23/03/2020,F,50,Ruttonjee Hospital,"Block A, Park Place",Kong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
+402,25/03/2020,13/03/2020,M,26,Ruttonjee Hospital,Welley Building,Hong Kong Island,Central and Western,No,Hospitalised,HK resident,Imported,Confirmed
+403,25/03/2020,23/03/2020,M,45,Queen Elizabeth Hospital,"Block A, Park Place",Hong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
+404,25/03/2020,23/03/2020,F,50,Ruttonjee Hospital,"Block A, Park Place",Hong Kong Island,Southern,No,Hospitalised,HK resident,Imported,Confirmed
 405,25/03/2020,20/03/2020,M,41,Queen Elizabeth Hospital,"Tower 16, Laguna Verde",Kowloon,Kowloon City,No,Hospitalised,HK resident,Possibly local,Confirmed
-406,25/03/2020,23/03/2020,M,50,Queen Mary Hospital,"Block 2, Stanford Villa",Kong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
-407,25/03/2020,17/03/2020,F,20,Pamela Youde Nethersole Eastern Hospital,"Tower 1, Grand Promenade",Kong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
+406,25/03/2020,23/03/2020,M,50,Queen Mary Hospital,"Block 2, Stanford Villa",Hong Kong Island,Southern,No,Hospitalised,HK resident,Possibly local,Confirmed
+407,25/03/2020,17/03/2020,F,20,Pamela Youde Nethersole Eastern Hospital,"Tower 1, Grand Promenade",Hong Kong Island,Eastern,No,Hospitalised,HK resident,Imported,Confirmed
 408,25/03/2020,24/03/2020,F,18,North District Hospital,"Lane 12, Liu Pok Tsuen",New Territories,North,No,Hospitalised,HK resident,Imported,Confirmed
 409,25/03/2020,16/03/2020,M,20,Kwong Wah Hospital,"Tower 6, Island Harbourview",Kowloon,Yau Tsim Mong,No,Hospitalised,HK resident,Imported,Confirmed
-410,25/03/2020,17/03/2020,M,36,Queen Mary Hospital,52 Conduit Road,Kong Kong Island,Central and Western,No,Hospitalised,Non-HK resident,Imported,Confirmed
+410,25/03/2020,17/03/2020,M,36,Queen Mary Hospital,52 Conduit Road,Hong Kong Island,Central and Western,No,Hospitalised,Non-HK resident,Imported,Confirmed
 411,25/03/2020,20/03/2020,M,38,Tuen Mun Hospital,San Hui Village,New Territories,Tuen Mun,No,Hospitalised,Non-HK resident,Close contact of local case,Confirmed
