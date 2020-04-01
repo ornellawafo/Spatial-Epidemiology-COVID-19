@@ -278,6 +278,11 @@ shp_HK$Prop15_24 = data$Pct_15.24/100
 shp_HK$Prop25_64 = data$Pct_25.64/100
 shp_HK$Prop65 = data$Pct_65./100
 shp_HK$Income = data$Monthly.income..HKD.
+shp_HK$Housing = as.numeric(data$No..households)
+shp_HK$HospBeds = data$Num_beds
+shp_HK$SecEduc = data$Pct_Sec.Educ/100
+shp_HK$PostSec = data$Pct_PostSec.w..degree/100
+shp_HK$PropLabor = data$Count.Labor.force/(data$Male.Count + data$Female.Count)
 
 # Converting shapefile data to dataframe object
 # merge the "fortified" data with the data from our spatial object
@@ -451,6 +456,116 @@ plotf =
         panel.background = element_blank())
 
 grid.arrange(plota2, plotb, plotc, plotd, plote, plotf)
+
+# Population of 0-14 years old 
+plotg =
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = Prop0_14)) + 
+  ggtitle("Proportion of 0-14 years old") +
+  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+# Population of 25-64 years old
+ploth =
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = Prop25_64)) + 
+  ggtitle("Proportion of 25-64 years old") +
+  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+# Proportion of Post-Sec Educ
+ploti =
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = PostSec)) + 
+  ggtitle("Proportion with Post-Secondary Education") +
+  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+# Proportion of Secondary education and higher
+plotj =
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = SecEduc)) + 
+  ggtitle("Proportion with Secondary Education and higher") +
+  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+# Number of housing units
+plotk =
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = Housing)) + 
+  ggtitle("Number of Households") +
+  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+# Average number of beds per hospital
+plotl =
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = HospBeds)) + 
+  ggtitle("Average number of beds per hospital") +
+  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+grid.arrange(plotg, ploth, ploti, plotj, plotk, plotl, ncol = 2)
 ```
 
 # Summary of Inferential Results (3 pages)
