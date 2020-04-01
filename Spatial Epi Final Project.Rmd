@@ -251,6 +251,7 @@ shp_HK = shp_HK[order(shp_HK$ENAME),]
 shp_HK$Lat = data$Lat
 shp_HK$Long = data$Long
 shp_HK$Cases = data$Cases
+shp_HK$Rate = (data$Cases/(data$Male.Count + data$Female.Count))*100000
 shp_HK$TotalPop = data$Male.Count + data$Female.Count
 shp_HK$PopDens = (data$Male.Count + data$Female.Count)/data$Area_km2
 shp_HK$PropMale = data$Male.Count/(data$Male.Count + data$Female.Count)
@@ -312,6 +313,16 @@ plota =
         panel.grid = element_blank(),
         axis.title = element_blank(), 
         panel.background = element_blank())
+
+# Rate per 100,000
+brks <-classIntervals(shp_HK$Rate, n=5, style="quantile")
+brks <- brks$brks
+shp_HK.df$RateCat[shp_HK.df$Rate < brks[2]] = 0
+shp_HK.df$RateCat[shp_HK.df$Rate >= brks[2] & shp_HK.df$Rate < brks[3]] = 1
+shp_HK.df$RateCat[shp_HK.df$Rate >= brks[3] & shp_HK.df$Rate < brks[4]] = 2
+shp_HK.df$RateCat[shp_HK.df$Rate >= brks[4] & shp_HK.df$Rate < brks[5]] = 3
+shp_HK.df$RateCat[shp_HK.df$Rate >= brks[5]] = 4
+shp_HK.df$RateCat = factor(shp_HK.df$RateCat, levels = 0:4, labels = c("<2.5", "2.5-3.2", "3.2-4.5", "4.5-13.6", ">13.6"))
 
 # Population density
 plotb = 
@@ -403,7 +414,6 @@ plotf =
         axis.title = element_blank(), 
         panel.background = element_blank())
 
-grid.arrange(plota, plotb, plotc, plotd, plote, plotf, ncol = 3)
 ```
 
 # Summary of Inferential Results (3 pages)
