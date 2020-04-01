@@ -113,6 +113,7 @@ Covariates <- read.csv("Hong Kong Covariates V2.csv")
 data <- merge(x = linelist.agg, y = Covariates, by = "District")
 summary(data)
 
+
 # Selecting which covariates to include
 
 ```
@@ -145,7 +146,7 @@ HK.district.boxplots <- function(df, na.rm = TRUE, ...){
       theme(legend.position="none") + 
       labs(y="Value")+
       
-      ggtitle(paste(names(covariates[i]), '\n', 
+      ggtitle(paste(names(Covariates[i]), '\n', 
                     "By Region \n",
                     sep=''))
 
@@ -155,9 +156,7 @@ HK.district.boxplots <- function(df, na.rm = TRUE, ...){
 }
 
 # run graphing function on long df
-HK.district.boxplots(covariates)
-
-
+HK.district.boxplots(Covariates)
 ```
 
 ## Boxplot by region
@@ -215,9 +214,9 @@ HK.histogram <- function(df, na.rm = TRUE, ...){
       #facet_wrap(~Region)
       theme_pander() +
       theme(legend.position="none") + 
-      labs(y="Value", x= paste(names(covariates[i])))+
+      labs(y="Value", x= paste(names(Covariates[i])))+
       
-      ggtitle(paste(names(covariates[i]), '\n', 
+      ggtitle(paste(names(Covariates[i]), '\n', 
                     "By Region \n",
                     sep=''))
     # print plots to screen
@@ -226,9 +225,185 @@ HK.histogram <- function(df, na.rm = TRUE, ...){
 }
 
 # run graphing function on long df
-HK.histogram(covariates)
+HK.histogram(Covariates)
+```
 
+# Exploratory analysis
+```{r}
+# Coordinates by district
+HKcoords <- read.csv("HK_coords.csv", header = T)
+HKcoords <- HKcoords[order(HKcoords$District), ]
+data$Lat <- HKcoords$Lat
+data$Long <- HKcoords$Long
 
+# Creating maps for exploratory analysis
+library(spdep)
+library(rgdal)
+library(maptools)
+library(sp)
+library(RColorBrewer)
+library(viridis)
+library(classInt)
+
+# Adding variables in shapefile
+shp_HK = readOGR("shp_HK/Hong_Kong_18_Districts.shp", stringsAsFactors = FALSE)
+shp_HK = shp_HK[order(shp_HK$ENAME),]
+shp_HK$Lat = data$Lat
+shp_HK$Long = data$Long
+shp_HK$Cases = data$Cases
+shp_HK$TotalPop = data$Male.Count + data$Female.Count
+shp_HK$PopDens = (data$Male.Count + data$Female.Count)/data$Area_km2
+shp_HK$PropMale = data$Male.Count/(data$Male.Count + data$Female.Count)
+shp_HK$PropFemale = data$Female.Count/(data$Male.Count + data$Female.Count)
+shp_HK$Prop0_14 = data$Pct_0.14/100
+shp_HK$Prop15_24 = data$Pct_15.24/100
+shp_HK$Prop25_64 = data$Pct_25.64/100
+shp_HK$Prop65 = data$Pct_65./100
+shp_HK$Income = data$Monthly.income..HKD.
+
+# Converting shapefile data to dataframe object
+# merge the "fortified" data with the data from our spatial object
+shp_HK$id = rownames(shp_HK@data)
+shp = fortify(shp_HK)
+shp_HK.df = merge(shp, shp_HK@data, by = "id")
+
+####### MAPS OF RESPONSE AND COVARIATES, BY DISTRIC #########
+
+# Total COVID-19 cases (as continuous variable)
+ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = Cases)) + 
+  ggtitle("Total COVID-19 cases, by district") +
+  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+# Total COVID-19 cases (as discrete variable)
+brks <-classIntervals(shp_HK$Cases, n=5, style="quantile")
+brks <- brks$brks
+shp_HK.df$CasesCat[shp_HK.df$Cases < 10] = 0
+shp_HK.df$CasesCat[shp_HK.df$Cases >= 10 & shp_HK.df$Cases < 15] = 1
+shp_HK.df$CasesCat[shp_HK.df$Cases >= 15 & shp_HK.df$Cases < 20] = 2
+shp_HK.df$CasesCat[shp_HK.df$Cases >= 20 & shp_HK.df$Cases < 43] = 3
+shp_HK.df$CasesCat[shp_HK.df$Cases >= 43] = 4
+shp_HK.df$CasesCat = factor(shp_HK.df$CasesCat, levels = 0:4, labels = c("<10", "10-14", "15-19", "20-42", ">42"))
+
+plota =
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = CasesCat)) + 
+  scale_fill_brewer(palette = "YlOrRd") +
+  ggtitle("Total COVID-19 cases") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+# Population density
+plotb = 
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = PopDens)) + 
+  ggtitle("Population density") +
+  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+# Male population
+plotc = 
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = PropMale)) + 
+  ggtitle("Proportion of males") +
+  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+# Female population
+plotd = 
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = PropFemale)) + 
+  ggtitle("Proportion of males") +
+  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+# Older population
+plote = 
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = Prop65)) + 
+  ggtitle("Proportion of 65 and above") +
+  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+# Younger population
+plotf =
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = Prop15_24)) + 
+  ggtitle("Proportion of 15-24 years old") +
+  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+grid.arrange(plota, plotb, plotc, plotd, plote, plotf, ncol = 3)
 ```
 
 # Summary of Inferential Results (3 pages)
