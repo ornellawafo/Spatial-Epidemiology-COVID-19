@@ -207,9 +207,7 @@ HK.histogram <- function(df, na.rm = TRUE, ...){
   for (i in seq_along(names(df[,3:ncol(df)]))) { 
     
     # create plot for each district in df 
-    plot <- 
-      ggplot(df, aes(df[,i])) + 
-
+    plot <- ggplot(df, aes(df[,i])) + 
       geom_bar(position="dodge", aes(fill=Region, size=2) )+
       #facet_wrap(~Region)
       theme_pander() +
@@ -230,6 +228,26 @@ HK.histogram(Covariates)
 
 # Exploratory analysis
 ```{r}
+# Histograms
+library(ggplot2)
+library(tidyr)
+hist.data <- subset(data, select = c(District, Cases, Male.Count, Female.Count, Area_km2,
+                                       Monthly.income..HKD., Pct_0.14, Pct_15.24, Pct_25.64, Pct_65.))
+hist.data$TotalPop <- hist.data$Male.Count + hist.data$Female.Count
+hist.data$Rate <- (hist.data$Cases/hist.data$TotalPop)*100000
+hist.data$PropMale <- (hist.data$Male.Count/hist.data$TotalPop)*100
+hist.data$PropFemale <- (hist.data$Female.Count/hist.data$TotalPop)*100
+hist.data$PopDensity <- hist.data$TotalPop/hist.data$Area_km2
+
+hist.data %>% 
+  select(Cases, Rate, PopDensity, PropMale, PropFemale, 
+         Pct_0.14, Pct_15.24, Pct_25.64, Pct_65., Monthly.income..HKD.) %>%
+  gather() %>%                             
+  ggplot(aes(value)) +                     
+    facet_wrap(~key, scales = "free") +    
+    geom_histogram(bins = 5) +
+    xlab("") + ylab("Frequency")
+
 # Coordinates by district
 HKcoords <- read.csv("HK_coords.csv", header = T)
 HKcoords <- HKcoords[order(HKcoords$District), ]
@@ -242,7 +260,6 @@ library(rgdal)
 library(maptools)
 library(sp)
 library(RColorBrewer)
-library(viridis)
 library(classInt)
 
 # Adding variables in shapefile
@@ -323,6 +340,25 @@ shp_HK.df$RateCat[shp_HK.df$Rate >= brks[3] & shp_HK.df$Rate < brks[4]] = 2
 shp_HK.df$RateCat[shp_HK.df$Rate >= brks[4] & shp_HK.df$Rate < brks[5]] = 3
 shp_HK.df$RateCat[shp_HK.df$Rate >= brks[5]] = 4
 shp_HK.df$RateCat = factor(shp_HK.df$RateCat, levels = 0:4, labels = c("<2.5", "2.5-3.2", "3.2-4.5", "4.5-13.6", ">13.6"))
+
+plota2 =
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = RateCat)) + 
+  scale_fill_brewer(palette = "YlOrRd") +
+  ggtitle("Rate of COVID-19 per 100,000") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+grid.arrange(plota, plota2)
 
 # Population density
 plotb = 
@@ -414,6 +450,7 @@ plotf =
         axis.title = element_blank(), 
         panel.background = element_blank())
 
+grid.arrange(plota2, plotb, plotc, plotd, plote, plotf)
 ```
 
 # Summary of Inferential Results (3 pages)
