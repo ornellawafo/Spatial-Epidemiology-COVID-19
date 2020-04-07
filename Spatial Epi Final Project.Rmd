@@ -264,16 +264,16 @@ data %>%
 # Histogram of SIR and new covariates
 sir <- ggplot(data = data, aes(SIR)) + geom_histogram() +
   ylab("Frequency")
-age1 <- ggplot(data = data, aes(Pct_0.24)) + geom_histogram() + ylab("Frequency") + 
-  xlab("% of 0-24 yrs old")
-age2 <- ggplot(data = data, aes(Pct_25.64)) + geom_histogram() + ylab("Frequency") +
-  xlab("% of 25-64 yrs old")
-age3 <- ggplot(data = data, aes(Pct_65.)) + geom_histogram() + ylab("Frequency") +
-  xlab("% of 65+ yrs old")
-income <- ggplot(data = data, aes(log(Monthly.income..HKD.))) + geom_histogram() +
-  ylab("Frequency") + xlab("Log of Monthly income (HKD)")
-postsec <- ggplot(data = data, aes(log(Pct_Sec.Educ))) + geom_histogram() +
-  ylab("Frequency") + xlab("Log of % with Post-Secondary Education")
+age1 <- ggplot(data = data, aes(Prop_0.24)) + geom_histogram() + ylab("Frequency") + 
+  xlab("Prop of 0-24 yrs old")
+age2 <- ggplot(data = data, aes(Prop_25.64)) + geom_histogram() + ylab("Frequency") +
+  xlab("Prop of 25-64 yrs old")
+age3 <- ggplot(data = data, aes(Prop_65)) + geom_histogram() + ylab("Frequency") +
+  xlab("Prop of 65+ yrs old")
+income <- ggplot(data = data, aes(Log_income)) + geom_histogram() +
+  ylab("Frequency") + xlab("Log(Monthly income)")
+postsec <- ggplot(data = data, aes(Log_postsec)) + geom_histogram() +
+  ylab("Frequency") + xlab("Log(Prop with Post-Secondary Education)")
 grid.arrange(sir, age1, age2, age3, income, postsec, ncol = 3)
 ```
 
