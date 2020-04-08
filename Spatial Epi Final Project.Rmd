@@ -44,6 +44,20 @@ You do not need to be complete here, aim for including the descriptive results w
 ```{r, echo = F}
 # Loading packages
 library(dplyr)
+
+# Creating maps for exploratory analysis
+library(spdep)
+library(rgdal)
+library(maptools)
+library(sp)
+library(RColorBrewer)
+library(classInt)
+
+# Creating graphs
+library(ggplot2)
+library(gridExtra)
+library(ggthemes)
+library(pander)
 ```
 
 **Hong Kong line list of COVID-19**
@@ -95,15 +109,9 @@ summary(linelist.agg)
 **Hong Kong covariates dataset**
 
 ```{r, echo = F}
-# Old covariates dataset
-covariates <- read.csv("Hong Kong Covariates.csv", sep=",")
-# head(covariates)
-# str(covariates)
-# summary(covariates)
-# ncol(covariates)
-
 # Updated covariates dataset
 Covariates <- read.csv("Hong Kong Covariates V2.csv")
+summary(Covariates)
 ```
 
 **Merging case dataset with covariates dataset**
@@ -112,22 +120,12 @@ Covariates <- read.csv("Hong Kong Covariates V2.csv")
 # Merging the datasets by district
 data <- merge(x = linelist.agg, y = Covariates, by = "District")
 summary(data)
-
-
-# Selecting which covariates to include
-
 ```
 
 ## Boxplots by district and region
 
 ```{r, echo = F}
-library(ggplot2)
-library(gridExtra)
-library(ggthemes)
-library(pander)
-
 #Plots of variables by Region
-
 
 # create graphing function
 HK.district.boxplots <- function(df, na.rm = TRUE, ...){
@@ -162,8 +160,6 @@ HK.district.boxplots(Covariates)
 ## Boxplot by region
 
 ```{r, echo = F}
-
-
 # create graphing function
 HK.region.boxplots <- function(df, na.rm = TRUE, ...){
   
@@ -226,41 +222,68 @@ HK.histogram <- function(df, na.rm = TRUE, ...){
 HK.histogram(Covariates)
 ```
 
-# Exploratory analysis
+## Exploratory analysis
 ```{r}
-# Histograms
-library(ggplot2)
-library(tidyr)
-hist.data <- subset(data, select = c(District, Cases, Male.Count, Female.Count, Area_km2,
-                                       Monthly.income..HKD., Pct_0.14, Pct_15.24, Pct_25.64, Pct_65.))
-hist.data$TotalPop <- hist.data$Male.Count + hist.data$Female.Count
-hist.data$Rate <- (hist.data$Cases/hist.data$TotalPop)*100000
-hist.data$PropMale <- (hist.data$Male.Count/hist.data$TotalPop)*100
-hist.data$PropFemale <- (hist.data$Female.Count/hist.data$TotalPop)*100
-hist.data$PopDensity <- hist.data$TotalPop/hist.data$Area_km2
+# More data manipulation
+## 1) New age categories: 0-24, 25-64, 65+, 
+data$Pct_0.24 = data$Pct_0.14 + data$Pct_15.24
+data$Prop_0.24 = data$Pct_0.24/100
+data$Prop_25.64 = data$Pct_25.64/100
+data$Prop_65 = data$Pct_65/100
 
-hist.data %>% 
-  select(Cases, Rate, PopDensity, PropMale, PropFemale, 
-         Pct_0.14, Pct_15.24, Pct_25.64, Pct_65., Monthly.income..HKD.) %>%
+## 2) Re-calculate population-level variables, based on female and male counts
+data$Total_pop = data$Male_count + data$Female_count
+data$Pop_density = data$Total_pop/data$Area_km2
+data$Prop_labor = data$Count_labor/data$Total_pop
+data$Prop_male = data$Male_count/data$Total_pop
+data$Prop_female = data$Female_count/data$Total_pop
+
+## 3) Log-transformation of monthly income and education variables
+data$Prop_sec = data$Pct_Sec/100
+data$Prop_postsec = data$Pct_PostSec/100
+data$Log_income = log(data$Monthly_income)
+data$Log_sec = log(data$Prop_sec)
+data$Log_postsec = log(data$Prop_postsec)
+
+## 4) Calculate expected cases and SIR using standardization method
+tot.case = sum(data$Cases)
+tot.pop = sum(data$Total_pop)
+ave.rate = tot.case/tot.pop
+data$Expected = ave.rate*data$Total_pop
+data$SIR = data$Cases/data$Expected
+
+######### Histograms #########
+data %>% 
+  select() %>% ## select variables to plot
   gather() %>%                             
   ggplot(aes(value)) +                     
     facet_wrap(~key, scales = "free") +    
     geom_histogram(bins = 5) +
     xlab("") + ylab("Frequency")
 
+# Histogram of SIR and new covariates
+sir <- ggplot(data = data, aes(SIR)) + geom_histogram() +
+  ylab("Frequency")
+age1 <- ggplot(data = data, aes(Prop_0.24)) + geom_histogram() + ylab("Frequency") + 
+  xlab("Prop of 0-24 yrs old")
+age2 <- ggplot(data = data, aes(Prop_25.64)) + geom_histogram() + ylab("Frequency") +
+  xlab("Prop of 25-64 yrs old")
+age3 <- ggplot(data = data, aes(Prop_65)) + geom_histogram() + ylab("Frequency") +
+  xlab("Prop of 65+ yrs old")
+income <- ggplot(data = data, aes(Log_income)) + geom_histogram() +
+  ylab("Frequency") + xlab("Log(Monthly income)")
+postsec <- ggplot(data = data, aes(Log_postsec)) + geom_histogram() +
+  ylab("Frequency") + xlab("Log(Prop with Post-Secondary Education)")
+grid.arrange(sir, age1, age2, age3, income, postsec, ncol = 3)
+```
+
+## Mapping of the outcome and covariates
+```{r}
 # Coordinates by district
 HKcoords <- read.csv("HK_coords.csv", header = T)
 HKcoords <- HKcoords[order(HKcoords$District), ]
 data$Lat <- HKcoords$Lat
 data$Long <- HKcoords$Long
-
-# Creating maps for exploratory analysis
-library(spdep)
-library(rgdal)
-library(maptools)
-library(sp)
-library(RColorBrewer)
-library(classInt)
 
 # Adding variables in shapefile
 shp_HK = readOGR("shp_HK/Hong_Kong_18_Districts.shp", stringsAsFactors = FALSE)
@@ -268,21 +291,22 @@ shp_HK = shp_HK[order(shp_HK$ENAME),]
 shp_HK$Lat = data$Lat
 shp_HK$Long = data$Long
 shp_HK$Cases = data$Cases
-shp_HK$Rate = (data$Cases/(data$Male.Count + data$Female.Count))*100000
-shp_HK$TotalPop = data$Male.Count + data$Female.Count
-shp_HK$PopDens = (data$Male.Count + data$Female.Count)/data$Area_km2
-shp_HK$PropMale = data$Male.Count/(data$Male.Count + data$Female.Count)
-shp_HK$PropFemale = data$Female.Count/(data$Male.Count + data$Female.Count)
-shp_HK$Prop0_14 = data$Pct_0.14/100
-shp_HK$Prop15_24 = data$Pct_15.24/100
-shp_HK$Prop25_64 = data$Pct_25.64/100
-shp_HK$Prop65 = data$Pct_65./100
-shp_HK$Income = data$Monthly.income..HKD.
-shp_HK$Housing = as.numeric(data$No..households)
+shp_HK$Expected = data$Expected
+shp_HK$SIR = data$SIR
+shp_HK$Rate = (data$Cases/data$Total_pop)*100000
+shp_HK$TotalPop = data$Total_pop
+shp_HK$PopDens = data$Pop_density
+shp_HK$PropMale = data$Prop_male
+shp_HK$PropFemale = data$Prop_female
+shp_HK$Prop0_24 = data$Prop_0.24
+shp_HK$Prop25_64 = data$Prop_25.64
+shp_HK$Prop65 = data$Prop_65
+shp_HK$Income = data$Monthly_income
+shp_HK$Housing = data$Num_household
 shp_HK$HospBeds = data$Num_beds
-shp_HK$SecEduc = data$Pct_Sec.Educ/100
-shp_HK$PostSec = data$Pct_PostSec.w..degree/100
-shp_HK$PropLabor = data$Count.Labor.force/(data$Male.Count + data$Female.Count)
+shp_HK$SecEduc = data$Prop_sec
+shp_HK$PostSec = data$Prop_postsec
+shp_HK$PropLabor = data$Prop_labor
 
 # Converting shapefile data to dataframe object
 # merge the "fortified" data with the data from our spatial object
@@ -364,6 +388,26 @@ plota2 =
         panel.background = element_blank())
 
 grid.arrange(plota, plota2)
+
+# SIR 
+plota3 =
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = SIR)) + 
+  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  ggtitle("Standardized Incidence Ratio") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+grid.arrange(plota2, plota3, ncol = 2)
 
 # Population density
 plotb = 
@@ -566,6 +610,72 @@ plotl =
         panel.background = element_blank())
 
 grid.arrange(plotg, ploth, ploti, plotj, plotk, plotl, ncol = 2)
+```
+
+## Spatial autocorrelation test
+```{r}
+############################# Build neighborhood object #############################
+coords <- as.matrix(subset(HKcoords, select = c(Long, Lat)))
+IDs <- shp_HK$ENAME
+
+# 1) Having contiguous boundary point
+HK.nb <- poly2nb(shp_HK, row.names = IDs)
+summary(HK.nb)
+
+# 2) Having 3 nearest neighbors
+HK.nb3 <- knn2nb(knearneigh(coords, k = 3, longlat = TRUE), row.names = IDs, sym = T)
+summary(HK.nb3)
+
+# 3) Having 5 nearest neighbors
+HK.nb5 <- knn2nb(knearneigh(coords, k = 5, longlat = TRUE), row.names = IDs, sym = T)
+
+## Plot neighbourhood structure
+plot(shp_HK, border="grey", main="Neighbors based on contiguous border", cex.main = 0.5)
+plot(HK.nb, coords, add=TRUE)
+
+plot(shp_HK, border="grey", main="K = 3 nearest neighbors")
+plot(HK.nb3, coords, add=TRUE)
+
+plot(shp_HK, border="grey", main="K = 5 nearest neighbors")
+plot(HK.nb5, coords, add=TRUE)
+
+############################# Convert neighborhood object to weight list #############################
+HK.wnb <-  nb2listw(HK.nb, style = "B", zero.policy = T)
+HK.wnb3 <- nb2listw(HK.nb3, style = "B")
+HK.wnb5 <- nb2listw(HK.nb5, style = "B")
+
+############################# Moran Test for Spatial Autocorrelation #############################
+
+# A) Moran test for SIR
+moran.sir1 <- moran.test(data$SIR, HK.wnb, zero.policy = T)
+moran.sir2 <- moran.test(data$SIR, HK.wnb3)
+moran.sir3 <- moran.test(data$SIR, HK.wnb5)
+
+### Results
+moran.sir1
+moran.sir2
+moran.sir3
+
+# B) Moran test for residuals
+poi.fit1 <- glm(Cases ~ Pop_density + offset(log(Expected)), 
+                data = data, family = poisson(link="log"))
+poi.fit2 <- glm(Cases ~ Prop_female + offset(log(Expected)), 
+                data = data, family = poisson(link="log"))
+poi.fit3 <- glm(Cases ~ Prop_0.24 + Prop_25.64 + Prop_65 + offset(log(Expected)), 
+                data = data, family = poisson(link="log"))
+poi.fit4 <- glm(Cases ~ Pop_density + Prop_female + Prop_0.24 + Prop_25.64 + Prop_65 + offset(log(Expected)), 
+                data = newdata, family = poisson(link="log"))
+
+moran.lm1 <- lm.morantest(poi.fit1, HK.wnb, zero.policy = T)
+moran.lm2 <- lm.morantest(poi.fit2, HK.wnb, zero.policy = T)
+moran.lm3 <- lm.morantest(poi.fit3, HK.wnb, zero.policy = T)
+moran.lm4 <- lm.morantest(poi.fit4, HK.wnb, zero.policy = T)
+
+### Results
+moran.lm1
+moran.lm2
+moran.lm3
+moran.lm4
 ```
 
 # Summary of Inferential Results (3 pages)
