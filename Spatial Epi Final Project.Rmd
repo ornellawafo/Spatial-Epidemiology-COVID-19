@@ -42,27 +42,35 @@ You do not need to be complete here, aim for including the descriptive results w
 ## Data Cleaning
 
 ```{r, echo = F}
-
 # Loading packages
 library(dplyr)
+```
 
-# Read in the COVID-19 line list from HK --------------------------------------------------------
-Linelist <- read.csv("Hong Kong Line List.csv", header = T)
+**Hong Kong line list of COVID-19**
+
+```{r, echo = F}
+# Read in the COVID-19 line list from HK
+linelist <- read.csv("Hong Kong Line List.csv", header = T)
+# summary(linelist)
 
 # Create binary variables to prepare for aggregationn
-linelist <- Linelist %>%
+linelist <- linelist %>%
               mutate(
                 Male = ifelse(Gender == "M", 1, 0),
+                # Age.0.14 = ifelse(Age >= 0 & Age < 15, 1, 0),
+                # Age.15.24 = ifelse(Age >= 15 & Age < 25, 1, 0),
+                # Age.25.64 = ifelse(Age >= 25 & Age < 65, 1, 0),
+                # Age.65 = ifelse(Age >= 65, 1, 0),
                 Cases = 1,
-                Deaths = ifelse(Linelist$Outcomes == "Deceased", 1, 0),
-                Imported = ifelse(Linelist$Case.classification == "Imported", 1, 0),
-                Resident = ifelse(Linelist$HK.residents == "HK resident", 1, 0),
-                Proxy = ifelse(Linelist$Proxy == "Yes", 1, 0)
+                Deaths = ifelse(linelist$Outcomes == "Deceased", 1, 0),
+                Imported = ifelse(linelist$Case.classification == "Imported", 1, 0), # Note: disregarded other categories
+                Resident = ifelse(linelist$HK.residents == "HK resident", 1, 0), # Note: there were 2 unknowns
+                Proxy = ifelse(linelist$Proxy == "Yes", 1, 0) # Note: hospital location used as proxy
               )
 
 # Rearrange dataframe to prepare for aggregation
 linelist <- linelist %>%
-              select(Case.ID, Region, District, Male, Age,
+              select(Case.ID, Region, District, Male, Age, # Age.0.14, Age.15.24, Age.25.64, Age.65,
                      Cases, Deaths, Proxy, Imported, Resident)
 
 # Aggregate dataframe by Region, District, Gender
@@ -70,44 +78,44 @@ linelist.agg <- linelist %>%
                   group_by(Region, District) %>%
                   summarise(Cases = sum(Cases),
                             Deaths = sum(Deaths),
+                            # P.age.0.14 = sum(Age.0.14)/sum(Cases),
+                            # P.age.15.24 = sum(Age.15.24)/sum(Cases),
+                            # P.age.25.64 = sum(Age.25.64)/sum(Cases),
+                            # P.age.65 = sum(Age.65)/sum(Cases),
                             Age = mean(Age),
-                            Prop.male = sum(Male)/sum(Cases),
+                            P.male = sum(Male)/sum(Cases),
                             Proxy = sum(Proxy),
                             Imported = sum(Imported),
                             Resident = sum(Resident))
 
-# Read in covariates dataset --------------------------------------------------------------------
+# Summary of cleaned and aggregated data
+summary(linelist.agg)
+```
+
+**Hong Kong covariates dataset**
+
+```{r, echo = F}
+# Old covariates dataset
+covariates <- read.csv("Hong Kong Covariates.csv", sep=",")
+# head(covariates)
+# str(covariates)
+# summary(covariates)
+# ncol(covariates)
+
+# Updated covariates dataset
 Covariates <- read.csv("Hong Kong Covariates V2.csv")
+```
 
-# Merging the line list and covariates datasets by district -------------------------------------
-Data <- merge(x = linelist.agg, y = Covariates, by = "District")
+**Merging case dataset with covariates dataset**
 
-# Selecting which covariates to include ---------------------------------------------------------
-Data$Pct.Male <- Data$Male.Count/Data$Total.Population*100
-Data$Rate <- (Data$Cases/Data$Total.Pop)*100000
-Data$N.Households <- as.numeric(Data$No..households)
-data.clean <- Data %>%
-  select(Region = Region.x, 
-         District, 
-         Cases,
-         Rate, 
-         Deaths, 
-         Pct.Male,
-         Total.Pop = Total.Population,
-         Area.km2 = Area_km2,
-         Pop.Density, 
-         Pct.Labor = prop.labor.force,
-         Pct.Male.Labor = Male.labor.prop,
-         N.Hospital = Num_hosp,
-         N.Hospital.Beds = Num_beds,
-         Monthly.Income = Monthly.income..HKD.,
-         N.Households,
-         Pct.0.14 = Pct_0.14,
-         Pct.15.24 = Pct_15.24,
-         Pct.25.64 = Pct_25.64,
-         Pct.65 = Pct_65.,
-         Pct.Sec.Educ = Pct_Sec.Educ,
-         Pct.Post.Sec = Pct_PostSec.w..degree)
+```{r, echo = F}
+# Merging the datasets by district
+data <- merge(x = linelist.agg, y = Covariates, by = "District")
+summary(data)
+
+
+# Selecting which covariates to include
+
 ```
 
 ## Boxplots by district and region
@@ -219,44 +227,40 @@ HK.histogram(Covariates)
 ```
 
 # Exploratory analysis
-
 ```{r}
-# Loading packages
-library(ggplot2); library(tidyr); library(gridExtra)
+# Histograms
+library(ggplot2)
+library(tidyr)
+hist.data <- subset(data, select = c(District, Cases, Male.Count, Female.Count, Area_km2,
+                                       Monthly.income..HKD., Pct_0.14, Pct_15.24, Pct_25.64, Pct_65.))
+hist.data$TotalPop <- hist.data$Male.Count + hist.data$Female.Count
+hist.data$Rate <- (hist.data$Cases/hist.data$TotalPop)*100000
+hist.data$PropMale <- (hist.data$Male.Count/hist.data$TotalPop)*100
+hist.data$PropFemale <- (hist.data$Female.Count/hist.data$TotalPop)*100
+hist.data$PopDensity <- hist.data$TotalPop/hist.data$Area_km2
 
-# Histograms ------------------------------------------------------------------------------------
-data.clean %>% 
-  select(Cases, Rate, Pop.Density, Pct.Male, 
-         Pct.0.14, Pct.15.24, Pct.25.64, Pct.65, 
-         Monthly.Income, Pct.Labor, Pct.Male.Labor, N.Households,
-         Pct.Sec.Educ, Pct.Post.Sec, N.Hospital, N.Hospital.Beds) %>%
+hist.data %>% 
+  select(Cases, Rate, PopDensity, PropMale, PropFemale, 
+         Pct_0.14, Pct_15.24, Pct_25.64, Pct_65., Monthly.income..HKD.) %>%
   gather() %>%                             
   ggplot(aes(value)) +                     
     facet_wrap(~key, scales = "free") +    
     geom_histogram(bins = 5) +
     xlab("") + ylab("Frequency")
 
-# FINAL DATASET ---------------------------------------------------------------------------------
-data <- data.clean %>% 
-          select(District, Cases, Rate, Pop.Density, Pct.Male, 
-                 Pct.0.14, Pct.15.24, Pct.25.64, Pct.65, 
-                 Monthly.Income, Pct.Labor, Pct.Male.Labor, N.Households,
-                 Pct.Sec.Educ, Pct.Post.Sec, N.Hospital, N.Hospital.Beds) 
-summary(data)
-str(data)
-
-# Pairs plot to check for correlation -----------------------------------------------------------
-pairs(data)
-
-# Coordinates by district -----------------------------------------------------------------------
+# Coordinates by district
 HKcoords <- read.csv("HK_coords.csv", header = T)
 HKcoords <- HKcoords[order(HKcoords$District), ]
 data$Lat <- HKcoords$Lat
 data$Long <- HKcoords$Long
 
-# Creating maps for exploratory analysis --------------------------------------------------------
-library(spdep); library(rgdal); library(maptools)
-library(sp); library(RColorBrewer); library(classInt)
+# Creating maps for exploratory analysis
+library(spdep)
+library(rgdal)
+library(maptools)
+library(sp)
+library(RColorBrewer)
+library(classInt)
 
 # Adding variables in shapefile
 shp_HK = readOGR("shp_HK/Hong_Kong_18_Districts.shp", stringsAsFactors = FALSE)
@@ -264,23 +268,21 @@ shp_HK = shp_HK[order(shp_HK$ENAME),]
 shp_HK$Lat = data$Lat
 shp_HK$Long = data$Long
 shp_HK$Cases = data$Cases
-shp_HK$Rate = data$Rate
-shp_HK$TotalPop = Data$Total.Population
-shp_HK$PopDens = data$Pop.Density
-shp_HK$PropMale = data$Pct.Male/100
-shp_HK$PropFemale = (100-data$Pct.Male)/100
-shp_HK$Prop0_14 = data$Pct.0.14/100
-shp_HK$Prop15_24 = data$Pct.15.24/100
-shp_HK$Prop25_64 = data$Pct.25.64/100
-shp_HK$Prop65 = data$Pct.65/100
-shp_HK$Income = data$Monthly.Income
-shp_HK$Housing = data$N.Households
-shp_HK$Hosp = data$N.Hospital
-shp_HK$HospBeds = data$N.Hospital.Beds
-shp_HK$SecEduc = data$Pct.Sec.Educ/100
-shp_HK$PostSec = data$Pct.Post.Sec/100
-shp_HK$PropLabor = data$Pct.Labor/100
-shp_HK$PropMaleLabor = data$Pct.Male.Labor
+shp_HK$Rate = (data$Cases/(data$Male.Count + data$Female.Count))*100000
+shp_HK$TotalPop = data$Male.Count + data$Female.Count
+shp_HK$PopDens = (data$Male.Count + data$Female.Count)/data$Area_km2
+shp_HK$PropMale = data$Male.Count/(data$Male.Count + data$Female.Count)
+shp_HK$PropFemale = data$Female.Count/(data$Male.Count + data$Female.Count)
+shp_HK$Prop0_14 = data$Pct_0.14/100
+shp_HK$Prop15_24 = data$Pct_15.24/100
+shp_HK$Prop25_64 = data$Pct_25.64/100
+shp_HK$Prop65 = data$Pct_65./100
+shp_HK$Income = data$Monthly.income..HKD.
+shp_HK$Housing = as.numeric(data$No..households)
+shp_HK$HospBeds = data$Num_beds
+shp_HK$SecEduc = data$Pct_Sec.Educ/100
+shp_HK$PostSec = data$Pct_PostSec.w..degree/100
+shp_HK$PropLabor = data$Count.Labor.force/(data$Male.Count + data$Female.Count)
 
 # Converting shapefile data to dataframe object
 # merge the "fortified" data with the data from our spatial object
@@ -288,9 +290,9 @@ shp_HK$id = rownames(shp_HK@data)
 shp = fortify(shp_HK)
 shp_HK.df = merge(shp, shp_HK@data, by = "id")
 
-# Maps of Response and Covariates, by District --------------------------------------------------
+####### MAPS OF RESPONSE AND COVARIATES, BY DISTRIC #########
 
-# Total COVID-19 cases (as continuous variable) -------------------------------------------------
+# Total COVID-19 cases (as continuous variable)
 ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Cases)) + 
   ggtitle("Total COVID-19 cases, by district") +
@@ -305,10 +307,9 @@ ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black"
         panel.border = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
+        panel.background = element_blank())
 
-# Total COVID-19 cases (as discrete variable) ---------------------------------------------------
+# Total COVID-19 cases (as discrete variable)
 brks <-classIntervals(shp_HK$Cases, n=5, style="quantile")
 brks <- brks$brks
 shp_HK.df$CasesCat[shp_HK.df$Cases < 10] = 0
@@ -333,10 +334,9 @@ plota =
         panel.border = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
+        panel.background = element_blank())
 
-# COVID-19 rate per 100,000 ---------------------------------------------------------------------
+# Rate per 100,000
 brks <-classIntervals(shp_HK$Rate, n=5, style="quantile")
 brks <- brks$brks
 shp_HK.df$RateCat[shp_HK.df$Rate < brks[2]] = 0
@@ -361,12 +361,11 @@ plota2 =
         panel.border = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
+        panel.background = element_blank())
 
 grid.arrange(plota, plota2)
 
-# Population density ----------------------------------------------------------------------------
+# Population density
 plotb = 
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PopDens)) + 
@@ -382,10 +381,9 @@ plotb =
         panel.border = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
+        panel.background = element_blank())
 
-# Male population -------------------------------------------------------------------------------
+# Male population
 plotc = 
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PropMale)) + 
@@ -401,10 +399,9 @@ plotc =
         panel.border = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
+        panel.background = element_blank())
 
-# Female population ------------------------------------------------------------------------------
+# Female population
 plotd = 
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PropFemale)) + 
@@ -420,10 +417,9 @@ plotd =
         panel.border = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
+        panel.background = element_blank())
 
-# Population of 65+ -----------------------------------------------------------------------------
+# Older population
 plote = 
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Prop65)) + 
@@ -439,10 +435,9 @@ plote =
         panel.border = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
+        panel.background = element_blank())
 
-# Population of 15-24 ---------------------------------------------------------------------------
+# Younger population
 plotf =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Prop15_24)) + 
@@ -458,12 +453,11 @@ plotf =
         panel.border = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
+        panel.background = element_blank())
 
 grid.arrange(plota2, plotb, plotc, plotd, plote, plotf)
 
-# Population of 0-14 years old ------------------------------------------------------------------
+# Population of 0-14 years old 
 plotg =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Prop0_14)) + 
@@ -479,10 +473,9 @@ plotg =
         panel.border = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
+        panel.background = element_blank())
 
-# Population of 25-64 years old ----------------------------------------------------------------
+# Population of 25-64 years old
 ploth =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Prop25_64)) + 
@@ -498,10 +491,9 @@ ploth =
         panel.border = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
+        panel.background = element_blank())
 
-# Proportion of Post-Sec Educ ------------------------------------------------------------------
+# Proportion of Post-Sec Educ
 ploti =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PostSec)) + 
@@ -517,10 +509,9 @@ ploti =
         panel.border = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
+        panel.background = element_blank())
 
-# Proportion of Secondary education and higher -------------------------------------------------
+# Proportion of Secondary education and higher
 plotj =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = SecEduc)) + 
@@ -536,10 +527,9 @@ plotj =
         panel.border = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
+        panel.background = element_blank())
 
-# Number of housing units ----------------------------------------------------------------------
+# Number of housing units
 plotk =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Housing)) + 
@@ -555,10 +545,9 @@ plotk =
         panel.border = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
+        panel.background = element_blank())
 
-# Average number of beds per hospital ---------------------------------------------------------
+# Average number of beds per hospital
 plotl =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = HospBeds)) + 
@@ -574,62 +563,10 @@ plotl =
         panel.border = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
-
-# Number of hospital ---------------------------------------------------------------------------
-plotm =
-  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
-  geom_polygon(data = shp_HK.df, aes(fill = Hosp)) + 
-  ggtitle("Number of hospitals") +
-  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
-  theme(legend.title = element_blank(),
-        legend.justification=c(1,0), 
-        legend.position=c(1,0),
-        plot.title = element_text(hjust = 0.5),
-        axis.text = element_blank(),
-        axis.line = element_blank(),
-        axis.ticks = element_blank(),
-        panel.border = element_blank(),
-        panel.grid = element_blank(),
-        axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
+        panel.background = element_blank())
 
 grid.arrange(plotg, ploth, ploti, plotj, plotk, plotl, ncol = 2)
-# Income ----------------------------------------------------------------------------------------
-plotn =
-  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
-  geom_polygon(data = shp_HK.df, aes(fill = Income)) + 
-  ggtitle("Monthly Income") +
-  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
-  theme(legend.title = element_blank(),
-        legend.justification=c(1,0), 
-        legend.position=c(1,0),
-        plot.title = element_text(hjust = 0.5),
-        axis.text = element_blank(),
-        axis.line = element_blank(),
-        axis.ticks = element_blank(),
-        panel.border = element_blank(),
-        panel.grid = element_blank(),
-        axis.title = element_blank(), 
-        panel.background = element_blank()) +
-    coord_fixed(1.3)
 ```
-
-```{r}
-# BMA model selection ----------------------------------------------------------------------------
-library(BMA)
-
-# Removing country and outcome columns to convert to covariates matrix for bicreg
-colnames(data)
-data.X <- data[ , -c(1:3, 18:19)]
-
-BMA.models <- bic.glm(x = data.X, y = data$Cases, glm.family = poisson(), dispersion = F)
-summary(BMA.models)
-BMA.models
-```
-
 
 # Summary of Inferential Results (3 pages)
 
