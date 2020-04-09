@@ -253,12 +253,13 @@ data$Expected = ave.rate*data$Total_pop
 data$SIR = data$Cases/data$Expected
 
 ######### Histograms #########
+library(tidyr)
 data %>% 
-  select() %>% ## select variables to plot
+  select(SIR,Log_income,Prop_0.24,Prop_25.64,Prop_65,Prop_labor) %>% ## select variables to plot
   gather() %>%                             
   ggplot(aes(value)) +                     
-    facet_wrap(~key, scales = "free") +    
-    geom_histogram(bins = 5) +
+    geom_histogram(bins = 5, fill="coral") +
+      facet_wrap(~key, scales = "free") + 
     xlab("") + ylab("Frequency")
 
 # Histogram of SIR and new covariates
