@@ -616,7 +616,7 @@ plotl =
 plotm =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PropLabor)) + 
-  ggtitle("Average number of beds per hospital") +
+  ggtitle("Proportion of Pop. in Labor Force") +
   scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
   theme(legend.title = element_blank(),
         legend.justification=c(1,0), 
