@@ -278,6 +278,7 @@ postsec <- ggplot(data = data, aes(Log_postsec)) + geom_histogram() +
 grid.arrange(sir, age1, age2, age3, income, postsec, ncol = 3)
 ```
 
+
 ## Mapping of the outcome and covariates
 ```{r}
 # Coordinates by district
@@ -505,7 +506,7 @@ grid.arrange(plota2, plotb, plotc, plotd, plote, plotf)
 # Population of 0-14 years old 
 plotg =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
-  geom_polygon(data = shp_HK.df, aes(fill = Prop0_14)) + 
+  geom_polygon(data = shp_HK.df, aes(fill = Prop0_24)) + 
   ggtitle("Proportion of 0-14 years old") +
   scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
   theme(legend.title = element_blank(),
@@ -610,7 +611,27 @@ plotl =
         axis.title = element_blank(), 
         panel.background = element_blank())
 
-grid.arrange(plotg, ploth, ploti, plotj, plotk, plotl, ncol = 2)
+
+# Proportion labor
+plotm =
+  ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
+  geom_polygon(data = shp_HK.df, aes(fill = PropLabor)) + 
+  ggtitle("Average number of beds per hospital") +
+  scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  theme(legend.title = element_blank(),
+        legend.justification=c(1,0), 
+        legend.position=c(1,0),
+        plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.title = element_blank(), 
+        panel.background = element_blank())
+
+
+grid.arrange(plotg, ploth, ploti, plotj, plotk, plotl, plotm, ncol = 2)
 ```
 
 ## Spatial autocorrelation test
