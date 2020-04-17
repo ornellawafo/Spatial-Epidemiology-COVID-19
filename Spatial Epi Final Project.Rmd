@@ -223,6 +223,7 @@ HK.histogram(Covariates)
 ```
 
 ## Exploratory analysis
+
 ```{r}
 # More data manipulation
 ## 1) New age categories: 0-24, 25-64, 65+, 
@@ -285,8 +286,8 @@ postsec <- ggplot(data = data, aes(Log_postsec)) + geom_histogram() +
 grid.arrange(sir, age1, age2, age3, income, postsec, ncol = 3)
 ```
 
-
 ## Mapping of the outcome and covariates
+
 ```{r}
 # Coordinates by district -----------------------------------------------------------------------
 HKcoords <- read.csv("HK_coords.csv", header = T)
@@ -704,6 +705,7 @@ grid.arrange(plotg, ploth, ploti, plotj, plotk, plotl, plotm,plotn,  ncol = 2)
 ```
 
 ## Spatial autocorrelation test
+
 ```{r}
 ############################# Build neighborhood object #############################
 coords <- as.matrix(subset(HKcoords, select = c(Long, Lat)))
@@ -768,6 +770,213 @@ moran.lm2
 moran.lm3
 # moran.lm4
 ```
+
+## Model
+
+Cleaning up data and creating neighborhood structures for nimble
+
+```{r}
+###################################
+#             Données             #
+###################################
+
+insee <- read.csv("~/Dropbox/McGill/BIOS692/Project/Insee.csv", sep = ";", header = T)
+colnames(insee) = c("num", "departement", "educ_sup", "pauvrete", "densite_pop", 
+                  "age_25", "age_2564", "age_65", "menage1", "enfant_0", "enfant_1", "enfant_2", "enfant_3", 
+                  "presta_fam", "presta_logement", "educ_bac", "locataires", "agriculteurs", 
+                  "act_1524", "act_2554", "act_5564", "act_femmes", 
+                  "transp_2roues", "transp_commun", "transp_marche", "transp_aucun", "transp_voiture")
+
+# Remove non-demographic variables and transform data
+insee <- insee[, -c(14, 15, 17, 19, 20, 21, 23, 24, 25, 26, 27)]
+insee$densite_log <- log(insee$densite_pop)
+insee$enfant_12 <- insee$enfant_1+insee$enfant_2
+insee_s <- data.frame(num = insee$num, departement = insee$departement, pauvrete = insee$pauvrete,
+                      scale(insee[,-c(1,2,4,5,11,12)], scale = F))
+insee_s$pauv_logit <- log((insee_s$pauvrete/100) / (1-insee_s$pauvrete/100))
+
+# Neighborhood structure 1 (0-1)
+num_01 = c(read.table("~/Dropbox/McGill/BIOS692/Project/node1"))$x
+adj_01 = c(read.table("~/Dropbox/McGill/BIOS692/Project/node2"))$x
+Nedges_01 = length(adj_01) # She built this outside, number of obs in vector form of adjacency matrix
+
+# Neighborhood structure 2 (weighted distribution)
+num_dist = rep(95, 96)
+adj_dist = rep(1:96,96)[-c(((1:96)-1)*96+(1:96))]
+Nedges_dist = length(adj_dist)
+W_dist = as.matrix(read.table("~/Dropbox/McGill/BIOS692/Project/Wdist"))
+weights_dist = c(W_dist[1:96, ])[ -c(((1:96) - 1) * 96 + (1:96))]
+
+France = read.table("~/Dropbox/McGill/BIOS692/Project/France")
+
+```
+
+**Nimble: Usual fixed priors model**
+
+```{r}
+###################################
+#    Usual fixed priors model     # 
+###################################
+library(nimble)
+
+# Defining the usual fixed priors model
+usual_code <- nimbleCode({ 
+
+  # Defining our priors
+  beta0 ~ dnorm(0, sd = 100)      # Intercept
+  for(j in 1:p){
+    beta[j] ~ dnorm(0, sd = 100)  # Betas for the covariates
+  }
+  nu2 ~ dinvgamma(1, 0.01)        # Victoire has normal likelihood, but good idea to assign IG
+  sigma2 ~ dinvgamma(1, 0.01)     # Full conditional will be IG known distribution, makes MCMC easier
+  
+  # Defining transformed parameters
+  tau2 <- 1 / sigma2
+  nu <- sqrt(nu2)                 # Don't need nu
+  s[1:N] ~ dcar_normal(adj[1:L], weights[1:L], num[1:N], tau2, zero_mean = 1) 
+  # Spatial effects (dcar is long vector, weights, n neighbors, zero mean = 1 constrains sum to 0)
+
+  # Defining likelihood
+  for(i in 1:N) { # inprod (beta1X + beta 2X)
+    # Notes: Don't need to define prior for mu, the SD is defined only from the mean for Poisson
+    # Notes: log(mu[i]) <- log(E[i]) + beta0 + inprod(X[i,1:p], beta[1:p]) + s[i]
+    mu[i] <- beta0 + inprod(X[i,1:p], beta[1:p]) + s[i]   # We still need to define mu
+    y[i] ~ dnorm(mu[i], sd = nu)  # Outcome follows N distribution, we do dpois rmb to define offset inside this or put in log of mean
+  }
+})
+
+# Check Dengue fit code line 284 and replicate this bit, since we're building vector that will have neighborhood structure
+
+# Number of neighbors per district
+num <- c()
+n <- length(y)
+for(i in 1:n){
+  num[i] <- sum(W[i,])
+}
+
+# Adjacency vector like in winbugs
+adj <- c()
+adj <- which(W[1,] == 1)
+adj
+for(i in 2:n){
+  adj <- c(adj, c(which(W[i,] == 1)))
+}
+
+```
+
+**Neighborhood structure 1: Adjacency-based neighbors**
+
+```{r}
+# Neighborhood structure 1: Adjacency matrix (Victoire used 0-1 neighborhood) ###############################
+
+# Defining the data that goes into the model ----------------------------------------------------------------
+
+# (1) Define constants that go into CAR prior into a list
+Consts_usual_01 = list(N = 96,                                # Number of areas
+                       p = 10,                                # Number of covariates
+                       X = as.matrix(insee_s[, c(4:6,8:14)]), # Matrix of covariates
+                       L = Nedges_01,                         # Edges
+                       adj = adj_01,                          # Adjacency matrix
+                       num = num_01,  
+                       weights = rep(1, Nedges_01))           # Giving weight of 1 for neighbors
+
+# (2) Define dependent variable (outcome)
+Data <- list(y = insee_s$pauv_logit)
+
+# (3) Define initial values for the MCMC chain
+Inits_usual <- list(beta0 = 1, beta = rep(1, 10), sigma2 = 1, nu2 = 1, s = rnorm(96)) # S sampled from N dist
+
+# Defining model --------------------------------------------------------------------------------------------
+
+# (1) Define the usual fixed prior model for nimble
+usual01_model <- nimbleModel(code = usual_code, constants = Consts_usual_01, data = Data, inits = Inits_usual)
+
+# (2) Define the compiled nimble model
+usual01_Cmodel <- compileNimble(usual01_model)      
+
+# (3) Configure the MCMC chain
+usual01_conf <- configureMCMC(usual01_model, monitors = c('beta0', 'beta', 'sigma2', 'nu2', 's'))
+
+# (4) Do something
+usual01_conf$printSamplers()
+
+# (5) Build MCMC object
+usual01_MCMC <- buildMCMC(usual01_conf, enableWAIC = T) 
+
+# (6) Compile model with MCMC object
+usual01_CMCMC <- compileNimble(usual01_MCMC, project = usual01_Cmodel)  
+
+# (7) Run the model
+usual01_runMCMC <- runMCMC(usual01_CMCMC, nburnin = 15000, niter = 200000, nchains = 2, thin = 20, WAIC = T)
+
+# (8) Check convergence
+usual01_samples = rbind(usual01_runMCMC$samples[[1]], usual01_runMCMC$samples[[2]])
+plot(usual01_samples[,"nu2"], type = "l") # She assigns prior for variance, nu is sqrt of nu2
+
+# (9) WAIC
+usual01_runMCMC$WAIC
+
+# Posterior summaries
+
+```
+
+**Neighborhood structure 2: Distance-based neighbors**
+
+```{r}
+# Neighborhood structure 2: 1/euclidean distance neighbourhood ###############################################
+
+# Defining the data that goes into the model ----------------------------------------------------------------
+
+# (1) Define constants that go into CAR prior into a list
+Consts_usual_dist <- list(N = 96, 
+                          p = 10, 
+                          X = as.matrix(insee_s[, c(4:6,8:14)]), 
+                          L = Nedges_dist, 
+                          adj = adj_dist, 
+                          num = num_dist, 
+                          weights = rep(1,Nedges_dist))
+
+# (2) Define dependent variable (outcome)
+Data <- list(y = insee_s$pauv_logit)
+
+# (3) Define initial values for the MCMC chain
+Inits_usual <- list(beta0 = 1, beta = rep(1, 10), sigma2 = 1, nu2 = 1, s = rnorm(96))
+
+# Defining model --------------------------------------------------------------------------------------------
+
+# (1) Define the usual fixed prior model for nimble
+usualdist_model <- nimbleModel(code = usual_code, constants = Consts_usual_dist, data = Data, inits = Inits_usual)
+
+# (2) Define the compiled nimble model
+usualdist_Cmodel <- compileNimble(usualdist_model)
+
+# (3) Configure the MCMC chain
+usualdist_conf <- configureMCMC(usualdist_model, monitors = c('beta0',"beta",'sigma2', "nu2", 's'))
+
+# (4) Do something
+usualdist_conf$printSamplers()
+
+# (5) Build MCMC object
+usualdist_MCMC <- buildMCMC(usualdist_conf, enableWAIC = T)
+
+# (6) Compile model with MCMC object
+usualdist_CMCMC <- compileNimble(usualdist_MCMC, project = usualdist_Cmodel)
+
+# (7) Run the model
+usualdist_runMCMC <- runMCMC(usualdist_CMCMC, nburnin = 15000, niter = 200000, nchains = 2, thin = 20, WAIC = T)
+
+# (8) Check convergence
+usualdist_samples = rbind(usualdist_runMCMC$samples[[1]], usualdist_runMCMC$samples[[2]])
+plot(usualdist_samples[,"sigma2"], type = "l")
+
+# (9) WAIC
+usualdist_runMCMC$WAIC
+
+# Posterior summaries
+
+
+```
+
 
 # Summary of Inferential Results (3 pages)
 
