@@ -713,13 +713,12 @@ plotm =
         axis.title = element_blank(), 
         panel.background = element_blank())
 
-<<<<<<< HEAD
 
 grid.arrange(plotg, ploth, ploti, plotj, plotk, plotl, plotm,plotn,  ncol = 2)
 
-=======
+
 grid.arrange(plotg, ploth, ploti, plotj, plotk, plotl, plotm, plotn,  ncol = 2)
->>>>>>> 8dc9065390a1ab2dc3c80781428c2194c6a42fff
+
 ```
 
 ## Spatial autocorrelation test
@@ -840,18 +839,23 @@ num.nb <- c()
 for(i in 1:n){
   num.nb[i] <- sum(HK.nbmat.adj[i,])
 }
+#same outcome, simpler method
+num.nb <- rowSums(HK.nbmat.adj)
 
 # 2) Having 3 nearest neighbors
 num.nb.3 <- c()
 for(i in 1:n){
   num.nb.3[i] <- sum(HK.nbmat.3[i,])
 }
+num.nb.3 <- rowSums(HK.nbmat.3)
+
 
 # 3) Having 5 nearest neighbors
 num.nb.5 <- c()
 for(i in 1:n){
   num.nb.5[i] <- sum(HK.nbmat.5[i,])
 }
+num.nb.5 <- rowSums(HK.nbmat.5)
 
 # Adjacency vector -----------------------------------------------------------------
 
@@ -862,19 +866,36 @@ for(i in 2:n){
   adj <- c(adj, c(which(HK.nbmat.adj[i,] == 1)))
 }
 
+## list of regions with their respective contiguous neighborhoods
+#adj <- list()
+#for(i in 1:n){
+#  adj[[i]] <- c(which(HK.nbmat.adj[i,] == 1))
+#}
+
+
 # 2) Having 3 nearest neighbors
 adj.3 <- c()
 adj.3 <- which(HK.nbmat.adj[1,] == 1)
 for(i in 2:n){
   adj.3 <- c(adj.3, c(which(HK.nbmat.3[i,] == 1)))
 }
+#adj.3 <- list()
+#for(i in 1:n){
+#  adj.3[[i]] <- c(which(HK.nbmat.3[i,] == 1))
+#}
 
-# 3) Having 5 nearest neighbors
+ #3) Having 5 nearest neighbors
 adj.5 <- c()
 adj.5 <- which(HK.nbmat.adj[1,] == 1)
 for(i in 2:n){
   adj.5 <- c(adj.5, c(which(HK.nbmat.5[i,] == 1)))
 }
+#adj.5 <- list()
+#for(i in 1:n){
+#  adj.5[[i]] <- c(which(HK.nbmat.5[i,] == 1))
+#}
+
+
 ```
 
 **Nimble: Usual fixed priors model**
