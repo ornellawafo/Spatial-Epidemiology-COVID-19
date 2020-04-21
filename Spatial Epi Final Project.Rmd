@@ -223,6 +223,7 @@ HK.histogram(Covariates)
 ```
 
 ## Exploratory analysis
+
 ```{r}
 # More data manipulation
 ## 1) New age categories: 0-24, 25-64, 65+, 
@@ -253,17 +254,22 @@ data$Expected = ave.rate*data$Total_pop
 data$SIR = data$Cases/data$Expected
 
 ######### Histograms #########
+<<<<<<< HEAD
 library(tidyr)
 library(dplyr)
 data %>% 
   select(Cases, Pop_density, Prop_male, 
+=======
+data %>% 
+ select(Cases, Pop_density, Prop_male, 
+>>>>>>> 8dc9065390a1ab2dc3c80781428c2194c6a42fff
          Pct_0.24, Pct_15.24, Pct_25.64, Pct_65, 
          Log_income, Prop_labor, Prop_male_labor, Num_household,
          Log_sec, Log_postsec, Num_hosp, Num_beds) %>% ## select variables to plot
   gather() %>%                             
   ggplot(aes(value)) +                     
-    geom_histogram(bins = 5, fill="coral") +
-      facet_wrap(~key, scales = "free") + 
+    facet_wrap(~key, scales = "free") +    
+    geom_histogram(bins = 5) +
     xlab("") + ylab("Frequency")
 
 # Histogram of SIR and new covariates ----------------------------------------------------------
@@ -282,8 +288,8 @@ postsec <- ggplot(data = data, aes(Log_postsec)) + geom_histogram() +
 grid.arrange(sir, age1, age2, age3, income, postsec, ncol = 3)
 ```
 
-
 ## Mapping of the outcome and covariates
+
 ```{r}
 # Coordinates by district -----------------------------------------------------------------------
 HKcoords <- read.csv("HK_coords.csv", header = T)
@@ -520,7 +526,10 @@ plotf =
 
 grid.arrange(plota2, plotb, plotc, plotd, plote, plotf)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8dc9065390a1ab2dc3c80781428c2194c6a42fff
 # Population of 0-14 years old 
 plotg =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
@@ -539,8 +548,11 @@ plotg =
         axis.title = element_blank(), 
         panel.background = element_blank())
 
+<<<<<<< HEAD
 # Population of 25-64 years old
 
+=======
+>>>>>>> 8dc9065390a1ab2dc3c80781428c2194c6a42fff
 # Population of 0-14 years old ------------------------------------------------------------------
 # plotg =
 #   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
@@ -561,7 +573,10 @@ plotg =
 #     coord_fixed(1.3)
 
 # Population of 25-64 years old ----------------------------------------------------------------
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8dc9065390a1ab2dc3c80781428c2194c6a42fff
 ploth =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Prop25_64)) + 
@@ -675,8 +690,11 @@ plotn =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 8dc9065390a1ab2dc3c80781428c2194c6a42fff
 # Proportion labor ----------------------------------------------------------------------------
 plotm =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
@@ -695,12 +713,17 @@ plotm =
         axis.title = element_blank(), 
         panel.background = element_blank())
 
+<<<<<<< HEAD
 
 grid.arrange(plotg, ploth, ploti, plotj, plotk, plotl, plotm,plotn,  ncol = 2)
 
+=======
+grid.arrange(plotg, ploth, ploti, plotj, plotk, plotl, plotm, plotn,  ncol = 2)
+>>>>>>> 8dc9065390a1ab2dc3c80781428c2194c6a42fff
 ```
 
 ## Spatial autocorrelation test
+
 ```{r}
 ############################# Build neighborhood object #############################
 coords <- as.matrix(subset(HKcoords, select = c(Long, Lat)))
@@ -765,6 +788,231 @@ moran.lm2
 moran.lm3
 # moran.lm4
 ```
+
+## Model
+
+Cleaning up data and creating neighborhood structures for nimble
+
+```{r}
+# Clean dataset and keep only variables we want to include in nimble regressions
+data.clean <- data %>%
+  select(District,
+         # Region = Region.x,
+         Cases,
+         Expected,
+         SIR,
+         # Deaths,
+         # Mean.age = Age,
+         # Prop.male = P.male,
+         Area_km2,
+         Pop_density,
+         Prop_labor,
+         Prop_female_labor,
+         Num_hosp,
+         Num_beds,
+         Num_household,
+         Pct_0.24,
+         Prop_25.64,
+         Prop_65,
+         Prop_female,
+         Log_income,
+         Log_sec,
+         Log_postsec)
+
+# Building vectors that will have neighborhood structure ###########################
+
+# Converting neighborhood objects to matrix ----------------------------------------
+
+# 1) Having contiguous boundary point
+HK.nbmat.adj <- nb2mat(HK.nb, style = 'B', zero.policy = TRUE) 
+
+# 2) Having 3 nearest neighbors
+HK.nbmat.3 <- nb2mat(HK.nb3, style = 'B', zero.policy = TRUE) 
+
+# 3) Having 5 nearest neighbors
+HK.nbmat.5 <- nb2mat(HK.nb5, style = 'B', zero.policy = TRUE) 
+
+# Number of neighbors per district -------------------------------------------------
+n <- nrow(data.clean)
+
+# 1) Having contiguous boundary point
+num.nb <- c()
+for(i in 1:n){
+  num.nb[i] <- sum(HK.nbmat.adj[i,])
+}
+
+# 2) Having 3 nearest neighbors
+num.nb.3 <- c()
+for(i in 1:n){
+  num.nb.3[i] <- sum(HK.nbmat.3[i,])
+}
+
+# 3) Having 5 nearest neighbors
+num.nb.5 <- c()
+for(i in 1:n){
+  num.nb.5[i] <- sum(HK.nbmat.5[i,])
+}
+
+# Adjacency vector -----------------------------------------------------------------
+
+# 1) Having contiguous boundary point
+adj <- c()
+adj <- which(HK.nbmat.adj[1,] == 1)
+for(i in 2:n){
+  adj <- c(adj, c(which(HK.nbmat.adj[i,] == 1)))
+}
+
+# 2) Having 3 nearest neighbors
+adj.3 <- c()
+adj.3 <- which(HK.nbmat.adj[1,] == 1)
+for(i in 2:n){
+  adj.3 <- c(adj.3, c(which(HK.nbmat.3[i,] == 1)))
+}
+
+# 3) Having 5 nearest neighbors
+adj.5 <- c()
+adj.5 <- which(HK.nbmat.adj[1,] == 1)
+for(i in 2:n){
+  adj.5 <- c(adj.5, c(which(HK.nbmat.5[i,] == 1)))
+}
+```
+
+**Nimble: Usual fixed priors model**
+
+```{r}
+###################################
+#    Usual fixed priors model     # 
+###################################
+library(nimble)
+
+# Defining the usual fixed priors model ------------------------------------------------------
+usual_code <- nimbleCode({ 
+
+  # Defining our priors
+  beta0 ~ dnorm(0, sd = 100)      # Intercept
+  for(j in 1:p){
+    beta[j] ~ dnorm(0, sd = 100)  # Betas for the covariates
+  }
+  nu2 ~ dinvgamma(1, 0.01)        # Victoire has normal likelihood, but good idea to assign IG
+  sigma2 ~ dinvgamma(1, 0.01)     # Full conditional will be IG known dist, makes MCMC easier
+  
+  # Defining transformed parameters
+  tau2 <- 1 / sigma2
+  nu <- sqrt(nu2)                 # Don't need nu
+  s[1:N] ~ dcar_normal(adj[1:L], weights[1:L], num[1:N], tau2, zero_mean = 1) 
+  # Spatial effects (dcar is long vector, weights, n neighbors, zero mean = 1 constrains sum to 0)
+
+  # Defining likelihood
+  for(i in 1:N) { # inprod (beta1X + beta 2X)?
+    log(mu[i]) <- log(E[i]) + beta0 + inprod(X[i, 1:p], beta[1:p]) + s[i]
+    y[i] ~ dpois(mu[i]) # we do dpois rmb to define offset inside this or put in log of mean
+    # Notes: Don't need to define prior for mu (nu?), the SD is defined only from the mean for Poisson
+    # Victoire: mu[i] <- beta0 + inprod(X[i,1:p], beta[1:p]) + s[i]   # We still need to define mu
+    # Victoire: y[i] ~ dnorm(mu[i], sd = nu)  # Outcome follows N distribution
+  }
+})
+```
+
+**Neighborhood structure 1: Adjacency-based neighbors**
+
+```{r}
+# Neighborhood structure 1: Adjacency matrix (Victoire used 0-1 neighborhood) ###############################
+
+# Defining the data that goes into the model ----------------------------------------------------------------
+
+# (1) Define constants that go into CAR prior into a list
+Consts_usual_01 = list(N = nrow(data.clean),                  # Number of areas
+                       p = ncol(data.clean[5:18]),            # Number of covariates
+                       X = as.matrix(data.clean[, c(5:18)]),  # Matrix of covariates
+                       L = length(adj),                       # Edges (length of adj vector)
+                       adj = adj,                             # Adjacency matrix
+                       num = num.nb,                          # Number of neighbors per district
+                       weights = rep(1, length(adj)))         # Giving weight of 1 for neighbors
+
+# (2) Define dependent variable (outcome)
+outcome <- list(y = data.clean$Cases) # Observed cases
+
+# (3) Define initial values for the MCMC chain
+Inits_usual <- list(beta0 = 1, 
+                    beta = rep(1, ncol(data.clean[5:18])), 
+                    sigma2 = 1, 
+                    s = rnorm(num.nb)) # S sampled from N dist (do we sample ours from poisson?)
+
+# Defining model --------------------------------------------------------------------------------------------
+
+# (1) Define the usual fixed prior model for nimble
+usual01_model <- nimbleModel(code = usual_code, constants = Consts_usual_01, data = outcome, inits = Inits_usual)
+
+# (2) Define the compiled nimble model
+usual01_Cmodel <- compileNimble(usual01_model)      
+
+# (3) Configure the MCMC chain
+usual01_conf <- configureMCMC(usual01_model, monitors = c('beta0', 'beta', 'sigma2', 's'))
+
+# (4) Do something
+usual01_conf$printSamplers()
+
+# (5) Build MCMC object
+usual01_MCMC <- buildMCMC(usual01_conf, enableWAIC = T) 
+
+# (6) Compile model with MCMC object
+usual01_CMCMC <- compileNimble(usual01_MCMC, project = usual01_Cmodel)  
+
+# (7) Run the model
+usual01_runMCMC <- runMCMC(usual01_CMCMC, nburnin = 15000, niter = 200000, nchains = 2, thin = 20, WAIC = T)
+
+# (8) Check convergence
+usual01_samples = rbind(usual01_runMCMC$samples[[1]], usual01_runMCMC$samples[[2]])
+
+# Plot the MCMC chains
+plot(usual01_samples[, "beta[1]"], type = "l")
+
+# Plot the density curves for posterior
+plot(density(usual01_samples[,"beta[1]"])) # Why are all beta's = 1
+plot(density(usual01_samples[,"beta[2]"]))
+plot(density(usual01_samples[,"beta[3]"]))
+plot(density(usual01_samples[,"beta[4]"]))
+plot(density(usual01_samples[,"beta[5]"]))
+plot(density(usual01_samples[,"beta[6]"]))
+plot(density(usual01_samples[,"beta[7]"]))
+plot(density(usual01_samples[,"beta[8]"]))
+plot(density(usual01_samples[,"beta[9]"]))
+plot(density(usual01_samples[,"beta[10]"]))
+plot(density(usual01_samples[,"beta[11]"]))
+plot(density(usual01_samples[,"beta[12]"]))
+plot(density(usual01_samples[,"beta[13]"]))
+plot(density(usual01_samples[,"beta[14]"]))
+plot(density(usual01_samples[,"sigma2"]))
+plot(density(usual01_samples[,"s[1]"])) # Why are all of the s's the exact same shape
+plot(density(usual01_samples[,"s[2]"]))
+plot(density(usual01_samples[,"s[3]"]))
+plot(density(usual01_samples[,"s[4]"]))
+plot(density(usual01_samples[,"s[5]"]))
+plot(density(usual01_samples[,"s[6]"]))
+plot(density(usual01_samples[,"s[7]"]))
+plot(density(usual01_samples[,"s[8]"]))
+plot(density(usual01_samples[,"s[9]"]))
+plot(density(usual01_samples[,"s[10]"]))
+plot(density(usual01_samples[,"s[11]"]))
+plot(density(usual01_samples[,"s[12]"]))
+plot(density(usual01_samples[,"s[13]"]))
+plot(density(usual01_samples[,"s[14]"]))
+plot(density(usual01_samples[,"s[15]"]))
+plot(density(usual01_samples[,"s[16]"]))
+plot(density(usual01_samples[,"s[17]"]))
+plot(density(usual01_samples[,"s[18]"]))
+
+# (9) WAIC
+usual01_runMCMC$WAIC
+
+# Posterior summaries
+
+```
+
+**Neighborhood structure 2: Distance-based neighbors (k = 3)**
+
+**Neighborhood structure 3: Distance-based neighbors (k = 5)**
+
 
 # Summary of Inferential Results (3 pages)
 
