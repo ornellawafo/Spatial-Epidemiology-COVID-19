@@ -2416,10 +2416,12 @@ exp(mean_CrI_beta0_bym_usual03)
 
 ```{r}
 #WAIC by model
-WAICs <- cbind(Adjescent= usual01_runMCMC$WAIC, K3= usual02_runMCMC$WAIC,K5= usual03_runMCMC$WAIC)
-WAICs
+WAIC.iCAR <- cbind(Adjescent= usual01_runMCMC$WAIC, K3= usual02_runMCMC$WAIC,K5= usual03_runMCMC$WAIC)
+WAIC.iCAR
 
-
+#WAIC by model
+WAIC.bymCAR <- cbind(Adjescent= bym_usual01_runMCMC$WAIC, K3= bym_usual02_runMCMC$WAIC,K5= bym_usual03_runMCMC$WAIC)
+WAIC.bymCAR
 
 ```
 
