@@ -265,7 +265,10 @@ data$SIR = data$Cases/data$Expected
 
 ```
 
+
 ```{r Histograms of selected variables}
+
+
 ######### Histograms #########
 
 library(tidyr)
@@ -307,6 +310,7 @@ HKcoords <- HKcoords[order(HKcoords$District), ]
 data$Lat <- HKcoords$Lat
 data$Long <- HKcoords$Long
 
+
 # Adding variables in shapefile -----------------------------------------------------------------
 shp_HK = readOGR("shp_HK/Hong_Kong_18_Districts.shp", stringsAsFactors = FALSE)
 shp_HK = shp_HK[order(shp_HK$ENAME),]
@@ -332,7 +336,9 @@ shp_HK$PostSec = data$Prop_postsec
 shp_HK$PropLabor = data$Prop_labor
 shp_HK$PropMaleLabor = data$Pct.Male.Labor
 
+
 # Converting shapefile data to dataframe object -------------------------------------------------
+
 # merge the "fortified" data with the data from our spatial object
 shp_HK$id = rownames(shp_HK@data)
 shp = fortify(shp_HK)
@@ -358,6 +364,7 @@ ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black"
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
+
 # Total COVID-19 cases (as discrete variable) ---------------------------------------------------
 brks <-classIntervals(shp_HK$Cases, n=5, style="quantile")
 brks <- brks$brks
@@ -367,6 +374,7 @@ shp_HK.df$CasesCat[shp_HK.df$Cases >= 15 & shp_HK.df$Cases < 20] = 2
 shp_HK.df$CasesCat[shp_HK.df$Cases >= 20 & shp_HK.df$Cases < 43] = 3
 shp_HK.df$CasesCat[shp_HK.df$Cases >= 43] = 4
 shp_HK.df$CasesCat = factor(shp_HK.df$CasesCat, levels = 0:4, labels = c("<10", "10-14", "15-19", "20-42", ">42"))
+
 
 # Total cases -----------------------------------------------------------------------------------
 plota =
@@ -387,7 +395,8 @@ plota =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# COVID-19 rate per 100,000 ---------------------------------------------------------------------
+
+# COVID-19 rate per 100,000  - creating breaks --------------------------------------------------------------------
 brks <-classIntervals(shp_HK$Rate, n=5, style="quantile")
 brks <- brks$brks
 shp_HK.df$RateCat[shp_HK.df$Rate < brks[2]] = 0
@@ -397,7 +406,9 @@ shp_HK.df$RateCat[shp_HK.df$Rate >= brks[4] & shp_HK.df$Rate < brks[5]] = 3
 shp_HK.df$RateCat[shp_HK.df$Rate >= brks[5]] = 4
 shp_HK.df$RateCat = factor(shp_HK.df$RateCat, levels = 0:4, labels = c("<2.5", "2.5-3.2", "3.2-4.5", "4.5-13.6", ">13.6"))
 
-# Rate ------------------------------------------------------------------------------------------
+
+
+# Plot of Rate ------------------------------------------------------------------------------------------
 plota2 =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = RateCat)) + 
@@ -418,7 +429,8 @@ plota2 =
 
 grid.arrange(plota, plota2)
 
-# SIR -------------------------------------------------------------------------------------------
+
+# Plot of SIR -------------------------------------------------------------------------------------------
 plota3 =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = SIR)) + 
@@ -439,7 +451,8 @@ plota3 =
 
 grid.arrange(plota2, plota3, ncol = 2)
 
-# Population density ----------------------------------------------------------------------------
+
+# Plot of Population density ----------------------------------------------------------------------------
 plotb = 
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PopDens)) + 
@@ -458,7 +471,8 @@ plotb =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Male population -------------------------------------------------------------------------------
+
+# Plot of Male population -------------------------------------------------------------------------------
 plotc = 
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PropMale)) + 
@@ -477,7 +491,8 @@ plotc =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Female population ------------------------------------------------------------------------------
+
+# Plot of Female population ------------------------------------------------------------------------------
 plotd = 
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PropFemale)) + 
@@ -496,7 +511,8 @@ plotd =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Population of 65+ -----------------------------------------------------------------------------
+
+# Plot of Population of 65+ -----------------------------------------------------------------------------
 plote = 
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Prop65)) + 
@@ -515,7 +531,8 @@ plote =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Population of 0-24 ---------------------------------------------------------------------------
+
+# Plot of Population of 0-24 ---------------------------------------------------------------------------
 plotf =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Prop0_24)) + 
@@ -536,11 +553,7 @@ plotf =
 
 grid.arrange(plota2, plotb, plotc, plotd, plote, plotf)
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 8dc9065390a1ab2dc3c80781428c2194c6a42fff
-# Population of 0-14 years old 
 plotg =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Prop0_24)) + 
@@ -561,6 +574,7 @@ plotg =
 
 # Population of 25-64 years old
 
+
 # Population of 0-14 years old ------------------------------------------------------------------
 # plotg =
 #   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
@@ -580,7 +594,8 @@ plotg =
 #         panel.background = element_blank()) +
 #     coord_fixed(1.3)
 
-# Population of 25-64 years old ----------------------------------------------------------------
+
+# Plot of Population of 25-64 years old ----------------------------------------------------------------
 
 ploth =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
@@ -600,7 +615,8 @@ ploth =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Proportion of Post-Sec Educ ------------------------------------------------------------------
+
+# Plot of Proportion of Post-Sec Educ ------------------------------------------------------------------
 ploti =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PostSec)) + 
@@ -619,7 +635,8 @@ ploti =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Proportion of secondary education and higher -------------------------------------------------
+
+# Plot of Proportion of secondary education and higher -------------------------------------------------
 plotj =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = SecEduc)) + 
@@ -638,7 +655,8 @@ plotj =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Number of housing units ----------------------------------------------------------------------
+
+# Plot of Number of housing units ----------------------------------------------------------------------
 plotk =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Housing)) + 
@@ -657,7 +675,8 @@ plotk =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Average number of beds per hospital ---------------------------------------------------------
+
+# Plot of Average number of beds per hospital ---------------------------------------------------------
 plotl =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = HospBeds)) + 
@@ -676,7 +695,8 @@ plotl =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Income ----------------------------------------------------------------------------------------
+
+# Plot of Income ----------------------------------------------------------------------------------------
 plotn =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Income)) + 
@@ -696,7 +716,8 @@ plotn =
     coord_fixed(1.3)
 
 
-# Proportion labor ----------------------------------------------------------------------------
+
+# Plot of Proportion labor ----------------------------------------------------------------------------
 plotm =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PropLabor)) + 
@@ -833,6 +854,7 @@ HK.nbmat.3 <- nb2mat(HK.nb3, style = 'B', zero.policy = TRUE)
 # 3) Having 5 nearest neighbors
 HK.nbmat.5 <- nb2mat(HK.nb5, style = 'B', zero.policy = TRUE) 
 
+
 # Number of neighbors per district -------------------------------------------------
 n <- nrow(data.clean)
 
@@ -859,7 +881,8 @@ for(i in 1:n){
 }
 #num.nb.5 <- rowSums(HK.nbmat.5)
 
-# Adjacency vector -----------------------------------------------------------------
+
+# Adjacency vectors -----------------------------------------------------------------
 
 # 1) Having contiguous boundary point
 adj <- c()
@@ -875,25 +898,21 @@ for(i in 2:n){
 #}
 
 
-# 2) Having 3 nearest neighbors  ------- This function leads to an error in the nimble code
-#adj.3 <- c()
-#adj.3 <- which(HK.nbmat.adj[1,] == 1)
-#for(i in 2:n){
-#  adj.3 <- c(adj.3, c(which(HK.nbmat.3[i,] == 1)))
-#}
+
+
 # 2) Having 3 nearest neighbors 
 adj.3 <- list()
 for(i in 1:n){
   adj.3[[i]] <- c(which(HK.nbmat.3[i,] == 1))
 }
 adj.3 <- unlist(adj.3)
-
- #3) Having 5 nearest neighbors ------- This function leads to an error in the nimble code
-#adj.5 <- c()
-#adj.5 <- which(HK.nbmat.adj[1,] == 1)
+# 2) Having 3 nearest neighbors  ------- This function leads to an error in the nimble code
+#adj.3 <- c()
+#adj.3 <- which(HK.nbmat.adj[1,] == 1)
 #for(i in 2:n){
-#  adj.5 <- c(adj.5, c(which(HK.nbmat.5[i,] == 1)))
+#  adj.3 <- c(adj.3, c(which(HK.nbmat.3[i,] == 1)))
 #}
+
 
  #3) Having 5 nearest neighbors 
 adj.5 <- list()
@@ -901,11 +920,18 @@ for(i in 1:n){
   adj.5[[i]] <- c(which(HK.nbmat.5[i,] == 1))
 }
 adj.5 <- unlist(adj.5)
+ #3) Having 5 nearest neighbors ------- This function leads to an error in the nimble code
+#adj.5 <- c()
+#adj.5 <- which(HK.nbmat.adj[1,] == 1)
+#for(i in 2:n){
+#  adj.5 <- c(adj.5, c(which(HK.nbmat.5[i,] == 1)))
+#}
+
 
 ```
 
-
-**Nimble: Usual fixed priors model**
+## ICAR
+**Nimble: iCAR Usual fixed priors model**
 
 ```{r usual code}
 ###################################
@@ -996,6 +1022,7 @@ usual01_runMCMC <- runMCMC(usual01_CMCMC, nburnin = 10000, niter = 200000, nchai
 usual01_samples = rbind(usual01_runMCMC$samples[[1]], usual01_runMCMC$samples[[2]])
 
 
+
 # Plot the MCMC chains----------
 
 # Betas (Covariates) - log scale
@@ -1040,6 +1067,7 @@ plot(main = paste(data.clean$District[15]), usual01_samples[,"s[15]"], type = "l
 plot(main = paste(data.clean$District[16]), usual01_samples[,"s[16]"], type = "l")
 plot(main = paste(data.clean$District[17]), usual01_samples[,"s[17]"], type = "l")
 plot(main = paste(data.clean$District[18]), usual01_samples[,"s[18]"], type = "l")
+
 
 
 # Plot the density curves for posterior -------------
@@ -1089,11 +1117,16 @@ plot(main = paste(data.clean$District[18]), density(usual01_samples[,"s[18]"]))
 
 
 
+
 # (9) WAIC ---------
 usual01_runMCMC$WAIC
 
 
+
 # Posterior summaries--------
+
+################### Beta = Covariate estimates?
+
 
 #Calculating the Beta means
 means_betas_usual_01 <- apply(usual01_samples[,1:14],2, mean)
@@ -1109,6 +1142,24 @@ colnames(mean_CrI_betas_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
 # Converting means and CrIs from log to regular scale
 exp(mean_CrI_betas_usual_01)
+
+
+################### S : estimates? per region
+
+#Calculating the S means
+means_s_usual_01 <- apply(usual01_samples[ ,15:(ncol(usual01_samples)-1)],2, mean)
+
+#Calculating the Beta 95% CrI 
+CrI_s_usual_01 <- t(apply(usual01_samples[ ,15:(ncol(usual01_samples)-1)],2, function(x) quantile(x, probs=c(0.015,0.975))))
+
+#Combining the means and CIs into a dataframe
+mean_CrI_s_usual_01 <- cbind(means_s_usual_01, CrI_s_usual_01) %>% as.data.frame()
+
+#Renaming the columns
+colnames(mean_CrI_s_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
+
+# Converting means and CrIs from log to regular scale
+exp(mean_CrI_s_usual_01)
 
 ```
 
@@ -1166,6 +1217,7 @@ usual02_runMCMC <- runMCMC(usual02_CMCMC, nburnin = 10000, niter = 200000, nchai
 usual02_samples = rbind(usual02_runMCMC$samples[[1]], usual02_runMCMC$samples[[2]])
 
 
+
 # Plot the MCMC chains----------
 plot(main = paste(names(data.clean[5])), usual02_samples[, "beta[1]"], type = "l")
 
@@ -1211,6 +1263,7 @@ plot(main = paste(data.clean$District[15]), usual02_samples[,"s[15]"], type = "l
 plot(main = paste(data.clean$District[16]), usual02_samples[,"s[16]"], type = "l")
 plot(main = paste(data.clean$District[17]), usual02_samples[,"s[17]"], type = "l")
 plot(main = paste(data.clean$District[18]), usual02_samples[,"s[18]"], type = "l")
+
 
 
 # Plot the density curves for posterior -------------
@@ -1260,11 +1313,15 @@ plot(main = paste(data.clean$District[18]), density(usual02_samples[,"s[18]"]))
 
 
 
+
 # (9) WAIC ---------
 usual02_runMCMC$WAIC
 
 
+
 # Posterior summaries--------
+
+################### Betas : Covariate estimates
 
 #Calculating the Beta means
 means_betas_usual_02=apply(usual02_samples[,1:14],2, mean)
@@ -1280,6 +1337,23 @@ colnames(mean_CrI_betas_usual_02) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
 # Converting means and CrIs from log to regular scale
 exp(mean_CrI_betas_usual_02)
+
+################### S : estimates? per region
+
+#Calculating the S means
+means_s_usual_02 <- apply(usual02_samples[ ,15:(ncol(usual02_samples)-1)],2, mean)
+
+#Calculating the Beta 95% CrI 
+CrI_s_usual_02 <- t(apply(usual02_samples[ ,15:(ncol(usual02_samples)-1)],2, function(x) quantile(x, probs=c(0.025,0.975))))
+
+#Combining the means and CIs into a dataframe
+mean_CrI_s_usual_02 <- cbind(means_s_usual_02, CrI_s_usual_02) %>% as.data.frame()
+
+#Renaming the columns
+colnames(mean_CrI_s_usual_02) <- c("Mean", "95% CrI LL", "95% CrI UL")
+
+# Converting means and CrIs from log to regular scale
+exp(mean_CrI_s_usual_02)
 ```
 **Neighborhood structure 3: Distance-based neighbors (k = 5)**
 
@@ -1335,6 +1409,7 @@ usual03_runMCMC <- runMCMC(usual03_CMCMC, nburnin = 50000, niter = 200000, nchai
 # (8) Check convergence
 usual03_samples = rbind(usual03_runMCMC$samples[[1]], usual03_runMCMC$samples[[2]])
 
+
 # Plot the MCMC chains----------
 
 # Betas (Covariates) - log scale
@@ -1379,6 +1454,7 @@ plot(main = paste(data.clean$District[15]), usual03_samples[,"s[15]"], type = "l
 plot(main = paste(data.clean$District[16]), usual03_samples[,"s[16]"], type = "l")
 plot(main = paste(data.clean$District[17]), usual03_samples[,"s[17]"], type = "l")
 plot(main = paste(data.clean$District[18]), usual03_samples[,"s[18]"], type = "l")
+
 
 
 # Plot the density curves for posterior -------------
@@ -1428,11 +1504,15 @@ plot(main = paste(data.clean$District[18]), density(usual03_samples[,"s[18]"]))
 
 
 
+
 # (9) WAIC ---------
 usual03_runMCMC$WAIC
 
 
+
 # Posterior summaries--------
+
+################### Betas - covariate estimates
 
 #Calculating the Beta means
 means_betas_usual_03=apply(usual03_samples[,1:14],2, mean)
@@ -1449,7 +1529,279 @@ colnames(mean_CrI_betas_usual_03) <- c("Mean", "95% CrI LL", "95% CrI UL")
 # Converting means and CrIs from log to regular scale
 exp(mean_CrI_betas_usual_03)
 
+################### S : estimates? per region
+
+#Calculating the S means
+means_s_usual_03 <- apply(usual03_samples[ ,15:(ncol(usual03_samples)-1)],2, mean)
+
+#Calculating the Beta 95% CrI 
+CrI_s_usual_03 <- t(apply(usual03_samples[ ,15:(ncol(usual03_samples)-1)],2, function(x) quantile(x, probs=c(0.035,0.975))))
+
+#Combining the means and CIs into a dataframe
+mean_CrI_s_usual_03 <- cbind(means_s_usual_03, CrI_s_usual_03) %>% as.data.frame()
+
+#Renaming the columns
+colnames(mean_CrI_s_usual_03) <- c("Mean", "95% CrI LL", "95% CrI UL")
+
+# Converting means and CrIs from log to regular scale
+exp(mean_CrI_s_usual_03)
+
+
 ```
+
+
+## BYM CAR
+**Nimble: BYMCAR Usual fixed priors model**
+
+```{r usual code}
+###################################
+#    Usual fixed priors model     # 
+###################################
+
+# Defining the usual fixed priors model ------------------------------------------------------
+usual_code_bym <- nimbleCode({ 
+
+  # Defining our priors
+
+#    for(i in 1:N){
+#log(mu[i])<-beta0+ v[i] + b[i]
+#lambda[i]<-mu[i]*E[i]
+#y[i]~dpois(lambda[i])
+#v[i]~dnorm(0,tauv)
+#}
+#for(k in 1:L){weights[k]<-1}
+#b[1:N]~dcar_normal(adj[1:L], weights[1:L], num[1:N], tauB,zero_mean=1)
+#
+#beta0~dnorm(0,tau0)
+#tauv~dgamma(2,0.5)
+#tau0~dgamma(2,0.5)
+#tauB~dgamma(2,0.5) 
+    
+  for(j in 1:p){
+    beta[j] ~ dnorm(0, sd = 100)  # Betas for the covariates
+  }
+
+  sigma2 ~ dinvgamma(1, 0.01)     # Full conditional is good b/c full conditional is IG  --> makes MCMC easier
+  
+  v[i]~dnorm(0,tauv) 
+  h  ~ dinvgamma(1, 0.01) 
+  tauv <- 1/h
+    #dgamma(2,0.5)
+  
+  
+  # Defining transformed parameters
+  tau2 <- 1/sigma2
+  #nu <- sqrt(nu2)                 # Don't need nu
+  s[1:N] ~ dcar_normal(adj[1:L], weights[1:L], num[1:N], tau2, zero_mean = 1) #CAR prior
+  # Spatial effects (dcar is long vector, weights, n neighbors, zero mean = 1 constrains sum to 0)
+
+  # Defining likelihood
+  for(i in 1:N) { # inprod (beta1X + beta 2X)?
+    log(mu[i]) <- log(E[i]) + inprod(X[i, 1:p], beta[1:p]) + s[i] + v[i] 
+    y[i] ~ dpois(mu[i]) # we do dpois rmb to define offset inside this or put in log of mean
+    # Notes: Don't need to define prior for mu (nu?), the SD is defined only from the mean for Poisson
+    # Victoire: mu[i] <- beta0 + inprod(X[i,1:p], beta[1:p]) + s[i]   # We still need to define mu
+    # Victoire: y[i] ~ dnorm(mu[i], sd = nu)  # Outcome follows N distribution
+
+  }
+  
+})
+```
+
+```{r}
+# Neighborhood structure 1: Adjacency matrix (Victoire used 0-1 neighborhood) ###############################
+
+# Defining the data that goes into the model ----------------------------------------------------------------
+
+# (1) Define constants that go into CAR prior into a list
+Consts_usual_bym_01 = list(N = nrow(data.clean),                  # Number of areas
+                       p = ncol(data.clean[5:18]),            # Number of covariates
+                       X = as.matrix(data.clean[, c(5:18)]),  # Matrix of covariates
+                       L = length(adj),                       # Edges (length of adj vector)
+                       E = data.clean$Expected,
+                       adj = adj,                             # Adjacency matrix
+                       num = num.nb,                          # Number of neighbors per district
+                       weights = rep(1, length(adj)))         # Giving weight of 1 for neighbors
+
+# (2) Define dependent variable (outcome)
+outcome <- list(y = data.clean$Cases) # Observed cases
+
+# (3) Define initial values for the MCMC chain
+Inits_usual_bym_01 <- list(
+                    beta = rep(0, ncol(data.clean[5:18])), 
+                    sigma2 = 1, 
+                    s = rnorm(num.nb), # S sampled from N dist (do we sample ours from poisson?)
+                    v = rnorm(num.nb),
+                    h = 1)
+
+
+# Defining model --------------------------------------------------------------------------------------------
+
+# (1) Define the usual fixed prior model for nimble
+bym_usual01_model <- nimbleModel(code = usual_code_bym, constants = Consts_usual_bym_01, 
+                             data = outcome, inits = Inits_usual_bym_01)
+
+# (2) Define the compiled nimble model
+usual01_Cmodel <- compileNimble(usual01_model,
+                              showCompilerOutput = TRUE)      
+
+# (3) Configure the MCMC chain
+usual01_conf <- configureMCMC(usual01_model, monitors = c('beta', 'sigma2', 's', 'v', 'h'))
+
+# (4) Do something
+usual01_conf$printSamplers()
+
+# (5) Build MCMC object
+usual01_MCMC <- buildMCMC(usual01_conf, enableWAIC = T) 
+
+# (6) Compile model with MCMC object
+usual01_CMCMC <- compileNimble(usual01_MCMC, project = usual01_Cmodel)  
+
+# (7) Run the model
+usual01_runMCMC <- runMCMC(usual01_CMCMC, nburnin = 10000, niter = 200000, nchains = 2, thin = 25, WAIC = T)
+
+# (8) Check convergence
+usual01_samples = rbind(usual01_runMCMC$samples[[1]], usual01_runMCMC$samples[[2]])
+
+
+
+# Plot the MCMC chains----------
+
+# Betas (Covariates) - log scale
+par(mfrow=c(4,4), mar=c(2,4.5,2.1,1)+0.1)
+plot(main = paste(names(data.clean[5])),  usual01_samples[,"beta[1]"] , type = "l") # Why are all beta's = 1
+plot(main = paste(names(data.clean[6])),  usual01_samples[,"beta[2]"] , type = "l")
+plot(main = paste(names(data.clean[7])),  usual01_samples[,"beta[3]"] , type = "l")
+plot(main = paste(names(data.clean[8])),  usual01_samples[,"beta[4]"] , type = "l")
+plot(main = paste(names(data.clean[9])),  usual01_samples[,"beta[5]"] , type = "l")
+plot(main = paste(names(data.clean[10])), usual01_samples[,"beta[6]"] , type = "l")
+plot(main = paste(names(data.clean[11])), usual01_samples[,"beta[7]"] , type = "l")
+plot(main = paste(names(data.clean[12])), usual01_samples[,"beta[8]"] , type = "l")
+plot(main = paste(names(data.clean[13])), usual01_samples[,"beta[9]"] , type = "l")
+plot(main = paste(names(data.clean[14])),usual01_samples[,"beta[10]"] , type = "l")
+plot(main = paste(names(data.clean[15])),usual01_samples[,"beta[11]"] , type = "l")
+plot(main = paste(names(data.clean[16])),usual01_samples[,"beta[12]"] , type = "l")
+plot(main = paste(names(data.clean[17])),usual01_samples[,"beta[13]"] , type = "l")
+plot(main = paste(names(data.clean[18])),usual01_samples[,"beta[14]"] , type = "l")
+
+#sigma squared
+par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
+plot(main ="Sigma Squared", usual01_samples[,"sigma2"], type = "l")
+
+
+# Spatial effects for each region  
+par(mfrow=c(4,5), mar=c(2,3,2.1,1)+0.1)
+plot(main = paste(data.clean$District[1]), usual01_samples[,"s[1]"]  , type = "l") 
+plot(main = paste(data.clean$District[2]), usual01_samples[,"s[2]"]  , type = "l")
+plot(main = paste(data.clean$District[3]), usual01_samples[,"s[3]"]  , type = "l")
+plot(main = paste(data.clean$District[4]), usual01_samples[,"s[4]"]  , type = "l")
+plot(main = paste(data.clean$District[5]), usual01_samples[,"s[5]"]  , type = "l")
+plot(main = paste(data.clean$District[6]), usual01_samples[,"s[6]"]  , type = "l")
+plot(main = paste(data.clean$District[7]), usual01_samples[,"s[7]"]  , type = "l")
+plot(main = paste(data.clean$District[8]), usual01_samples[,"s[8]"]  , type = "l")
+plot(main = paste(data.clean$District[9]), usual01_samples[,"s[9]"]  , type = "l")
+plot(main = paste(data.clean$District[10]), usual01_samples[,"s[10]"], type = "l")
+plot(main = paste(data.clean$District[11]), usual01_samples[,"s[11]"], type = "l")
+plot(main = paste(data.clean$District[12]), usual01_samples[,"s[12]"], type = "l")
+plot(main = paste(data.clean$District[13]), usual01_samples[,"s[13]"], type = "l")
+plot(main = paste(data.clean$District[14]), usual01_samples[,"s[14]"], type = "l")
+plot(main = paste(data.clean$District[15]), usual01_samples[,"s[15]"], type = "l")
+plot(main = paste(data.clean$District[16]), usual01_samples[,"s[16]"], type = "l")
+plot(main = paste(data.clean$District[17]), usual01_samples[,"s[17]"], type = "l")
+plot(main = paste(data.clean$District[18]), usual01_samples[,"s[18]"], type = "l")
+
+
+
+# Plot the density curves for posterior -------------
+# Betas (Covariates) - log scale
+par(mfrow=c(4,4), mar=c(2,4.5,2.1,1)+0.1)
+plot(main = paste(names(data.clean[5])),density(usual01_samples[,"beta[1]"])) 
+plot(main = paste(names(data.clean[6])),density(usual01_samples[,"beta[2]"]))
+plot(main = paste(names(data.clean[7])),density(usual01_samples[,"beta[3]"]))
+plot(main = paste(names(data.clean[8])),density(usual01_samples[,"beta[4]"]))
+plot(main = paste(names(data.clean[9])),density(usual01_samples[,"beta[5]"]))
+plot(main = paste(names(data.clean[10])),density(usual01_samples[,"beta[6]"]))
+plot(main = paste(names(data.clean[11])),density(usual01_samples[,"beta[7]"]))
+plot(main = paste(names(data.clean[12])),density(usual01_samples[,"beta[8]"]))
+plot(main = paste(names(data.clean[13])),density(usual01_samples[,"beta[9]"]))
+plot(main = paste(names(data.clean[14])),density(usual01_samples[,"beta[10]"]))
+plot(main = paste(names(data.clean[15])),density(usual01_samples[,"beta[11]"]))
+plot(main = paste(names(data.clean[16])),density(usual01_samples[,"beta[12]"]))
+plot(main = paste(names(data.clean[17])),density(usual01_samples[,"beta[13]"]))
+plot(main = paste(names(data.clean[18])),density(usual01_samples[,"beta[14]"]))
+
+#sigma squared
+par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
+plot(main ="Sigma Squared", density(usual01_samples[,"sigma2"]))
+
+#Spatial effects for each region 
+par(mfrow=c(4,5), mar=c(2,3,2.1,1)+0.1)
+plot(main = paste(data.clean$District[1]), density(usual01_samples[,"s[1]"])) 
+plot(main = paste(data.clean$District[2]), density(usual01_samples[,"s[2]"]))
+plot(main = paste(data.clean$District[3]), density(usual01_samples[,"s[3]"]))
+plot(main = paste(data.clean$District[4]), density(usual01_samples[,"s[4]"]))
+plot(main = paste(data.clean$District[5]), density(usual01_samples[,"s[5]"]))
+plot(main = paste(data.clean$District[6]), density(usual01_samples[,"s[6]"]))
+plot(main = paste(data.clean$District[7]), density(usual01_samples[,"s[7]"]))
+plot(main = paste(data.clean$District[8]), density(usual01_samples[,"s[8]"]))
+plot(main = paste(data.clean$District[9]), density(usual01_samples[,"s[9]"]))
+plot(main = paste(data.clean$District[10]), density(usual01_samples[,"s[10]"]))
+plot(main = paste(data.clean$District[11]), density(usual01_samples[,"s[11]"]))
+plot(main = paste(data.clean$District[12]), density(usual01_samples[,"s[12]"]))
+plot(main = paste(data.clean$District[13]), density(usual01_samples[,"s[13]"]))
+plot(main = paste(data.clean$District[14]), density(usual01_samples[,"s[14]"]))
+plot(main = paste(data.clean$District[15]), density(usual01_samples[,"s[15]"]))
+plot(main = paste(data.clean$District[16]), density(usual01_samples[,"s[16]"]))
+plot(main = paste(data.clean$District[17]), density(usual01_samples[,"s[17]"]))
+plot(main = paste(data.clean$District[18]), density(usual01_samples[,"s[18]"]))
+
+
+
+
+
+
+# (9) WAIC ---------
+usual01_runMCMC$WAIC
+
+
+
+# Posterior summaries--------
+
+#Betas
+#Calculating the Beta means
+means_betas_usual_01 <- apply(usual01_samples[,1:14],2, mean)
+
+#Calculating the Beta 95% CrI 
+CrI_betas_usual_01 <- t(apply(usual01_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.015,0.975))))
+
+#Combining the means and CIs into a dataframe
+mean_CrI_betas_usual_01 <- t(matrix(c(means_betas_usual_01, CrI_betas_usual_01), ncol=14, byrow=T)) %>% as.data.frame()
+
+#Renaming the columns
+colnames(mean_CrI_betas_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
+
+# Converting means and CrIs from log to regular scale
+exp(mean_CrI_betas_usual_01)
+
+################### S : estimates? per region
+
+#Calculating the S means
+means_s_usual_01 <- apply(usual01_samples[ ,15:(ncol(usual01_samples)-1)],2, mean)
+
+#Calculating the Beta 95% CrI 
+CrI_s_usual_01 <- t(apply(usual01_samples[ ,15:(ncol(usual01_samples)-1)],2, function(x) quantile(x, probs=c(0.015,0.975))))
+
+#Combining the means and CIs into a dataframe
+mean_CrI_s_usual_01 <- cbind(means_s_usual_01, CrI_s_usual_01) %>% as.data.frame()
+
+#Renaming the columns
+colnames(mean_CrI_s_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
+
+# Converting means and CrIs from log to regular scale
+exp(mean_CrI_s_usual_01)
+
+```
+
 
 # Summary of Inferential Results (3 pages)
 
