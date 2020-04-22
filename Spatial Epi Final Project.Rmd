@@ -265,7 +265,10 @@ data$SIR = data$Cases/data$Expected
 
 ```
 
+
 ```{r Histograms of selected variables}
+
+
 ######### Histograms #########
 
 library(tidyr)
@@ -307,6 +310,7 @@ HKcoords <- HKcoords[order(HKcoords$District), ]
 data$Lat <- HKcoords$Lat
 data$Long <- HKcoords$Long
 
+
 # Adding variables in shapefile -----------------------------------------------------------------
 shp_HK = readOGR("shp_HK/Hong_Kong_18_Districts.shp", stringsAsFactors = FALSE)
 shp_HK = shp_HK[order(shp_HK$ENAME),]
@@ -332,7 +336,9 @@ shp_HK$PostSec = data$Prop_postsec
 shp_HK$PropLabor = data$Prop_labor
 shp_HK$PropMaleLabor = data$Pct.Male.Labor
 
+
 # Converting shapefile data to dataframe object -------------------------------------------------
+
 # merge the "fortified" data with the data from our spatial object
 shp_HK$id = rownames(shp_HK@data)
 shp = fortify(shp_HK)
@@ -358,6 +364,7 @@ ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black"
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
+
 # Total COVID-19 cases (as discrete variable) ---------------------------------------------------
 brks <-classIntervals(shp_HK$Cases, n=5, style="quantile")
 brks <- brks$brks
@@ -367,6 +374,7 @@ shp_HK.df$CasesCat[shp_HK.df$Cases >= 15 & shp_HK.df$Cases < 20] = 2
 shp_HK.df$CasesCat[shp_HK.df$Cases >= 20 & shp_HK.df$Cases < 43] = 3
 shp_HK.df$CasesCat[shp_HK.df$Cases >= 43] = 4
 shp_HK.df$CasesCat = factor(shp_HK.df$CasesCat, levels = 0:4, labels = c("<10", "10-14", "15-19", "20-42", ">42"))
+
 
 # Total cases -----------------------------------------------------------------------------------
 plota =
@@ -387,7 +395,8 @@ plota =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# COVID-19 rate per 100,000 ---------------------------------------------------------------------
+
+# COVID-19 rate per 100,000  - creating breaks --------------------------------------------------------------------
 brks <-classIntervals(shp_HK$Rate, n=5, style="quantile")
 brks <- brks$brks
 shp_HK.df$RateCat[shp_HK.df$Rate < brks[2]] = 0
@@ -397,7 +406,9 @@ shp_HK.df$RateCat[shp_HK.df$Rate >= brks[4] & shp_HK.df$Rate < brks[5]] = 3
 shp_HK.df$RateCat[shp_HK.df$Rate >= brks[5]] = 4
 shp_HK.df$RateCat = factor(shp_HK.df$RateCat, levels = 0:4, labels = c("<2.5", "2.5-3.2", "3.2-4.5", "4.5-13.6", ">13.6"))
 
-# Rate ------------------------------------------------------------------------------------------
+
+
+# Plot of Rate ------------------------------------------------------------------------------------------
 plota2 =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = RateCat)) + 
@@ -418,7 +429,8 @@ plota2 =
 
 grid.arrange(plota, plota2)
 
-# SIR -------------------------------------------------------------------------------------------
+
+# Plot of SIR -------------------------------------------------------------------------------------------
 plota3 =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = SIR)) + 
@@ -439,7 +451,8 @@ plota3 =
 
 grid.arrange(plota2, plota3, ncol = 2)
 
-# Population density ----------------------------------------------------------------------------
+
+# Plot of Population density ----------------------------------------------------------------------------
 plotb = 
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PopDens)) + 
@@ -458,7 +471,8 @@ plotb =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Male population -------------------------------------------------------------------------------
+
+# Plot of Male population -------------------------------------------------------------------------------
 plotc = 
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PropMale)) + 
@@ -477,7 +491,8 @@ plotc =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Female population ------------------------------------------------------------------------------
+
+# Plot of Female population ------------------------------------------------------------------------------
 plotd = 
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PropFemale)) + 
@@ -496,7 +511,8 @@ plotd =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Population of 65+ -----------------------------------------------------------------------------
+
+# Plot of Population of 65+ -----------------------------------------------------------------------------
 plote = 
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Prop65)) + 
@@ -515,7 +531,8 @@ plote =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Population of 0-24 ---------------------------------------------------------------------------
+
+# Plot of Population of 0-24 ---------------------------------------------------------------------------
 plotf =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Prop0_24)) + 
@@ -536,11 +553,7 @@ plotf =
 
 grid.arrange(plota2, plotb, plotc, plotd, plote, plotf)
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 8dc9065390a1ab2dc3c80781428c2194c6a42fff
-# Population of 0-14 years old 
 plotg =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Prop0_24)) + 
@@ -561,6 +574,7 @@ plotg =
 
 # Population of 25-64 years old
 
+
 # Population of 0-14 years old ------------------------------------------------------------------
 # plotg =
 #   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
@@ -580,7 +594,8 @@ plotg =
 #         panel.background = element_blank()) +
 #     coord_fixed(1.3)
 
-# Population of 25-64 years old ----------------------------------------------------------------
+
+# Plot of Population of 25-64 years old ----------------------------------------------------------------
 
 ploth =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
@@ -600,7 +615,8 @@ ploth =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Proportion of Post-Sec Educ ------------------------------------------------------------------
+
+# Plot of Proportion of Post-Sec Educ ------------------------------------------------------------------
 ploti =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PostSec)) + 
@@ -619,7 +635,8 @@ ploti =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Proportion of secondary education and higher -------------------------------------------------
+
+# Plot of Proportion of secondary education and higher -------------------------------------------------
 plotj =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = SecEduc)) + 
@@ -638,7 +655,8 @@ plotj =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Number of housing units ----------------------------------------------------------------------
+
+# Plot of Number of housing units ----------------------------------------------------------------------
 plotk =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Housing)) + 
@@ -657,7 +675,8 @@ plotk =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Average number of beds per hospital ---------------------------------------------------------
+
+# Plot of Average number of beds per hospital ---------------------------------------------------------
 plotl =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = HospBeds)) + 
@@ -676,7 +695,8 @@ plotl =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-# Income ----------------------------------------------------------------------------------------
+
+# Plot of Income ----------------------------------------------------------------------------------------
 plotn =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = Income)) + 
@@ -696,7 +716,8 @@ plotn =
     coord_fixed(1.3)
 
 
-# Proportion labor ----------------------------------------------------------------------------
+
+# Plot of Proportion labor ----------------------------------------------------------------------------
 plotm =
   ggplot(data = shp_HK.df, aes(x = long, y = lat, group = group), colour = "black", fill = NA) +
   geom_polygon(data = shp_HK.df, aes(fill = PropLabor)) + 
@@ -833,6 +854,7 @@ HK.nbmat.3 <- nb2mat(HK.nb3, style = 'B', zero.policy = TRUE)
 # 3) Having 5 nearest neighbors
 HK.nbmat.5 <- nb2mat(HK.nb5, style = 'B', zero.policy = TRUE) 
 
+
 # Number of neighbors per district -------------------------------------------------
 n <- nrow(data.clean)
 
@@ -859,7 +881,8 @@ for(i in 1:n){
 }
 #num.nb.5 <- rowSums(HK.nbmat.5)
 
-# Adjacency vector -----------------------------------------------------------------
+
+# Adjacency vectors -----------------------------------------------------------------
 
 # 1) Having contiguous boundary point
 adj <- c()
@@ -875,25 +898,21 @@ for(i in 2:n){
 #}
 
 
-# 2) Having 3 nearest neighbors  ------- This function leads to an error in the nimble code
-#adj.3 <- c()
-#adj.3 <- which(HK.nbmat.adj[1,] == 1)
-#for(i in 2:n){
-#  adj.3 <- c(adj.3, c(which(HK.nbmat.3[i,] == 1)))
-#}
+
+
 # 2) Having 3 nearest neighbors 
 adj.3 <- list()
 for(i in 1:n){
   adj.3[[i]] <- c(which(HK.nbmat.3[i,] == 1))
 }
 adj.3 <- unlist(adj.3)
-
- #3) Having 5 nearest neighbors ------- This function leads to an error in the nimble code
-#adj.5 <- c()
-#adj.5 <- which(HK.nbmat.adj[1,] == 1)
+# 2) Having 3 nearest neighbors  ------- This function leads to an error in the nimble code
+#adj.3 <- c()
+#adj.3 <- which(HK.nbmat.adj[1,] == 1)
 #for(i in 2:n){
-#  adj.5 <- c(adj.5, c(which(HK.nbmat.5[i,] == 1)))
+#  adj.3 <- c(adj.3, c(which(HK.nbmat.3[i,] == 1)))
 #}
+
 
  #3) Having 5 nearest neighbors 
 adj.5 <- list()
@@ -901,6 +920,13 @@ for(i in 1:n){
   adj.5[[i]] <- c(which(HK.nbmat.5[i,] == 1))
 }
 adj.5 <- unlist(adj.5)
+ #3) Having 5 nearest neighbors ------- This function leads to an error in the nimble code
+#adj.5 <- c()
+#adj.5 <- which(HK.nbmat.adj[1,] == 1)
+#for(i in 2:n){
+#  adj.5 <- c(adj.5, c(which(HK.nbmat.5[i,] == 1)))
+#}
+
 
 ```
 
@@ -996,6 +1022,7 @@ usual01_runMCMC <- runMCMC(usual01_CMCMC, nburnin = 10000, niter = 200000, nchai
 usual01_samples = rbind(usual01_runMCMC$samples[[1]], usual01_runMCMC$samples[[2]])
 
 
+
 # Plot the MCMC chains----------
 
 # Betas (Covariates) - log scale
@@ -1040,6 +1067,7 @@ plot(main = paste(data.clean$District[15]), usual01_samples[,"s[15]"], type = "l
 plot(main = paste(data.clean$District[16]), usual01_samples[,"s[16]"], type = "l")
 plot(main = paste(data.clean$District[17]), usual01_samples[,"s[17]"], type = "l")
 plot(main = paste(data.clean$District[18]), usual01_samples[,"s[18]"], type = "l")
+
 
 
 # Plot the density curves for posterior -------------
@@ -1089,8 +1117,10 @@ plot(main = paste(data.clean$District[18]), density(usual01_samples[,"s[18]"]))
 
 
 
+
 # (9) WAIC ---------
 usual01_runMCMC$WAIC
+
 
 
 # Posterior summaries--------
@@ -1166,6 +1196,7 @@ usual02_runMCMC <- runMCMC(usual02_CMCMC, nburnin = 10000, niter = 200000, nchai
 usual02_samples = rbind(usual02_runMCMC$samples[[1]], usual02_runMCMC$samples[[2]])
 
 
+
 # Plot the MCMC chains----------
 plot(main = paste(names(data.clean[5])), usual02_samples[, "beta[1]"], type = "l")
 
@@ -1211,6 +1242,7 @@ plot(main = paste(data.clean$District[15]), usual02_samples[,"s[15]"], type = "l
 plot(main = paste(data.clean$District[16]), usual02_samples[,"s[16]"], type = "l")
 plot(main = paste(data.clean$District[17]), usual02_samples[,"s[17]"], type = "l")
 plot(main = paste(data.clean$District[18]), usual02_samples[,"s[18]"], type = "l")
+
 
 
 # Plot the density curves for posterior -------------
@@ -1260,8 +1292,10 @@ plot(main = paste(data.clean$District[18]), density(usual02_samples[,"s[18]"]))
 
 
 
+
 # (9) WAIC ---------
 usual02_runMCMC$WAIC
+
 
 
 # Posterior summaries--------
@@ -1335,6 +1369,7 @@ usual03_runMCMC <- runMCMC(usual03_CMCMC, nburnin = 50000, niter = 200000, nchai
 # (8) Check convergence
 usual03_samples = rbind(usual03_runMCMC$samples[[1]], usual03_runMCMC$samples[[2]])
 
+
 # Plot the MCMC chains----------
 
 # Betas (Covariates) - log scale
@@ -1379,6 +1414,7 @@ plot(main = paste(data.clean$District[15]), usual03_samples[,"s[15]"], type = "l
 plot(main = paste(data.clean$District[16]), usual03_samples[,"s[16]"], type = "l")
 plot(main = paste(data.clean$District[17]), usual03_samples[,"s[17]"], type = "l")
 plot(main = paste(data.clean$District[18]), usual03_samples[,"s[18]"], type = "l")
+
 
 
 # Plot the density curves for posterior -------------
@@ -1428,8 +1464,10 @@ plot(main = paste(data.clean$District[18]), density(usual03_samples[,"s[18]"]))
 
 
 
+
 # (9) WAIC ---------
 usual03_runMCMC$WAIC
+
 
 
 # Posterior summaries--------
