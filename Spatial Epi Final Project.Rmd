@@ -1588,13 +1588,13 @@ usual_code_bym <- nimbleCode({
     
   for(j in 1:p){
     beta[j] ~ dnorm(0, sd = 100)  # Betas for the covariates
+
+
   }
 
   sigma2 ~ dinvgamma(1, 0.01)     # Full conditional is good b/c full conditional is IG  --> makes MCMC easier
   
-  v[i]~dnorm(0,tauv) 
-  h  ~ dinvgamma(1, 0.01) 
-  tauv <- 1/h
+
     #dgamma(2,0.5)
   
   
@@ -1603,6 +1603,8 @@ usual_code_bym <- nimbleCode({
   #nu <- sqrt(nu2)                 # Don't need nu
   s[1:N] ~ dcar_normal(adj[1:L], weights[1:L], num[1:N], tau2, zero_mean = 1) #CAR prior
   # Spatial effects (dcar is long vector, weights, n neighbors, zero mean = 1 constrains sum to 0)
+  
+
 
   # Defining likelihood
   for(i in 1:N) { # inprod (beta1X + beta 2X)?
@@ -1611,7 +1613,7 @@ usual_code_bym <- nimbleCode({
     # Notes: Don't need to define prior for mu (nu?), the SD is defined only from the mean for Poisson
     # Victoire: mu[i] <- beta0 + inprod(X[i,1:p], beta[1:p]) + s[i]   # We still need to define mu
     # Victoire: y[i] ~ dnorm(mu[i], sd = nu)  # Outcome follows N distribution
-
+      v[i]~dnorm(0,100) 
   }
   
 })
@@ -1640,8 +1642,8 @@ Inits_usual_bym_01 <- list(
                     beta = rep(0, ncol(data.clean[5:18])), 
                     sigma2 = 1, 
                     s = rnorm(num.nb), # S sampled from N dist (do we sample ours from poisson?)
-                    v = rnorm(num.nb),
-                    h = 1)
+                    v =  rep(0, nrow(data.clean))
+                    )
 
 
 # Defining model --------------------------------------------------------------------------------------------
@@ -1655,7 +1657,7 @@ bym_usual01_Cmodel <- compileNimble(bym_usual01_model,
                               showCompilerOutput = TRUE)      
 
 # (3) Configure the MCMC chain
-bym_usual01_conf <- configureMCMC(bym_usual01_model, monitors = c('beta', 'sigma2', 's', 'v', 'h'))
+bym_usual01_conf <- configureMCMC(bym_usual01_model, monitors = c('beta', 'sigma2', 's', 'v'))
 
 # (4) Do something
 bym_usual01_conf$printSamplers()
@@ -1784,7 +1786,7 @@ means_betas_bym_usual_01 <- apply(bym_usual01_samples[,1:14],2, mean)
 CrI_betas_bym_usual_01 <- t(apply(bym_usual01_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.015,0.975))))
 
 #Combining the means and CIs into a dataframe
-mean_CrI_betas_ubym_sual_01 <- t(matrix(c(means_betas_bym_usual_01, CrI_betas_bym_usual_01), ncol=14, byrow=T)) %>% as.data.frame()
+mean_CrI_betas_bym_usual_01 <- t(matrix(c(means_betas_bym_usual_01, CrI_betas_bym_usual_01), ncol=14, byrow=T)) %>% as.data.frame()
 
 #Renaming the columns
 colnames(mean_CrI_betas_bym_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
@@ -1795,10 +1797,10 @@ exp(mean_CrI_betas_bym_usual_01)
 ################### S : estimates? per region
 
 #Calculating the S means
-means_s_bym_usual_01 <- apply(bym_usual01_samples[ ,15:(ncol(bym_usual01_samples)-1)],2, mean)
+means_s_bym_usual_01 <- apply(bym_usual01_samples[ ,15:32],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_s_bym_usual_01 <- t(apply(bym_usual01_samples[ ,15:(ncol(bym_usual01_samples)-1)],2, function(x) quantile(x, probs=c(0.015,0.975))))
+CrI_s_bym_usual_01 <- t(apply(bym_usual01_samples[ ,15:32],2, function(x) quantile(x, probs=c(0.015,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_s_bym_usual_01 <- cbind(means_s_bym_usual_01, CrI_s_bym_usual_01) %>% as.data.frame()
@@ -1808,6 +1810,24 @@ colnames(mean_CrI_s_bym_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
 # Converting means and CrIs from log to regular scale
 exp(mean_CrI_s_bym_usual_01)
+
+
+################### V : estimates? per region
+
+#Calculating the S means
+means_v_bym_usual_01 <- apply(bym_usual01_samples[ ,34:ncol(bym_usual01_samples)],2, mean)
+
+#Calculating the Beta 95% CrI 
+CrI_v_bym_usual_01 <- t(apply(bym_usual01_samples[ ,34:ncol(bym_usual01_samples)],2, function(x) quantile(x, probs=c(0.015,0.975))))
+
+#Combining the means and CIs into a dataframe
+mean_CrI_v_bym_usual_01 <- cbind(means_v_bym_usual_01, CrI_v_bym_usual_01) %>% as.data.frame()
+
+#Renaming the columns
+colnames(mean_CrI_v_bym_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
+
+# Converting means and CrIs from log to regular scale
+exp(mean_CrI_v_bym_usual_01)
 
 ```
 
