@@ -928,12 +928,16 @@ adj.5 <- unlist(adj.5)
 #}
 
 
+
 ```
 
+
 ## ICAR
+
 **Nimble: iCAR Usual fixed priors model**
 
-```{r usual code}
+
+```{r  usual code}
 ###################################
 #    Usual fixed priors model     # 
 ###################################
@@ -966,6 +970,8 @@ usual_code <- nimbleCode({
   }
 })
 ```
+
+
 
 **Neighborhood structure 1: Adjacency-based neighbors**
 
@@ -1355,10 +1361,13 @@ colnames(mean_CrI_s_usual_02) <- c("Mean", "95% CrI LL", "95% CrI UL")
 # Converting means and CrIs from log to regular scale
 exp(mean_CrI_s_usual_02)
 ```
+
 **Neighborhood structure 3: Distance-based neighbors (k = 5)**
 
 ```{r}
+
 # Neighborhood structure 1: Adjacency matrix (Victoire used 0-1 neighborhood) ###############################
+
 
 # Defining the data that goes into the model ----------------------------------------------------------------
 
@@ -1642,26 +1651,26 @@ bym_usual01_model <- nimbleModel(code = usual_code_bym, constants = Consts_usual
                              data = outcome, inits = Inits_usual_bym_01)
 
 # (2) Define the compiled nimble model
-usual01_Cmodel <- compileNimble(usual01_model,
+bym_usual01_Cmodel <- compileNimble(bym_usual01_model,
                               showCompilerOutput = TRUE)      
 
 # (3) Configure the MCMC chain
-usual01_conf <- configureMCMC(usual01_model, monitors = c('beta', 'sigma2', 's', 'v', 'h'))
+bym_usual01_conf <- configureMCMC(bym_usual01_model, monitors = c('beta', 'sigma2', 's', 'v', 'h'))
 
 # (4) Do something
-usual01_conf$printSamplers()
+bym_usual01_conf$printSamplers()
 
 # (5) Build MCMC object
-usual01_MCMC <- buildMCMC(usual01_conf, enableWAIC = T) 
+bym_usual01_MCMC <- buildMCMC(bym_usual01_conf, enableWAIC = T) 
 
 # (6) Compile model with MCMC object
-usual01_CMCMC <- compileNimble(usual01_MCMC, project = usual01_Cmodel)  
+bym_usual01_CMCMC <- compileNimble(bym_usual01_MCMC, project = bym_usual01_Cmodel)  
 
 # (7) Run the model
-usual01_runMCMC <- runMCMC(usual01_CMCMC, nburnin = 10000, niter = 200000, nchains = 2, thin = 25, WAIC = T)
+bym_usual01_runMCMC <- runMCMC(bym_usual01_CMCMC, nburnin = 10000, niter = 200000, nchains = 2, thin = 25, WAIC = T)
 
 # (8) Check convergence
-usual01_samples = rbind(usual01_runMCMC$samples[[1]], usual01_runMCMC$samples[[2]])
+bym_usual01_samples = rbind(bym_usual01_runMCMC$samples[[1]], bym_usual01_runMCMC$samples[[2]])
 
 
 
@@ -1669,91 +1678,91 @@ usual01_samples = rbind(usual01_runMCMC$samples[[1]], usual01_runMCMC$samples[[2
 
 # Betas (Covariates) - log scale
 par(mfrow=c(4,4), mar=c(2,4.5,2.1,1)+0.1)
-plot(main = paste(names(data.clean[5])),  usual01_samples[,"beta[1]"] , type = "l") # Why are all beta's = 1
-plot(main = paste(names(data.clean[6])),  usual01_samples[,"beta[2]"] , type = "l")
-plot(main = paste(names(data.clean[7])),  usual01_samples[,"beta[3]"] , type = "l")
-plot(main = paste(names(data.clean[8])),  usual01_samples[,"beta[4]"] , type = "l")
-plot(main = paste(names(data.clean[9])),  usual01_samples[,"beta[5]"] , type = "l")
-plot(main = paste(names(data.clean[10])), usual01_samples[,"beta[6]"] , type = "l")
-plot(main = paste(names(data.clean[11])), usual01_samples[,"beta[7]"] , type = "l")
-plot(main = paste(names(data.clean[12])), usual01_samples[,"beta[8]"] , type = "l")
-plot(main = paste(names(data.clean[13])), usual01_samples[,"beta[9]"] , type = "l")
-plot(main = paste(names(data.clean[14])),usual01_samples[,"beta[10]"] , type = "l")
-plot(main = paste(names(data.clean[15])),usual01_samples[,"beta[11]"] , type = "l")
-plot(main = paste(names(data.clean[16])),usual01_samples[,"beta[12]"] , type = "l")
-plot(main = paste(names(data.clean[17])),usual01_samples[,"beta[13]"] , type = "l")
-plot(main = paste(names(data.clean[18])),usual01_samples[,"beta[14]"] , type = "l")
+plot(main = paste(names(data.clean[5])),  bym_usual01_samples[,"beta[1]"] , type = "l") # Why are all beta's = 1
+plot(main = paste(names(data.clean[6])),  bym_usual01_samples[,"beta[2]"] , type = "l")
+plot(main = paste(names(data.clean[7])),  bym_usual01_samples[,"beta[3]"] , type = "l")
+plot(main = paste(names(data.clean[8])),  bym_usual01_samples[,"beta[4]"] , type = "l")
+plot(main = paste(names(data.clean[9])),  bym_usual01_samples[,"beta[5]"] , type = "l")
+plot(main = paste(names(data.clean[10])), bym_usual01_samples[,"beta[6]"] , type = "l")
+plot(main = paste(names(data.clean[11])), bym_usual01_samples[,"beta[7]"] , type = "l")
+plot(main = paste(names(data.clean[12])), bym_usual01_samples[,"beta[8]"] , type = "l")
+plot(main = paste(names(data.clean[13])), bym_usual01_samples[,"beta[9]"] , type = "l")
+plot(main = paste(names(data.clean[14])),bym_usual01_samples[,"beta[10]"] , type = "l")
+plot(main = paste(names(data.clean[15])),bym_usual01_samples[,"beta[11]"] , type = "l")
+plot(main = paste(names(data.clean[16])),bym_usual01_samples[,"beta[12]"] , type = "l")
+plot(main = paste(names(data.clean[17])),bym_usual01_samples[,"beta[13]"] , type = "l")
+plot(main = paste(names(data.clean[18])),bym_usual01_samples[,"beta[14]"] , type = "l")
 
 #sigma squared
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
-plot(main ="Sigma Squared", usual01_samples[,"sigma2"], type = "l")
+plot(main ="Sigma Squared", bym_usual01_samples[,"sigma2"], type = "l")
 
 
 # Spatial effects for each region  
 par(mfrow=c(4,5), mar=c(2,3,2.1,1)+0.1)
-plot(main = paste(data.clean$District[1]), usual01_samples[,"s[1]"]  , type = "l") 
-plot(main = paste(data.clean$District[2]), usual01_samples[,"s[2]"]  , type = "l")
-plot(main = paste(data.clean$District[3]), usual01_samples[,"s[3]"]  , type = "l")
-plot(main = paste(data.clean$District[4]), usual01_samples[,"s[4]"]  , type = "l")
-plot(main = paste(data.clean$District[5]), usual01_samples[,"s[5]"]  , type = "l")
-plot(main = paste(data.clean$District[6]), usual01_samples[,"s[6]"]  , type = "l")
-plot(main = paste(data.clean$District[7]), usual01_samples[,"s[7]"]  , type = "l")
-plot(main = paste(data.clean$District[8]), usual01_samples[,"s[8]"]  , type = "l")
-plot(main = paste(data.clean$District[9]), usual01_samples[,"s[9]"]  , type = "l")
-plot(main = paste(data.clean$District[10]), usual01_samples[,"s[10]"], type = "l")
-plot(main = paste(data.clean$District[11]), usual01_samples[,"s[11]"], type = "l")
-plot(main = paste(data.clean$District[12]), usual01_samples[,"s[12]"], type = "l")
-plot(main = paste(data.clean$District[13]), usual01_samples[,"s[13]"], type = "l")
-plot(main = paste(data.clean$District[14]), usual01_samples[,"s[14]"], type = "l")
-plot(main = paste(data.clean$District[15]), usual01_samples[,"s[15]"], type = "l")
-plot(main = paste(data.clean$District[16]), usual01_samples[,"s[16]"], type = "l")
-plot(main = paste(data.clean$District[17]), usual01_samples[,"s[17]"], type = "l")
-plot(main = paste(data.clean$District[18]), usual01_samples[,"s[18]"], type = "l")
+plot(main = paste(data.clean$District[1]), bym_usual01_samples[,"s[1]"]  , type = "l") 
+plot(main = paste(data.clean$District[2]), bym_usual01_samples[,"s[2]"]  , type = "l")
+plot(main = paste(data.clean$District[3]), bym_usual01_samples[,"s[3]"]  , type = "l")
+plot(main = paste(data.clean$District[4]), bym_usual01_samples[,"s[4]"]  , type = "l")
+plot(main = paste(data.clean$District[5]), bym_usual01_samples[,"s[5]"]  , type = "l")
+plot(main = paste(data.clean$District[6]), bym_usual01_samples[,"s[6]"]  , type = "l")
+plot(main = paste(data.clean$District[7]), bym_usual01_samples[,"s[7]"]  , type = "l")
+plot(main = paste(data.clean$District[8]), bym_usual01_samples[,"s[8]"]  , type = "l")
+plot(main = paste(data.clean$District[9]), bym_usual01_samples[,"s[9]"]  , type = "l")
+plot(main = paste(data.clean$District[10]), bym_usual01_samples[,"s[10]"], type = "l")
+plot(main = paste(data.clean$District[11]), bym_usual01_samples[,"s[11]"], type = "l")
+plot(main = paste(data.clean$District[12]), bym_usual01_samples[,"s[12]"], type = "l")
+plot(main = paste(data.clean$District[13]), bym_usual01_samples[,"s[13]"], type = "l")
+plot(main = paste(data.clean$District[14]), bym_usual01_samples[,"s[14]"], type = "l")
+plot(main = paste(data.clean$District[15]), bym_usual01_samples[,"s[15]"], type = "l")
+plot(main = paste(data.clean$District[16]), bym_usual01_samples[,"s[16]"], type = "l")
+plot(main = paste(data.clean$District[17]), bym_usual01_samples[,"s[17]"], type = "l")
+plot(main = paste(data.clean$District[18]), bym_usual01_samples[,"s[18]"], type = "l")
 
 
 
 # Plot the density curves for posterior -------------
 # Betas (Covariates) - log scale
 par(mfrow=c(4,4), mar=c(2,4.5,2.1,1)+0.1)
-plot(main = paste(names(data.clean[5])),density(usual01_samples[,"beta[1]"])) 
-plot(main = paste(names(data.clean[6])),density(usual01_samples[,"beta[2]"]))
-plot(main = paste(names(data.clean[7])),density(usual01_samples[,"beta[3]"]))
-plot(main = paste(names(data.clean[8])),density(usual01_samples[,"beta[4]"]))
-plot(main = paste(names(data.clean[9])),density(usual01_samples[,"beta[5]"]))
-plot(main = paste(names(data.clean[10])),density(usual01_samples[,"beta[6]"]))
-plot(main = paste(names(data.clean[11])),density(usual01_samples[,"beta[7]"]))
-plot(main = paste(names(data.clean[12])),density(usual01_samples[,"beta[8]"]))
-plot(main = paste(names(data.clean[13])),density(usual01_samples[,"beta[9]"]))
-plot(main = paste(names(data.clean[14])),density(usual01_samples[,"beta[10]"]))
-plot(main = paste(names(data.clean[15])),density(usual01_samples[,"beta[11]"]))
-plot(main = paste(names(data.clean[16])),density(usual01_samples[,"beta[12]"]))
-plot(main = paste(names(data.clean[17])),density(usual01_samples[,"beta[13]"]))
-plot(main = paste(names(data.clean[18])),density(usual01_samples[,"beta[14]"]))
+plot(main = paste(names(data.clean[5])),density(bym_usual01_samples[,"beta[1]"])) 
+plot(main = paste(names(data.clean[6])),density(bym_usual01_samples[,"beta[2]"]))
+plot(main = paste(names(data.clean[7])),density(bym_usual01_samples[,"beta[3]"]))
+plot(main = paste(names(data.clean[8])),density(bym_usual01_samples[,"beta[4]"]))
+plot(main = paste(names(data.clean[9])),density(bym_usual01_samples[,"beta[5]"]))
+plot(main = paste(names(data.clean[10])),density(bym_usual01_samples[,"beta[6]"]))
+plot(main = paste(names(data.clean[11])),density(bym_usual01_samples[,"beta[7]"]))
+plot(main = paste(names(data.clean[12])),density(bym_usual01_samples[,"beta[8]"]))
+plot(main = paste(names(data.clean[13])),density(bym_usual01_samples[,"beta[9]"]))
+plot(main = paste(names(data.clean[14])),density(bym_usual01_samples[,"beta[10]"]))
+plot(main = paste(names(data.clean[15])),density(bym_usual01_samples[,"beta[11]"]))
+plot(main = paste(names(data.clean[16])),density(bym_usual01_samples[,"beta[12]"]))
+plot(main = paste(names(data.clean[17])),density(bym_usual01_samples[,"beta[13]"]))
+plot(main = paste(names(data.clean[18])),density(bym_usual01_samples[,"beta[14]"]))
 
 #sigma squared
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
-plot(main ="Sigma Squared", density(usual01_samples[,"sigma2"]))
+plot(main ="Sigma Squared", density(bym_usual01_samples[,"sigma2"]))
 
 #Spatial effects for each region 
 par(mfrow=c(4,5), mar=c(2,3,2.1,1)+0.1)
-plot(main = paste(data.clean$District[1]), density(usual01_samples[,"s[1]"])) 
-plot(main = paste(data.clean$District[2]), density(usual01_samples[,"s[2]"]))
-plot(main = paste(data.clean$District[3]), density(usual01_samples[,"s[3]"]))
-plot(main = paste(data.clean$District[4]), density(usual01_samples[,"s[4]"]))
-plot(main = paste(data.clean$District[5]), density(usual01_samples[,"s[5]"]))
-plot(main = paste(data.clean$District[6]), density(usual01_samples[,"s[6]"]))
-plot(main = paste(data.clean$District[7]), density(usual01_samples[,"s[7]"]))
-plot(main = paste(data.clean$District[8]), density(usual01_samples[,"s[8]"]))
-plot(main = paste(data.clean$District[9]), density(usual01_samples[,"s[9]"]))
-plot(main = paste(data.clean$District[10]), density(usual01_samples[,"s[10]"]))
-plot(main = paste(data.clean$District[11]), density(usual01_samples[,"s[11]"]))
-plot(main = paste(data.clean$District[12]), density(usual01_samples[,"s[12]"]))
-plot(main = paste(data.clean$District[13]), density(usual01_samples[,"s[13]"]))
-plot(main = paste(data.clean$District[14]), density(usual01_samples[,"s[14]"]))
-plot(main = paste(data.clean$District[15]), density(usual01_samples[,"s[15]"]))
-plot(main = paste(data.clean$District[16]), density(usual01_samples[,"s[16]"]))
-plot(main = paste(data.clean$District[17]), density(usual01_samples[,"s[17]"]))
-plot(main = paste(data.clean$District[18]), density(usual01_samples[,"s[18]"]))
+plot(main = paste(data.clean$District[1]), density(bym_usual01_samples[,"s[1]"])) 
+plot(main = paste(data.clean$District[2]), density(bym_usual01_samples[,"s[2]"]))
+plot(main = paste(data.clean$District[3]), density(bym_usual01_samples[,"s[3]"]))
+plot(main = paste(data.clean$District[4]), density(bym_usual01_samples[,"s[4]"]))
+plot(main = paste(data.clean$District[5]), density(bym_usual01_samples[,"s[5]"]))
+plot(main = paste(data.clean$District[6]), density(bym_usual01_samples[,"s[6]"]))
+plot(main = paste(data.clean$District[7]), density(bym_usual01_samples[,"s[7]"]))
+plot(main = paste(data.clean$District[8]), density(bym_usual01_samples[,"s[8]"]))
+plot(main = paste(data.clean$District[9]), density(bym_usual01_samples[,"s[9]"]))
+plot(main = paste(data.clean$District[10]), density(bym_usual01_samples[,"s[10]"]))
+plot(main = paste(data.clean$District[11]), density(bym_usual01_samples[,"s[11]"]))
+plot(main = paste(data.clean$District[12]), density(bym_usual01_samples[,"s[12]"]))
+plot(main = paste(data.clean$District[13]), density(bym_usual01_samples[,"s[13]"]))
+plot(main = paste(data.clean$District[14]), density(bym_usual01_samples[,"s[14]"]))
+plot(main = paste(data.clean$District[15]), density(bym_usual01_samples[,"s[15]"]))
+plot(main = paste(data.clean$District[16]), density(bym_usual01_samples[,"s[16]"]))
+plot(main = paste(data.clean$District[17]), density(bym_usual01_samples[,"s[17]"]))
+plot(main = paste(data.clean$District[18]), density(bym_usual01_samples[,"s[18]"]))
 
 
 
@@ -1761,7 +1770,7 @@ plot(main = paste(data.clean$District[18]), density(usual01_samples[,"s[18]"]))
 
 
 # (9) WAIC ---------
-usual01_runMCMC$WAIC
+bym_usual01_runMCMC$WAIC
 
 
 
@@ -1769,36 +1778,36 @@ usual01_runMCMC$WAIC
 
 #Betas
 #Calculating the Beta means
-means_betas_usual_01 <- apply(usual01_samples[,1:14],2, mean)
+means_betas_bym_usual_01 <- apply(bym_usual01_samples[,1:14],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_betas_usual_01 <- t(apply(usual01_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.015,0.975))))
+CrI_betas_bym_usual_01 <- t(apply(bym_usual01_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.015,0.975))))
 
 #Combining the means and CIs into a dataframe
-mean_CrI_betas_usual_01 <- t(matrix(c(means_betas_usual_01, CrI_betas_usual_01), ncol=14, byrow=T)) %>% as.data.frame()
+mean_CrI_betas_ubym_sual_01 <- t(matrix(c(means_betas_bym_usual_01, CrI_betas_bym_usual_01), ncol=14, byrow=T)) %>% as.data.frame()
 
 #Renaming the columns
-colnames(mean_CrI_betas_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
+colnames(mean_CrI_betas_bym_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
 # Converting means and CrIs from log to regular scale
-exp(mean_CrI_betas_usual_01)
+exp(mean_CrI_betas_bym_usual_01)
 
 ################### S : estimates? per region
 
 #Calculating the S means
-means_s_usual_01 <- apply(usual01_samples[ ,15:(ncol(usual01_samples)-1)],2, mean)
+means_s_bym_usual_01 <- apply(bym_usual01_samples[ ,15:(ncol(bym_usual01_samples)-1)],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_s_usual_01 <- t(apply(usual01_samples[ ,15:(ncol(usual01_samples)-1)],2, function(x) quantile(x, probs=c(0.015,0.975))))
+CrI_s_bym_usual_01 <- t(apply(bym_usual01_samples[ ,15:(ncol(bym_usual01_samples)-1)],2, function(x) quantile(x, probs=c(0.015,0.975))))
 
 #Combining the means and CIs into a dataframe
-mean_CrI_s_usual_01 <- cbind(means_s_usual_01, CrI_s_usual_01) %>% as.data.frame()
+mean_CrI_s_bym_usual_01 <- cbind(means_s_bym_usual_01, CrI_s_bym_usual_01) %>% as.data.frame()
 
 #Renaming the columns
-colnames(mean_CrI_s_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
+colnames(mean_CrI_s_bym_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
 # Converting means and CrIs from log to regular scale
-exp(mean_CrI_s_usual_01)
+exp(mean_CrI_s_bym_usual_01)
 
 ```
 
