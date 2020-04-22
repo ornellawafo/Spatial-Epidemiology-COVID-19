@@ -946,7 +946,8 @@ adj.5 <- unlist(adj.5)
 usual_code <- nimbleCode({ 
 
   # Defining our priors
-
+ beta0 ~ dnorm(0, sd = 100)
+  
   for(j in 1:p){
     beta[j] ~ dnorm(0, sd = 100)  # Betas for the covariates
   }
@@ -961,7 +962,7 @@ usual_code <- nimbleCode({
 
   # Defining likelihood
   for(i in 1:N) { # inprod (beta1X + beta 2X)?
-    log(mu[i]) <- log(E[i]) + inprod(X[i, 1:p], beta[1:p]) + s[i]
+    log(mu[i]) <- log(E[i]) + beta0 + inprod(X[i, 1:p], beta[1:p]) + s[i]
     y[i] ~ dpois(mu[i]) # we do dpois rmb to define offset inside this or put in log of mean
     # Notes: Don't need to define prior for mu (nu?), the SD is defined only from the mean for Poisson
     # Victoire: mu[i] <- beta0 + inprod(X[i,1:p], beta[1:p]) + s[i]   # We still need to define mu
@@ -976,6 +977,7 @@ usual_code <- nimbleCode({
 **Neighborhood structure 1: Adjacency-based neighbors**
 
 ```{r}
+set.seed(1234)
 # Neighborhood structure 1: Adjacency matrix (Victoire used 0-1 neighborhood) ###############################
 
 # Defining the data that goes into the model ----------------------------------------------------------------
@@ -994,7 +996,7 @@ Consts_usual_01 = list(N = nrow(data.clean),                  # Number of areas
 outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
-Inits_usual <- list(
+Inits_usual <- list(beta0 = 1,
                     beta = rep(0, ncol(data.clean[5:18])), 
                     sigma2 = 1, 
                     s = rnorm(num.nb)) # S sampled from N dist (do we sample ours from poisson?)
@@ -1010,7 +1012,7 @@ usual01_Cmodel <- compileNimble(usual01_model,
                               showCompilerOutput = TRUE)      
 
 # (3) Configure the MCMC chain
-usual01_conf <- configureMCMC(usual01_model, monitors = c('beta', 'sigma2', 's'))
+usual01_conf <- configureMCMC(usual01_model, monitors = c( 'beta0', 'beta', 'sigma2', 's'))
 
 # (4) Do something
 usual01_conf$printSamplers()
@@ -1030,23 +1032,26 @@ usual01_samples = rbind(usual01_runMCMC$samples[[1]], usual01_runMCMC$samples[[2
 
 
 # Plot the MCMC chains----------
+#beta0
+par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
+plot(main ="Intercept", usual01_samples[,"beta0"], type ="l")
 
 # Betas (Covariates) - log scale
 par(mfrow=c(4,4), mar=c(2,4.5,2.1,1)+0.1)
-plot(main = paste(names(data.clean[5])),  usual01_samples[,"beta[1]"] , type = "l") # Why are all beta's = 1
-plot(main = paste(names(data.clean[6])),  usual01_samples[,"beta[2]"] , type = "l")
-plot(main = paste(names(data.clean[7])),  usual01_samples[,"beta[3]"] , type = "l")
-plot(main = paste(names(data.clean[8])),  usual01_samples[,"beta[4]"] , type = "l")
-plot(main = paste(names(data.clean[9])),  usual01_samples[,"beta[5]"] , type = "l")
-plot(main = paste(names(data.clean[10])), usual01_samples[,"beta[6]"] , type = "l")
-plot(main = paste(names(data.clean[11])), usual01_samples[,"beta[7]"] , type = "l")
-plot(main = paste(names(data.clean[12])), usual01_samples[,"beta[8]"] , type = "l")
-plot(main = paste(names(data.clean[13])), usual01_samples[,"beta[9]"] , type = "l")
-plot(main = paste(names(data.clean[14])),usual01_samples[,"beta[10]"] , type = "l")
-plot(main = paste(names(data.clean[15])),usual01_samples[,"beta[11]"] , type = "l")
-plot(main = paste(names(data.clean[16])),usual01_samples[,"beta[12]"] , type = "l")
-plot(main = paste(names(data.clean[17])),usual01_samples[,"beta[13]"] , type = "l")
-plot(main = paste(names(data.clean[18])),usual01_samples[,"beta[14]"] , type = "l")
+plot(main = paste(names(data.clean[5])),  usual01_samples[,"beta[1]"] , type = "l", ylab = "") 
+plot(main = paste(names(data.clean[6])),  usual01_samples[,"beta[2]"] , type = "l", ylab = "")
+plot(main = paste(names(data.clean[7])),  usual01_samples[,"beta[3]"] , type = "l", ylab = "")
+plot(main = paste(names(data.clean[8])),  usual01_samples[,"beta[4]"] , type = "l", ylab = "")
+plot(main = paste(names(data.clean[9])),  usual01_samples[,"beta[5]"] , type = "l", ylab = "")
+plot(main = paste(names(data.clean[10])), usual01_samples[,"beta[6]"] , type = "l", ylab = "")
+plot(main = paste(names(data.clean[11])), usual01_samples[,"beta[7]"] , type = "l", ylab = "")
+plot(main = paste(names(data.clean[12])), usual01_samples[,"beta[8]"] , type = "l", ylab = "")
+plot(main = paste(names(data.clean[13])), usual01_samples[,"beta[9]"] , type = "l", ylab = "")
+plot(main = paste(names(data.clean[14])),usual01_samples[,"beta[10]"] , type = "l", ylab = "")
+plot(main = paste(names(data.clean[15])),usual01_samples[,"beta[11]"] , type = "l", ylab = "")
+plot(main = paste(names(data.clean[16])),usual01_samples[,"beta[12]"] , type = "l", ylab = "")
+plot(main = paste(names(data.clean[17])),usual01_samples[,"beta[13]"] , type = "l", ylab = "")
+plot(main = paste(names(data.clean[18])),usual01_samples[,"beta[14]"] , type = "l", ylab = "")
 
 #sigma squared
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
@@ -1077,6 +1082,11 @@ plot(main = paste(data.clean$District[18]), usual01_samples[,"s[18]"], type = "l
 
 
 # Plot the density curves for posterior -------------
+
+#beta0
+par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
+plot(main ="Intercept", density(usual01_samples[,"beta0"]))
+
 # Betas (Covariates) - log scale
 par(mfrow=c(4,4), mar=c(2,4.5,2.1,1)+0.1)
 plot(main = paste(names(data.clean[5])),density(usual01_samples[,"beta[1]"])) 
@@ -1153,10 +1163,10 @@ exp(mean_CrI_betas_usual_01)
 ################### S : estimates? per region
 
 #Calculating the S means
-means_s_usual_01 <- apply(usual01_samples[ ,15:(ncol(usual01_samples)-1)],2, mean)
+means_s_usual_01 <- apply(usual01_samples[ ,16:(ncol(usual01_samples)-1)],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_s_usual_01 <- t(apply(usual01_samples[ ,15:(ncol(usual01_samples)-1)],2, function(x) quantile(x, probs=c(0.015,0.975))))
+CrI_s_usual_01 <- t(apply(usual01_samples[ ,16:(ncol(usual01_samples)-1)],2, function(x) quantile(x, probs=c(0.015,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_s_usual_01 <- cbind(means_s_usual_01, CrI_s_usual_01) %>% as.data.frame()
@@ -1166,6 +1176,23 @@ colnames(mean_CrI_s_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
 # Converting means and CrIs from log to regular scale
 exp(mean_CrI_s_usual_01)
+
+
+################## beta 0 
+
+mean_beta0_usual01 <- mean(usual01_samples[ ,15])
+
+#Calculating the Beta 95% CrI 
+CrI_beta0_usual_01 <- t(quantile(usual01_samples[ , 15], probs=c(0.015,0.975)))
+
+#Combining the means and CIs into a dataframe
+mean_CrI_beta0_usual_01 <- cbind(mean_beta0_usual01, CrI_beta0_usual_01) %>% as.data.frame()
+
+#Renaming the columns
+colnames(mean_CrI_beta0_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
+
+# Converting means and CrIs from log to regular scale
+exp(mean_CrI_beta0_usual_01)
 
 ```
 
@@ -1189,7 +1216,7 @@ Consts_usual_02 = list(N = nrow(data.clean),                  # Number of areas
 outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
-Inits_usual_02 <- list(
+Inits_usual_02 <- list(beta0 = 0,
                     beta = rep(0, ncol(data.clean[5:18])), 
                     sigma2 = 1, 
                     s = rnorm(num.nb.3)) # S sampled from N dist (do we sample ours from poisson?)
@@ -1205,7 +1232,7 @@ usual02_Cmodel <- compileNimble(usual02_model,
                               showCompilerOutput = TRUE)      
 
 # (3) Configure the MCMC chain
-usual02_conf <- configureMCMC(usual02_model, monitors = c('beta', 'sigma2', 's'))
+usual02_conf <- configureMCMC(usual02_model, monitors = c('beta0', 'beta', 'sigma2', 's'))
 
 # (4) Do something
 usual02_conf$printSamplers()
@@ -1360,6 +1387,24 @@ colnames(mean_CrI_s_usual_02) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
 # Converting means and CrIs from log to regular scale
 exp(mean_CrI_s_usual_02)
+
+
+################## beta 0 
+
+mean_beta0_usual02 <- mean(usual02_samples[ ,15])
+
+#Calculating the Beta 95% CrI 
+CrI_beta0_usual_02 <- t(quantile(usual02_samples[ , 15], probs=c(0.025,0.975)))
+
+#Combining the means and CIs into a dataframe
+mean_CrI_beta0_usual_02 <- cbind(mean_beta0_usual02, CrI_beta0_usual_02) %>% as.data.frame()
+
+#Renaming the columns
+colnames(mean_CrI_beta0_usual_02) <- c("Mean", "95% CrI LL", "95% CrI UL")
+
+# Converting means and CrIs from log to regular scale
+exp(mean_CrI_beta0_usual_02)
+
 ```
 
 **Neighborhood structure 3: Distance-based neighbors (k = 5)**
@@ -1385,7 +1430,7 @@ Consts_usual_03 = list(N = nrow(data.clean),                  # Number of areas
 outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
-Inits_usual_03 <- list(
+Inits_usual_03 <- list(beta0 = 0,
                     beta = rep(0, ncol(data.clean[5:18])), 
                     sigma2 = 1, 
                     s = rnorm(num.nb.5)) # S sampled from N dist (do we sample ours from poisson?)
@@ -1401,7 +1446,7 @@ usual03_Cmodel <- compileNimble(usual03_model,
                               showCompilerOutput = TRUE)      
 
 # (3) Configure the MCMC chain
-usual03_conf <- configureMCMC(usual03_model, monitors = c('beta', 'sigma2', 's'))
+usual03_conf <- configureMCMC(usual03_model, monitors = c('beta0',  'beta', 'sigma2', 's'))
 
 # (4) Do something
 usual03_conf$printSamplers()
@@ -1556,13 +1601,29 @@ colnames(mean_CrI_s_usual_03) <- c("Mean", "95% CrI LL", "95% CrI UL")
 exp(mean_CrI_s_usual_03)
 
 
+
+################## beta 0 
+
+mean_beta0_usual03 <- mean(usual03_samples[ ,15])
+
+#Calculating the Beta 95% CrI 
+CrI_beta0_usual_03 <- t(quantile(usual03_samples[ , 15], probs=c(0.035,0.975)))
+
+#Combining the means and CIs into a dataframe
+mean_CrI_beta0_usual_03 <- cbind(mean_beta0_usual03, CrI_beta0_usual_03) %>% as.data.frame()
+
+#Renaming the columns
+colnames(mean_CrI_beta0_usual_03) <- c("Mean", "95% CrI LL", "95% CrI UL")
+
+# Converting means and CrIs from log to regular scale
+exp(mean_CrI_beta0_usual_03)
 ```
 
 
 ## BYM CAR
 **Nimble: BYMCAR Usual fixed priors model**
 
-```{r usual code}
+```{r usual BYM code}
 ###################################
 #    Usual fixed priors model     # 
 ###################################
@@ -1586,17 +1647,13 @@ usual_code_bym <- nimbleCode({
 #tau0~dgamma(2,0.5)
 #tauB~dgamma(2,0.5) 
     
+   beta0 ~ dnorm(0, sd = 100)
   for(j in 1:p){
     beta[j] ~ dnorm(0, sd = 100)  # Betas for the covariates
-
-
   }
 
   sigma2 ~ dinvgamma(1, 0.01)     # Full conditional is good b/c full conditional is IG  --> makes MCMC easier
-  
 
-    #dgamma(2,0.5)
-  
   
   # Defining transformed parameters
   tau2 <- 1/sigma2
@@ -1608,7 +1665,7 @@ usual_code_bym <- nimbleCode({
 
   # Defining likelihood
   for(i in 1:N) { # inprod (beta1X + beta 2X)?
-    log(mu[i]) <- log(E[i]) + inprod(X[i, 1:p], beta[1:p]) + s[i] + v[i] 
+    log(mu[i]) <- log(E[i]) + beta0+ inprod(X[i, 1:p], beta[1:p]) + s[i] + v[i] 
     y[i] ~ dpois(mu[i]) # we do dpois rmb to define offset inside this or put in log of mean
     # Notes: Don't need to define prior for mu (nu?), the SD is defined only from the mean for Poisson
     # Victoire: mu[i] <- beta0 + inprod(X[i,1:p], beta[1:p]) + s[i]   # We still need to define mu
@@ -1639,11 +1696,12 @@ outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
 Inits_usual_bym_01 <- list(
-                    beta = rep(0, ncol(data.clean[5:18])), 
-                    sigma2 = 1, 
-                    s = rnorm(num.nb), # S sampled from N dist (do we sample ours from poisson?)
-                    v =  rep(0, nrow(data.clean))
-                    )
+                           beta0 = 0,
+                           beta = rep(0, ncol(data.clean[5:18])), 
+                           sigma2 = 1, 
+                           s = rnorm(num.nb), # S sampled from N dist (do we sample ours from poisson?)
+                           v =  rep(0, nrow(data.clean))
+                           )
 
 
 # Defining model --------------------------------------------------------------------------------------------
@@ -1657,7 +1715,7 @@ bym_usual01_Cmodel <- compileNimble(bym_usual01_model,
                               showCompilerOutput = TRUE)      
 
 # (3) Configure the MCMC chain
-bym_usual01_conf <- configureMCMC(bym_usual01_model, monitors = c('beta', 'sigma2', 's', 'v'))
+bym_usual01_conf <- configureMCMC(bym_usual01_model, monitors = c('beta0', 'beta', 'sigma2', 's', 'v'))
 
 # (4) Do something
 bym_usual01_conf$printSamplers()
@@ -1678,6 +1736,15 @@ bym_usual01_samples = rbind(bym_usual01_runMCMC$samples[[1]], bym_usual01_runMCM
 
 # Plot the MCMC chains----------
 
+
+#sigma squared
+par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
+plot(main ="Sigma Squared", bym_usual01_samples[,"sigma2"], type ="l")
+
+#Beta0
+par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
+plot(main ="Intercept", bym_usual01_samples[,"beta0"], type = "l")
+
 # Betas (Covariates) - log scale
 par(mfrow=c(4,4), mar=c(2,4.5,2.1,1)+0.1)
 plot(main = paste(names(data.clean[5])),  bym_usual01_samples[,"beta[1]"] , type = "l") # Why are all beta's = 1
@@ -1694,10 +1761,6 @@ plot(main = paste(names(data.clean[15])),bym_usual01_samples[,"beta[11]"] , type
 plot(main = paste(names(data.clean[16])),bym_usual01_samples[,"beta[12]"] , type = "l")
 plot(main = paste(names(data.clean[17])),bym_usual01_samples[,"beta[13]"] , type = "l")
 plot(main = paste(names(data.clean[18])),bym_usual01_samples[,"beta[14]"] , type = "l")
-
-#sigma squared
-par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
-plot(main ="Sigma Squared", bym_usual01_samples[,"sigma2"], type = "l")
 
 
 # Spatial effects for each region  
@@ -1724,6 +1787,16 @@ plot(main = paste(data.clean$District[18]), bym_usual01_samples[,"s[18]"], type 
 
 
 # Plot the density curves for posterior -------------
+
+#sigma squared
+par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
+plot(main ="Sigma Squared", density(bym_usual01_samples[,"sigma2"]))
+
+#Beta0
+par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
+plot(main ="Intercept", density(bym_usual01_samples[,"beta0"]))
+
+
 # Betas (Covariates) - log scale
 par(mfrow=c(4,4), mar=c(2,4.5,2.1,1)+0.1)
 plot(main = paste(names(data.clean[5])),density(bym_usual01_samples[,"beta[1]"])) 
@@ -1741,9 +1814,6 @@ plot(main = paste(names(data.clean[16])),density(bym_usual01_samples[,"beta[12]"
 plot(main = paste(names(data.clean[17])),density(bym_usual01_samples[,"beta[13]"]))
 plot(main = paste(names(data.clean[18])),density(bym_usual01_samples[,"beta[14]"]))
 
-#sigma squared
-par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
-plot(main ="Sigma Squared", density(bym_usual01_samples[,"sigma2"]))
 
 #Spatial effects for each region 
 par(mfrow=c(4,5), mar=c(2,3,2.1,1)+0.1)
@@ -1780,54 +1850,72 @@ bym_usual01_runMCMC$WAIC
 
 #Betas
 #Calculating the Beta means
-means_betas_bym_usual_01 <- apply(bym_usual01_samples[,1:14],2, mean)
+means_betas_bym_usual01 <- apply(bym_usual01_samples[,1:14],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_betas_bym_usual_01 <- t(apply(bym_usual01_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.015,0.975))))
+CrI_betas_bym_usual01 <- t(apply(bym_usual01_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.015,0.975))))
 
 #Combining the means and CIs into a dataframe
-mean_CrI_betas_bym_usual_01 <- t(matrix(c(means_betas_bym_usual_01, CrI_betas_bym_usual_01), ncol=14, byrow=T)) %>% as.data.frame()
+mean_CrI_betas_bym_usual01 <- t(matrix(c(means_betas_bym_usual01, CrI_betas_bym_usual01), ncol=14, byrow=T)) %>% as.data.frame()
 
 #Renaming the columns
-colnames(mean_CrI_betas_bym_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
+colnames(mean_CrI_betas_bym_usual01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
 # Converting means and CrIs from log to regular scale
-exp(mean_CrI_betas_bym_usual_01)
+exp(mean_CrI_betas_bym_usual01)
 
 ################### S : estimates? per region
 
 #Calculating the S means
-means_s_bym_usual_01 <- apply(bym_usual01_samples[ ,15:32],2, mean)
+means_s_bym_usual01 <- apply(bym_usual01_samples[ ,15:32],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_s_bym_usual_01 <- t(apply(bym_usual01_samples[ ,15:32],2, function(x) quantile(x, probs=c(0.015,0.975))))
+CrI_s_bym_usual01 <- t(apply(bym_usual01_samples[ ,15:32],2, function(x) quantile(x, probs=c(0.015,0.975))))
 
 #Combining the means and CIs into a dataframe
-mean_CrI_s_bym_usual_01 <- cbind(means_s_bym_usual_01, CrI_s_bym_usual_01) %>% as.data.frame()
+mean_CrI_s_bym_usual01 <- cbind(means_s_bym_usual01, CrI_s_bym_usual01) %>% as.data.frame()
 
 #Renaming the columns
-colnames(mean_CrI_s_bym_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
+colnames(mean_CrI_s_bym_usual01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
 # Converting means and CrIs from log to regular scale
-exp(mean_CrI_s_bym_usual_01)
+exp(mean_CrI_s_bym_usual01)
 
 
 ################### V : estimates? per region
 
 #Calculating the S means
-means_v_bym_usual_01 <- apply(bym_usual01_samples[ ,34:ncol(bym_usual01_samples)],2, mean)
+means_v_bym_usual01 <- apply(bym_usual01_samples[ ,34:ncol(bym_usual01_samples)],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_v_bym_usual_01 <- t(apply(bym_usual01_samples[ ,34:ncol(bym_usual01_samples)],2, function(x) quantile(x, probs=c(0.015,0.975))))
+CrI_v_bym_usual01 <- t(apply(bym_usual01_samples[ ,34:ncol(bym_usual01_samples)],2, function(x) quantile(x, probs=c(0.015,0.975))))
 
 #Combining the means and CIs into a dataframe
-mean_CrI_v_bym_usual_01 <- cbind(means_v_bym_usual_01, CrI_v_bym_usual_01) %>% as.data.frame()
+mean_CrI_v_bym_usual01 <- cbind(means_v_bym_usual01, CrI_v_bym_usual01) %>% as.data.frame()
 
 #Renaming the columns
-colnames(mean_CrI_v_bym_usual_01) <- c("Mean", "95% CrI LL", "95% CrI UL")
+colnames(mean_CrI_v_bym_usual01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
 # Converting means and CrIs from log to regular scale
-exp(mean_CrI_v_bym_usual_01)
+exp(mean_CrI_v_bym_usual01)
+
+
+
+################## beta 0 
+
+mean_beta0_bym_usual01 <- mean(bym_usual01_samples[ ,15])
+
+#Calculating the Beta 95% CrI 
+CrI_beta0_bym_usual01 <- t(quantile(bym_usual01_samples[ , 15], probs=c(0.015,0.975)))
+
+#Combining the means and CIs into a dataframe
+mean_CrI_beta0_bym_usual01 <- cbind(mean_beta0_bym_usual01, CrI_beta0_bym_usual01) %>% as.data.frame()
+
+#Renaming the columns
+colnames(mean_CrI_beta0_bym_usual01) <- c("Mean", "95% CrI LL", "95% CrI UL")
+
+# Converting means and CrIs from log to regular scale
+exp(mean_CrI_beta0_bym_usual01)
 
 ```
 
