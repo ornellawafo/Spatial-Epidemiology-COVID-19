@@ -1525,10 +1525,10 @@ for(i in 1:nrow(data.clean)){
 fitted_usual_02_dist <- data.clean$Expected * exp(fitted_usual02)
 
 # Mean fitted values
-fitted_usual_02 <- apply(test, 2, mean)
+fitted_usual_02 <- apply(fitted_usual_02_dist, 2, mean)
 
 # 95% CrI
-fitted_usual_02_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+fitted_usual_02_CrI <- t(apply(fitted_usual_02_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
 
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
@@ -1777,10 +1777,10 @@ for(i in 1:nrow(data.clean)){
 fitted_usual_03_dist <- data.clean$Expected * exp(fitted_usual03)
 
 # Mean fitted values
-fitted_usual_03 <- apply(test, 2, mean)
+fitted_usual_03 <- apply(fitted_usual_03_dist, 2, mean)
 
 # 95% CrI
-fitted_usual_03_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+fitted_usual_03_CrI <- t(apply(fitted_usual_03_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
 
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
@@ -2103,10 +2103,10 @@ for(i in 1:nrow(data.clean)){
 fitted_bym_usual_01_dist <- data.clean$Expected * exp(fitted_bym_usual01)
 
 # Mean fitted values
-fitted_bym_usual_01 <- apply(test, 2, mean)
+fitted_bym_usual_01 <- apply(fitted_bym_usual_01, 2, mean)
 
 # 95% CrI
-fitted_bym_usual_01_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+fitted_bym_usual_01_CrI <- t(apply(fitted_bym_usual_01, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
 
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
@@ -2391,10 +2391,10 @@ for(i in 1:nrow(data.clean)){
 fitted_bym_usual_02_dist <- data.clean$Expected * exp(fitted_bym_usual02)
 
 # Mean fitted values
-fitted_bym_usual_02 <- apply(test, 2, mean)
+fitted_bym_usual_02 <- apply(fitted_bym_usual_02_dist, 2, mean)
 
 # 95% CrI
-fitted_bym_usual_02_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+fitted_bym_usual_02_CrI <- t(apply(fitted_bym_usual_02_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
 
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
@@ -2680,10 +2680,10 @@ for(i in 1:nrow(data.clean)){
 fitted_bym_usual_03_dist <- data.clean$Expected * exp(fitted_bym_usual03)
 
 # Mean fitted values
-fitted_bym_usual_03 <- apply(test, 2, mean)
+fitted_bym_usual_03 <- apply(fitted_bym_usual_03_dist, 2, mean)
 
 # 95% CrI
-fitted_bym_usual_03_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+fitted_bym_usual_03_CrI <- t(apply(fitted_bym_usual_03_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
 
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
@@ -3034,10 +3034,10 @@ for(i in 1:nrow(data.clean)){
 fitted_bym_usual_03_dist <- data.clean$Expected * exp(fitted_ridge01)
 
 # Mean fitted values
-fitted_bym_usual_03 <- apply(test, 2, mean)
+fitted_bym_usual_03 <- apply(fitted_bym_usual_03_dist, 2, mean)
 
 # 95% CrI
-fitted_bym_usual_03_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+fitted_bym_usual_03_CrI <- t(apply(fitted_bym_usual_03_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
 
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
@@ -3350,10 +3350,10 @@ for(i in 1:nrow(data.clean)){
 fitted_bym_usual_03_dist <- data.clean$Expected * exp(fitted_ridge02)
 
 # Mean fitted values
-fitted_bym_usual_03 <- apply(test, 2, mean)
+fitted_bym_usual_03 <- apply(fitted_bym_usual_03_dist, 2, mean)
 
 # 95% CrI
-fitted_bym_usual_03_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+fitted_bym_usual_03_CrI <- t(apply(fitted_bym_usual_03_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
 
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
@@ -3672,10 +3672,10 @@ for(i in 1:nrow(data.clean)){
 fitted_bym_usual_03_dist <- data.clean$Expected * exp(fitted_ridge03)
 
 # Mean fitted values
-fitted_bym_usual_03 <- apply(test, 2, mean)
+fitted_bym_usual_03 <- apply(fitted_bym_usual_03_dist, 2, mean)
 
 # 95% CrI
-fitted_bym_usual_03_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+fitted_bym_usual_03_CrI <- t(apply(fitted_bym_usual_03_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
 
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
