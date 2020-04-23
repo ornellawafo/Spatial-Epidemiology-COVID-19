@@ -121,11 +121,11 @@ cor(Covariates[,3:ncol(Covariates)])
 
 # Absolute covariance values above 0.5
 var.cov <- list()
-for(i in 1:(ncol(Covariates)-2)){
-  var.cov[[i]] <- c(which(abs(cor(Covariates[3:ncol(Covariates)])[,i]) > 0.5))
+for(i in 1:(ncol(data.clean)-1)){
+  var.cov[[i]] <- c(which(abs(cor(data.clean[,2:ncol(data.clean)])[,i]) > 0.7))
 }
 
-names(var.cov) <- paste(names(Covariates[3:34])) %>% as.vector()
+names(var.cov) <- paste(names(data.clean[2:ncol(data.clean)])) %>% as.vector()
 
 
 #Version 1
@@ -834,6 +834,7 @@ moran.lm3
 Cleaning up data and creating neighborhood structures for nimble
 
 ```{r}
+data$beds_per_hosp <- with(data,  Num_beds/Num_hosp)
 
 library(dplyr)
 # Clean dataset and keep only variables we want to include in nimble regressions ----------------
@@ -850,17 +851,14 @@ data.clean <- data %>%
          Pop_density,
          Prop_labor,
          # Prop_female_labor,
-         Num_hosp,
-         Num_beds,
-         Num_household,
+         beds_per_hosp,
          Prop_0.24,
          Prop_25.64,
          Prop_65,
          Prop_female,
-         Log_income,
          # Log_sec,
-         Log_postsec)
-         # Household_poverty_rate,
+         Log_postsec,
+          household_poverty_rate)
          # Household_size,
          # Prop_poor) #highly correlated with log income
                       #very little variability in household size
@@ -873,7 +871,7 @@ cor(subset(data.clean, select = -District))
 # Note: Female pop highly collinear with pop of 65+ and post-sec
 
 # Poisson regression
-poi.fit <- glm(Cases ~ Pop_density + Prop_labor + Prop_0.24 + Prop_25.64 + Prop_65 + Prop_female + Log_income + Log_postsec + Num_hosp + Num_beds + Num_household + offset(log(Expected)), data = data.clean, family = poisson(link="log"))
+poi.fit <- glm(Cases ~ Pop_density + Prop_labor + Prop_0.24 + Prop_25.64 + Prop_65 + Prop_female +  Log_postsec +  beds_per_hosp  + household_poverty_rate + offset(log(Expected)), data = data.clean, family = poisson(link="log"))
 summary(poi.fit)
 
 # Checking assumption of a Poisson model
@@ -1026,8 +1024,8 @@ set.seed(1234)
 
 # (1) Define constants that go into CAR prior into a list
 Consts_usual_01 = list(N = nrow(data.clean),                  # Number of areas
-                       p = ncol(data.clean[5:15]),            # Number of covariates
-                       X = as.matrix(data.clean[, c(5:15)]),  # Matrix of covariates
+                       p = ncol(data.clean[5:13]),            # Number of covariates
+                       X = as.matrix(data.clean[, c(5:13)]),  # Matrix of covariates
                        L = length(adj),                       # Edges (length of adj vector)
                        E = data.clean$Expected,
                        adj = adj,                             # Adjacency matrix
@@ -1038,10 +1036,10 @@ Consts_usual_01 = list(N = nrow(data.clean),                  # Number of areas
 outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
-Inits_usual <- list(beta0 = 150,
-                    beta = rep(0, ncol(data.clean[5:15])), 
+Inits_usual <- list(beta0 = 1351,
+                    beta = rep(0, ncol(data.clean[, 5:13])), 
                     #sigma2 = 10, 
-                    tau2 = 0.05,
+                    tau2 = 0.3137,
                     s = rnorm(num.nb)) # S sampled from N dist (do we sample ours from poisson?)
 
 
@@ -1091,8 +1089,8 @@ plot(main = paste(names(data.clean[10])), usual01_samples[,"beta[6]"] , type = "
 plot(main = paste(names(data.clean[11])), usual01_samples[,"beta[7]"] , type = "l", ylab = "")
 plot(main = paste(names(data.clean[12])), usual01_samples[,"beta[8]"] , type = "l", ylab = "")
 plot(main = paste(names(data.clean[13])), usual01_samples[,"beta[9]"] , type = "l", ylab = "")
-plot(main = paste(names(data.clean[14])), usual01_samples[,"beta[10]"] , type = "l", ylab = "")
-plot(main = paste(names(data.clean[15])), usual01_samples[,"beta[11]"] , type = "l", ylab = "")
+#plot(main = paste(names(data.clean[14])), usual01_samples[,"beta[10]"] , type = "l", ylab = "")
+#plot(main = paste(names(data.clean[15])), usual01_samples[,"beta[11]"] , type = "l", ylab = "")
 #plot(main = paste(names(data.clean[16])),usual01_samples[,"beta[12]"] , type = "l", ylab = "")
 #plot(main = paste(names(data.clean[17])),usual01_samples[,"beta[13]"] , type = "l", ylab = "")
 #plot(main = paste(names(data.clean[18])),usual01_samples[,"beta[14]"] , type = "l", ylab = "")
@@ -1141,11 +1139,11 @@ plot(main = paste(names(data.clean[10])),density(usual01_samples[,"beta[6]"]))
 plot(main = paste(names(data.clean[11])),density(usual01_samples[,"beta[7]"]))
 plot(main = paste(names(data.clean[12])),density(usual01_samples[,"beta[8]"]))
 plot(main = paste(names(data.clean[13])),density(usual01_samples[,"beta[9]"]))
-plot(main = paste(names(data.clean[14])),density(usual01_samples[,"beta[10]"]))
-plot(main = paste(names(data.clean[15])),density(usual01_samples[,"beta[11]"]))
-plot(main = paste(names(data.clean[16])),density(usual01_samples[,"beta[12]"]))
-plot(main = paste(names(data.clean[17])),density(usual01_samples[,"beta[13]"]))
-plot(main = paste(names(data.clean[18])),density(usual01_samples[,"beta[14]"]))
+#plot(main = paste(names(data.clean[14])),density(usual01_samples[,"beta[10]"]))
+#plot(main = paste(names(data.clean[15])),density(usual01_samples[,"beta[11]"]))
+#plot(main = paste(names(data.clean[16])),density(usual01_samples[,"beta[12]"]))
+#plot(main = paste(names(data.clean[17])),density(usual01_samples[,"beta[13]"]))
+#plot(main = paste(names(data.clean[18])),density(usual01_samples[,"beta[14]"]))
 
 #sigma squared
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
@@ -2717,7 +2715,7 @@ ridge_code <- nimbleCode({
 # (1) Define constants that go into CAR prior into a list
 Consts_ridge_01 = list(N = nrow(data.clean),                  # Number of areas
                      p = ncol(data.clean[5:15]),            # Number of covariates
-                     X = as.matrix(data.clean[, c(5:15)]),  # Matrix of covariates
+                     X = as.matrix(data.clean[, c(5:13)]),  # Matrix of covariates
                      L = length(adj),                       # Edges (length of adj vector)
                      E = data.clean$Expected,
                      adj = adj,                             # Adjacency matrix
