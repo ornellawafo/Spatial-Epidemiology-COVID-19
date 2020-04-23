@@ -1006,7 +1006,9 @@ usual_code <- nimbleCode({
     beta[j] ~ dnorm(0, sd = 100)  #Betas for the covariates
   }
   
+
   sigma2 ~ dinvgamma(10, 0.001)
+
   #sigma2 ~ dinvgamma(1, 10) 
   # tau2 ~ dinvgamma(2, 0.10) 
   #here i set up a prior for tau directly, it makes the MCMC converge better
@@ -1079,6 +1081,7 @@ usual01_MCMC <- buildMCMC(usual01_conf, enableWAIC = T)
 usual01_CMCMC <- compileNimble(usual01_MCMC, project = usual01_Cmodel)  
 
 # (7) Run the model
+
 usual01_runMCMC <- runMCMC(usual01_CMCMC, niter = 200000, nburnin = 15000, thin = 20, nchains = 2, WAIC = T)
 
 # (8) Check convergence
