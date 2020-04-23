@@ -860,14 +860,15 @@ data.clean <- data %>%
          # Mean.age = Age,
           #Prop.male = P.male,
          # Area_km2,
-         #Pop_density,
+         Pop_density,
          Prop_labor,
          # Prop_female_labor,
          beds_per_hosp,
-         Prop_0.24,
-         Prop_25.64,
-         Prop_65,
+         #Prop_0.24,
+         #Prop_25.64,
+         #Prop_65,
          Prop_female,
+         Mean_median_age,
          # Log_sec,
          Log_postsec)
          #,household_poverty_rate)
@@ -883,7 +884,9 @@ cor(subset(data.clean, select = -District))
 # Note: Female pop highly collinear with pop of 65+ and post-sec
 
 # Poisson regression
-poi.fit <- glm(Cases ~ Pop_density + Prop_labor + Prop_0.24 + Prop_25.64 + Prop_65 + Prop_female +  Log_postsec +  beds_per_hosp  + household_poverty_rate + offset(log(Expected)), data = data.clean, family = poisson(link="log"))
+#poi.fit <- glm(Cases ~ Pop_density + Prop_labor + Prop_0.24 + Prop_25.64 + Prop_65 + Prop_female +  Log_postsec +  beds_per_hosp  + household_poverty_rate + offset(log(Expected)), data = data.clean, family = poisson(link="log"))
+
+poi.fit <- glm(Cases ~ . - District - SIR + offset(log(Expected)), data = data.clean, family = poisson(link="log"))
 summary(poi.fit)
 
 # Checking assumption of a Poisson model
@@ -1007,7 +1010,7 @@ usual_code <- nimbleCode({
   }
   
 
-  sigma2 ~ dinvgamma(10, 0.001)
+  sigma2 ~ dinvgamma(1, 0.01)
 
   #sigma2 ~ dinvgamma(1, 10) 
   # tau2 ~ dinvgamma(2, 0.10) 
@@ -1052,7 +1055,7 @@ Consts_usual_01 = list(N = nrow(data.clean),                  # Number of areas
 outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
-Inits_usual <- list(beta0 = 0,
+Inits_usual <- list(beta0 = 10,
                     beta = rep(0, ncol(data.clean[, 5:ncol(data.clean)])), 
                     sigma2 = 1, 
                     #tau2 = 0.1,
@@ -1097,7 +1100,7 @@ par(mfrow=c(1,1), mar=c(5, 4, 4, 2) + 0.1)
 plot(main ="Intercept", usual01_samples[,"beta0"], type ="l")
 
 # Betas (Covariates) - log scale
-par(mfrow=c(3,3), mar=c(3, 3, 3, 2) + 0.1)
+par(mfrow=c(4,2), mar=c(3, 3, 3, 2) + 0.1)
 plot(main = paste(names(data.clean[5])),  usual01_samples[,"beta[1]"] , type = "l", ylab = "") 
 plot(main = paste(names(data.clean[6])),  usual01_samples[,"beta[2]"] , type = "l", ylab = "")
 plot(main = paste(names(data.clean[7])),  usual01_samples[,"beta[3]"] , type = "l", ylab = "")
@@ -1203,10 +1206,10 @@ usual01_runMCMC$WAIC
 
 
 #Calculating the Beta means
-means_betas_usual_01 <- apply(usual01_samples[,1:14],2, mean)
+means_betas_usual_01 <- apply(usual01_samples[,1:6],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_betas_usual_01 <- t(apply(usual01_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.015,0.975))))
+CrI_betas_usual_01 <- t(apply(usual01_samples[ ,1:6],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_betas_usual_01 <- t(matrix(c(means_betas_usual_01, CrI_betas_usual_01), ncol=14, byrow=T)) %>% as.data.frame()
@@ -1221,10 +1224,10 @@ exp(mean_CrI_betas_usual_01)
 ################### S : estimates? per region
 
 #Calculating the S means
-means_s_usual_01 <- apply(usual01_samples[ ,16:(ncol(usual01_samples)-1)],2, mean)
+means_s_usual_01 <- apply(usual01_samples[ ,8:(ncol(usual01_samples)-1)],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_s_usual_01 <- t(apply(usual01_samples[ ,16:(ncol(usual01_samples)-1)],2, function(x) quantile(x, probs=c(0.015,0.975))))
+CrI_s_usual_01 <- t(apply(usual01_samples[ ,8:(ncol(usual01_samples)-1)],2, function(x) quantile(x, probs=c(0.015,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_s_usual_01 <- cbind(means_s_usual_01, CrI_s_usual_01) %>% as.data.frame()
@@ -1238,10 +1241,10 @@ exp(mean_CrI_s_usual_01)
 
 ################## beta 0 
 
-mean_beta0_usual01 <- mean(usual01_samples[ ,15])
+mean_beta0_usual01 <- mean(usual01_samples[ ,7])
 
 #Calculating the Beta 95% CrI 
-CrI_beta0_usual_01 <- t(quantile(usual01_samples[ , 15], probs=c(0.015,0.975)))
+CrI_beta0_usual_01 <- t(quantile(usual01_samples[ , 7], probs=c(0.025,0.975)))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_beta0_usual_01 <- cbind(mean_beta0_usual01, CrI_beta0_usual_01) %>% as.data.frame()
@@ -1258,24 +1261,24 @@ exp(mean_CrI_beta0_usual_01)
 #Creating matrix to store fitted values
 fitted_usual01 = matrix(NA, nrow=nrow(usual01_samples), ncol= nrow(data.clean))
 
-#Loop to generate fitted values
+#Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
-  fitted_usual01[,i] = usual01_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(usual01_samples[,1:14]) +
-                           usual01_samples[, 16+i-1] 
+  fitted_usual01[,i] = usual01_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(usual01_samples[,1:6]) + usual01_samples[, 8+i-1] 
 
 }
 
+# Fitted values - distribution
+fitted_usual_01_dist <- data.clean$Expected * exp(fitted_usual01)
+
+# Mean fitted values
+fitted_usual_01 <- apply(test, 2, mean)
+
+# 95% CrI
+fitted_usual_01_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+
+
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_usual01_df <- array(dim= c( ncol(fitted_usual01), 3)) %>% as.data.frame()
-
-# Fitted values
-fitted_usual01_df[, 1] = exp(apply(fitted_usual01, 2, mean))/(1+exp(apply(fitted_usual01, 2, mean)))*100
-
-# 95% Cr I LL
-fitted_usual01_df[, 2] = exp(apply(fitted_usual01, 2, function(x) quantile(x, probs=0.025)))/(1+exp(apply(fitted_usual01, 2, function(x) quantile(x, probs=0.025))))*100
-
-# 95% Cr I UL
-fitted_usual01_df[, 3] = exp(apply(fitted_usual01, 2, function(x) quantile(x, probs=0.975)))/(1+exp(apply(fitted_usual01, 2, function(x) quantile(x, probs=0.975))))*100
+fitted_usual01_df <- cbind(fitted_usual_01,fitted_usual_01_CrI )
 
 # Renaming columns
 colnames(fitted_usual01_df) <- c("fitted_mean_usual01", "fitted_lower_usual01" , "fitted_upper_usual01")
@@ -1284,7 +1287,7 @@ colnames(fitted_usual01_df) <- c("fitted_mean_usual01", "fitted_lower_usual01" ,
 head(fitted_usual01_df)
 
 #Predicted vs observed cases
-cbind(data.clean$Cases,fitted_usual01_df)
+cbind(Observed=data.clean$Cases,fitted_usual01_df)
 ```
 
 **Neighborhood structure 2: Distance-based neighbors (k = 3)**
@@ -1453,10 +1456,10 @@ usual02_runMCMC$WAIC
 ################### Betas : Covariate estimates
 
 #Calculating the Beta means
-means_betas_usual_02=apply(usual02_samples[,1:14],2, mean)
+means_betas_usual_02=apply(usual02_samples[,1:6],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_betas_usual_02=t(apply(usual02_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_betas_usual_02=t(apply(usual02_samples[ ,1:6],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_betas_usual_02 <- t(matrix(c(means_betas_usual_02, CI_betas_usual_02), ncol=14, byrow=T)) %>% as.data.frame()
@@ -1470,10 +1473,10 @@ exp(mean_CrI_betas_usual_02)
 ################### S : estimates? per region
 
 #Calculating the S means
-means_s_usual_02 <- apply(usual02_samples[ ,15:(ncol(usual02_samples)-1)],2, mean)
+means_s_usual_02 <- apply(usual02_samples[ ,8:(ncol(usual02_samples)-1)],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_s_usual_02 <- t(apply(usual02_samples[ ,15:(ncol(usual02_samples)-1)],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_s_usual_02 <- t(apply(usual02_samples[ ,8:(ncol(usual02_samples)-1)],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_s_usual_02 <- cbind(means_s_usual_02, CrI_s_usual_02) %>% as.data.frame()
@@ -1487,10 +1490,10 @@ exp(mean_CrI_s_usual_02)
 
 ################## beta 0 
 
-mean_beta0_usual02 <- mean(usual02_samples[ ,15])
+mean_beta0_usual02 <- mean(usual02_samples[ ,7])
 
 #Calculating the Beta 95% CrI 
-CrI_beta0_usual_02 <- t(quantile(usual02_samples[ , 15], probs=c(0.025,0.975)))
+CrI_beta0_usual_02 <- t(quantile(usual02_samples[ , 7], probs=c(0.025,0.975)))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_beta0_usual_02 <- cbind(mean_beta0_usual02, CrI_beta0_usual_02) %>% as.data.frame()
@@ -1507,24 +1510,24 @@ exp(mean_CrI_beta0_usual_02)
 #Creating matrix to store fitted values
 fitted_usual02 = matrix(NA, nrow=nrow(usual02_samples), ncol= nrow(data.clean))
 
-#Loop to generate fitted values
+#Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
-  fitted_usual02[,i] = usual02_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(usual02_samples[,1:14]) +
-                           usual02_samples[, 16+i-1] 
+  fitted_usual02[,i] = usual02_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(usual02_samples[,1:5]) + usual02_samples[, 7+i-1] 
 
 }
 
+# Fitted values - distribution
+fitted_usual_02_dist <- data.clean$Expected * exp(fitted_usual02)
+
+# Mean fitted values
+fitted_usual_02 <- apply(test, 2, mean)
+
+# 95% CrI
+fitted_usual_02_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+
+
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_usual02_df <- array(dim= c( ncol(fitted_usual02), 3)) %>% as.data.frame()
-
-# Fitted values
-fitted_usual02_df[, 1] = exp(apply(fitted_usual02, 2, mean))/(1+exp(apply(fitted_usual02, 2, mean)))*100
-
-# 95% Cr I LL
-fitted_usual02_df[, 2] = exp(apply(fitted_usual02, 2, function(x) quantile(x, probs=0.025)))/(1+exp(apply(fitted_usual02, 2, function(x) quantile(x, probs=0.025))))*100
-
-# 95% Cr I UL
-fitted_usual02_df[, 3] = exp(apply(fitted_usual02, 2, function(x) quantile(x, probs=0.975)))/(1+exp(apply(fitted_usual02, 2, function(x) quantile(x, probs=0.975))))*100
+fitted_usual02_df <- cbind(fitted_usual_02,fitted_usual_02_CrI )
 
 # Renaming columns
 colnames(fitted_usual02_df) <- c("fitted_mean_usual02", "fitted_lower_usual02" , "fitted_upper_usual02")
@@ -1534,8 +1537,6 @@ head(fitted_usual02_df)
 
 #Predicted vs observed cases
 cbind(data.clean$Cases,fitted_usual02_df)
-
-
 ```
 
 **Neighborhood structure 3: Distance-based neighbors (k = 5)**
@@ -1705,10 +1706,10 @@ usual03_runMCMC$WAIC
 ################### Betas - covariate estimates
 
 #Calculating the Beta means
-means_betas_usual_03=apply(usual03_samples[,1:14],2, mean)
+means_betas_usual_03=apply(usual03_samples[,1:6],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_betas_usual_03=t(apply(usual03_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_betas_usual_03=t(apply(usual03_samples[ ,1:6],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_betas_usual_03 <- t(matrix(c(means_betas_usual_03, CrI_betas_usual_03), ncol=14, byrow=T)) %>% as.data.frame()
@@ -1722,10 +1723,10 @@ exp(mean_CrI_betas_usual_03)
 ################### S : estimates? per region
 
 #Calculating the S means
-means_s_usual_03 <- apply(usual03_samples[ ,15:(ncol(usual03_samples)-1)],2, mean)
+means_s_usual_03 <- apply(usual03_samples[ ,8:(ncol(usual03_samples)-1)],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_s_usual_03 <- t(apply(usual03_samples[ ,15:(ncol(usual03_samples)-1)],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_s_usual_03 <- t(apply(usual03_samples[ ,8:(ncol(usual03_samples)-1)],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_s_usual_03 <- cbind(means_s_usual_03, CrI_s_usual_03) %>% as.data.frame()
@@ -1740,10 +1741,10 @@ exp(mean_CrI_s_usual_03)
 
 ################## beta 0 
 
-mean_beta0_usual03 <- mean(usual03_samples[ ,15])
+mean_beta0_usual03 <- mean(usual03_samples[ ,7])
 
 #Calculating the Beta 95% CrI 
-CrI_beta0_usual_03 <- t(quantile(usual03_samples[ , 15], probs=c(0.025,0.975)))
+CrI_beta0_usual_03 <- t(quantile(usual03_samples[ , 7], probs=c(0.025,0.975)))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_beta0_usual_03 <- cbind(mean_beta0_usual03, CrI_beta0_usual_03) %>% as.data.frame()
@@ -1759,26 +1760,26 @@ exp(mean_CrI_beta0_usual_03)
 # (11) Fitted values  ---------
 
 #Creating matrix to store fitted values
-fitted_usual03 =matrix(NA, nrow=nrow(usual03_samples), ncol= nrow(data.clean))
+fitted_usual03 = matrix(NA, nrow=nrow(usual03_samples), ncol= nrow(data.clean))
 
-#Loop to generate fitted values
+#Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
-  fitted_usual03[,i] = usual03_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(usual03_samples[,1:14]) +
-                           usual03_samples[, 16+i-1] 
+  fitted_usual03[,i] = usual03_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(usual03_samples[,1:5]) + usual03_samples[, 7+i-1] 
 
 }
 
+# Fitted values - distribution
+fitted_usual_03_dist <- data.clean$Expected * exp(fitted_usual03)
+
+# Mean fitted values
+fitted_usual_03 <- apply(test, 2, mean)
+
+# 95% CrI
+fitted_usual_03_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+
+
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_usual03_df <- array(dim= c( ncol(fitted_usual03), 3)) %>% as.data.frame()
-
-# Fitted values
-fitted_usual03_df[, 1] = exp(apply(fitted_usual03, 2, mean))/(1+exp(apply(fitted_usual03, 2, mean)))*100
-
-# 95% Cr I LL
-fitted_usual03_df[, 2] = exp(apply(fitted_usual03, 2, function(x) quantile(x, probs=0.025)))/(1+exp(apply(fitted_usual03, 2, function(x) quantile(x, probs=0.025))))*100
-
-# 95% Cr I UL
-fitted_usual03_df[, 3] = exp(apply(fitted_usual03, 2, function(x) quantile(x, probs=0.975)))/(1+exp(apply(fitted_usual03, 2, function(x) quantile(x, probs=0.975))))*100
+fitted_usual03_df <- cbind(fitted_usual_03,fitted_usual_03_CrI )
 
 # Renaming columns
 colnames(fitted_usual03_df) <- c("fitted_mean_usual03", "fitted_lower_usual03" , "fitted_upper_usual03")
@@ -1788,8 +1789,6 @@ head(fitted_usual03_df)
 
 #Predicted vs observed cases
 cbind(data.clean$Cases,fitted_usual03_df)
-
-
 ```
 
 
@@ -2013,10 +2012,10 @@ bym_usual01_runMCMC$WAIC
 
 #Betas
 #Calculating the Beta means
-means_betas_bym_usual01 <- apply(bym_usual01_samples[,1:14],2, mean)
+means_betas_bym_usual01 <- apply(bym_usual01_samples[,1:6],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_betas_bym_usual01 <- t(apply(bym_usual01_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.015,0.975))))
+CrI_betas_bym_usual01 <- t(apply(bym_usual01_samples[ ,1:6],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_betas_bym_usual01 <- t(matrix(c(means_betas_bym_usual01, CrI_betas_bym_usual01), ncol=14, byrow=T)) %>% as.data.frame()
@@ -2030,10 +2029,10 @@ exp(mean_CrI_betas_bym_usual01)
 ################### S : estimates? per region
 
 #Calculating the S means
-means_s_bym_usual01 <- apply(bym_usual01_samples[ ,15:32],2, mean)
+means_s_bym_usual01 <- apply(bym_usual01_samples[ ,8:25],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_s_bym_usual01 <- t(apply(bym_usual01_samples[ ,15:32],2, function(x) quantile(x, probs=c(0.015,0.975))))
+CrI_s_bym_usual01 <- t(apply(bym_usual01_samples[ ,8:25],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_s_bym_usual01 <- cbind(means_s_bym_usual01, CrI_s_bym_usual01) %>% as.data.frame()
@@ -2048,10 +2047,10 @@ exp(mean_CrI_s_bym_usual01)
 ################### V : estimates? per region
 
 #Calculating the S means
-means_v_bym_usual01 <- apply(bym_usual01_samples[ ,34:ncol(bym_usual01_samples)],2, mean)
+means_v_bym_usual01 <- apply(bym_usual01_samples[ ,27:ncol(bym_usual01_samples)],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_v_bym_usual01 <- t(apply(bym_usual01_samples[ ,34:ncol(bym_usual01_samples)],2, function(x) quantile(x, probs=c(0.015,0.975))))
+CrI_v_bym_usual01 <- t(apply(bym_usual01_samples[ ,27:ncol(bym_usual01_samples)],2, function(x) quantile(x, probs=c(0.015,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_v_bym_usual01 <- cbind(means_v_bym_usual01, CrI_v_bym_usual01) %>% as.data.frame()
@@ -2066,10 +2065,10 @@ exp(mean_CrI_v_bym_usual01)
 
 ################## beta 0 
 
-mean_beta0_bym_usual01 <- mean(bym_usual01_samples[ ,15])
+mean_beta0_bym_usual01 <- mean(bym_usual01_samples[ ,7])
 
 #Calculating the Beta 95% CrI 
-CrI_beta0_bym_usual01 <- t(quantile(bym_usual01_samples[ , 15], probs=c(0.015,0.975)))
+CrI_beta0_bym_usual01 <- t(quantile(bym_usual01_samples[ , 7], probs=c(0.015,0.975)))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_beta0_bym_usual01 <- cbind(mean_beta0_bym_usual01, CrI_beta0_bym_usual01) %>% as.data.frame()
@@ -2081,30 +2080,32 @@ colnames(mean_CrI_beta0_bym_usual01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 exp(mean_CrI_beta0_bym_usual01)
 
 
-
 # (11) Fitted values  ---------
 
 #Creating matrix to store fitted values
-fitted_bym_usual01 =matrix(NA, nrow=nrow(bym_usual01_samples), ncol= nrow(data.clean))
+fitted_bym_usual01 = matrix(NA, nrow=nrow(bym_usual01_samples), ncol= nrow(data.clean))
 
-#Loop to generate fitted values
+#Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
-  fitted_bym_usual01[,i] = bym_usual01_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual01_samples[,1:14]) +
-                           bym_usual01_samples[, 16+i-1] + bym_usual01_samples[ , 35+i-1]
+  fitted_bym_usual01[,i] = bym_usual01_samples[,"beta0"] 
+                      + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual01_samples[,1:5])
+                      + bym_usual01_samples[, 7+i-1] 
+                      + bym_usual01_samples[ , 9+i-1]
 
 }
 
+# Fitted values - distribution
+fitted_bym_usual_01_dist <- data.clean$Expected * exp(fitted_bym_usual01)
+
+# Mean fitted values
+fitted_bym_usual_01 <- apply(test, 2, mean)
+
+# 95% CrI
+fitted_bym_usual_01_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+
+
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_bym_usual01_df <- array(dim= c( ncol(fitted_bym_usual01), 3)) %>% as.data.frame()
-
-# Fitted values
-fitted_bym_usual01_df[, 1] = exp(apply(fitted_bym_usual01, 2, mean))/(1+exp(apply(fitted_bym_usual01, 2, mean)))*100
-
-# 95% Cr I LL
-fitted_bym_usual01_df[, 2] = exp(apply(fitted_bym_usual01, 2, function(x) quantile(x, probs=0.025)))/(1+exp(apply(fitted_bym_usual01, 2, function(x) quantile(x, probs=0.025))))*100
-
-# 95% Cr I UL
-fitted_bym_usual01_df[, 3] = exp(apply(fitted_bym_usual01, 2, function(x) quantile(x, probs=0.975)))/(1+exp(apply(fitted_bym_usual01, 2, function(x) quantile(x, probs=0.975))))*100
+fitted_bym_usual01_df <- cbind(fitted_bym_usual_01,fitted_bym_usual_01_CrI )
 
 # Renaming columns
 colnames(fitted_bym_usual01_df) <- c("fitted_mean_bym_usual01", "fitted_lower_bym_usual01" , "fitted_upper_bym_usual01")
@@ -2114,6 +2115,8 @@ head(fitted_bym_usual01_df)
 
 #Predicted vs observed cases
 cbind(data.clean$Cases,fitted_bym_usual01_df)
+
+
 
 ```
 
@@ -2296,10 +2299,10 @@ bym_usual02_runMCMC$WAIC
 
 #Betas
 #Calculating the Beta means
-means_betas_bym_usual02 <- apply(bym_usual02_samples[,1:14],2, mean)
+means_betas_bym_usual02 <- apply(bym_usual02_samples[,1:6],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_betas_bym_usual02 <- t(apply(bym_usual02_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_betas_bym_usual02 <- t(apply(bym_usual02_samples[ ,1:6],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_betas_bym_usual02 <- t(matrix(c(means_betas_bym_usual02, CrI_betas_bym_usual02), ncol=14, byrow=T)) %>% as.data.frame()
@@ -2313,10 +2316,10 @@ exp(mean_CrI_betas_bym_usual02)
 ################### S : estimates? per region
 
 #Calculating the S means
-means_s_bym_usual02 <- apply(bym_usual02_samples[ ,15:32],2, mean)
+means_s_bym_usual02 <- apply(bym_usual02_samples[ , 8:25],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_s_bym_usual02 <- t(apply(bym_usual02_samples[ ,15:32],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_s_bym_usual02 <- t(apply(bym_usual02_samples[ , 8:25],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_s_bym_usual02 <- cbind(means_s_bym_usual02, CrI_s_bym_usual02) %>% as.data.frame()
@@ -2331,10 +2334,10 @@ exp(mean_CrI_s_bym_usual02)
 ################### V : estimates? per region
 
 #Calculating the S means
-means_v_bym_usual02 <- apply(bym_usual02_samples[ ,34:ncol(bym_usual02_samples)],2, mean)
+means_v_bym_usual02 <- apply(bym_usual02_samples[ ,27:ncol(bym_usual02_samples)],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_v_bym_usual02 <- t(apply(bym_usual02_samples[ ,34:ncol(bym_usual02_samples)],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_v_bym_usual02 <- t(apply(bym_usual02_samples[ ,27:ncol(bym_usual02_samples)],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_v_bym_usual02 <- cbind(means_v_bym_usual02, CrI_v_bym_usual02) %>% as.data.frame()
@@ -2349,10 +2352,10 @@ exp(mean_CrI_v_bym_usual02)
 
 ################## beta 0 
 
-mean_beta0_bym_usual02 <- mean(bym_usual02_samples[ ,15])
+mean_beta0_bym_usual02 <- mean(bym_usual02_samples[ ,7])
 
 #Calculating the Beta 95% CrI 
-CrI_beta0_bym_usual02 <- t(quantile(bym_usual02_samples[ , 15], probs=c(0.025,0.975)))
+CrI_beta0_bym_usual02 <- t(quantile(bym_usual02_samples[ , 7], probs=c(0.025,0.975)))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_beta0_bym_usual02 <- cbind(mean_beta0_bym_usual02, CrI_beta0_bym_usual02) %>% as.data.frame()
@@ -2368,25 +2371,29 @@ exp(mean_CrI_beta0_bym_usual02)
 # (11) Fitted values  ---------
 
 #Creating matrix to store fitted values
-fitted_bym_usual02 =matrix(NA, nrow=nrow(bym_usual02_samples), ncol= nrow(data.clean))
+fitted_bym_usual02 = matrix(NA, nrow=nrow(bym_usual02_samples), ncol= nrow(data.clean))
 
-#Loop to generate fitted values
+#Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
-  fitted_bym_usual02[,i] = bym_usual02_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual02_samples[,1:14]) + 
-                           bym_usual02_samples[, 16+i-1] + bym_usual02_samples[ , 35+i-1]
+  fitted_bym_usual02[,i] = bym_usual02_samples[,"beta0"] 
+                      + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual02_samples[,1:5])
+                      + bym_usual02_samples[, 7+i-1] 
+                      + bym_usual02_samples[ , 9+i-1]
+
 }
 
+# Fitted values - distribution
+fitted_bym_usual_02_dist <- data.clean$Expected * exp(fitted_bym_usual02)
+
+# Mean fitted values
+fitted_bym_usual_02 <- apply(test, 2, mean)
+
+# 95% CrI
+fitted_bym_usual_02_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+
+
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_bym_usual02_df <- array(dim= c( ncol(fitted_bym_usual02), 3)) %>% as.data.frame()
-
-# Fitted values
-fitted_bym_usual02_df[, 1] = exp(apply(fitted_bym_usual02, 2, mean))/(1+exp(apply(fitted_bym_usual02, 2, mean)))*100
-
-# 95% Cr I LL
-fitted_bym_usual02_df[, 2] = exp(apply(fitted_bym_usual02, 2, function(x) quantile(x, probs=0.025)))/(1+exp(apply(fitted_bym_usual02, 2, function(x) quantile(x, probs=0.025))))*100
-
-# 95% Cr I UL
-fitted_bym_usual02_df[, 3] = exp(apply(fitted_bym_usual02, 2, function(x) quantile(x, probs=0.975)))/(1+exp(apply(fitted_bym_usual02, 2, function(x) quantile(x, probs=0.975))))*100
+fitted_bym_usual02_df <- cbind(fitted_bym_usual_02,fitted_bym_usual_02_CrI )
 
 # Renaming columns
 colnames(fitted_bym_usual02_df) <- c("fitted_mean_bym_usual02", "fitted_lower_bym_usual02" , "fitted_upper_bym_usual02")
@@ -2582,10 +2589,10 @@ bym_usual03_runMCMC$WAIC
 
 #Betas
 #Calculating the Beta means
-means_betas_bym_usual03 <- apply(bym_usual03_samples[,1:14],2, mean)
+means_betas_bym_usual03 <- apply(bym_usual03_samples[,1:6],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_betas_bym_usual03 <- t(apply(bym_usual03_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_betas_bym_usual03 <- t(apply(bym_usual03_samples[ ,1:6],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_betas_bym_usual03 <- t(matrix(c(means_betas_bym_usual03, CrI_betas_bym_usual03), ncol=14, byrow=T)) %>% as.data.frame()
@@ -2599,10 +2606,10 @@ exp(mean_CrI_betas_bym_usual03)
 ################### S : estimates? per region
 
 #Calculating the S means
-means_s_bym_usual03 <- apply(bym_usual03_samples[ ,15:32],2, mean)
+means_s_bym_usual03 <- apply(bym_usual03_samples[ , 8:25],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_s_bym_usual03 <- t(apply(bym_usual03_samples[ ,15:32],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_s_bym_usual03 <- t(apply(bym_usual03_samples[ , 8:25],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_s_bym_usual03 <- cbind(means_s_bym_usual03, CrI_s_bym_usual03) %>% as.data.frame()
@@ -2617,10 +2624,10 @@ exp(mean_CrI_s_bym_usual03)
 ################### V : estimates? per region
 
 #Calculating the S means
-means_v_bym_usual03 <- apply(bym_usual03_samples[ ,34:ncol(bym_usual03_samples)],2, mean)
+means_v_bym_usual03 <- apply(bym_usual03_samples[ , 27:ncol(bym_usual03_samples)],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_v_bym_usual03 <- t(apply(bym_usual03_samples[ ,34:ncol(bym_usual03_samples)],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_v_bym_usual03 <- t(apply(bym_usual03_samples[ , 27:ncol(bym_usual03_samples)],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_v_bym_usual03 <- cbind(means_v_bym_usual03, CrI_v_bym_usual03) %>% as.data.frame()
@@ -2635,10 +2642,10 @@ exp(mean_CrI_v_bym_usual03)
 
 ################## beta 0 
 
-mean_beta0_bym_usual03 <- mean(bym_usual03_samples[ ,15])
+mean_beta0_bym_usual03 <- mean(bym_usual03_samples[ ,7])
 
 #Calculating the Beta 95% CrI 
-CrI_beta0_bym_usual03 <- t(quantile(bym_usual03_samples[ , 15], probs=c(0.025,0.975)))
+CrI_beta0_bym_usual03 <- t(quantile(bym_usual03_samples[ , 7], probs=c(0.025,0.975)))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_beta0_bym_usual03 <- cbind(mean_beta0_bym_usual03, CrI_beta0_bym_usual03) %>% as.data.frame()
@@ -2653,25 +2660,29 @@ exp(mean_CrI_beta0_bym_usual03)
 # (11) Fitted values  ---------
 
 #Creating matrix to store fitted values
-fitted_bym_usual03 =matrix(NA, nrow=nrow(bym_usual03_samples), ncol= nrow(data.clean))
+fitted_bym_usual03 = matrix(NA, nrow=nrow(bym_usual03_samples), ncol= nrow(data.clean))
 
-#Loop to generate fitted values
+#Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
-  fitted_bym_usual03[,i] = bym_usual03_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual03_samples[,1:14])  +
-                           bym_usual03_samples[, 16+i-1] + bym_usual03_samples[ , 35+i-1]
+  fitted_bym_usual03[,i] = bym_usual03_samples[,"beta0"] 
+                      + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual03_samples[,1:5])
+                      + bym_usual03_samples[, 7+i-1] 
+                      + bym_usual03_samples[ , 9+i-1]
+
 }
 
+# Fitted values - distribution
+fitted_bym_usual_03_dist <- data.clean$Expected * exp(fitted_bym_usual03)
+
+# Mean fitted values
+fitted_bym_usual_03 <- apply(test, 2, mean)
+
+# 95% CrI
+fitted_bym_usual_03_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+
+
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_bym_usual03_df <- array(dim= c( ncol(fitted_bym_usual03), 3)) %>% as.data.frame()
-
-# Fitted values
-fitted_bym_usual03_df[, 1] = exp(apply(fitted_bym_usual03, 2, mean))/(1+exp(apply(fitted_bym_usual03, 2, mean)))*100
-
-# 95% Cr I LL
-fitted_bym_usual03_df[, 2] = exp(apply(fitted_bym_usual03, 2, function(x) quantile(x, probs=0.025)))/(1+exp(apply(fitted_bym_usual03, 2, function(x) quantile(x, probs=0.025))))*100
-
-# 95% Cr I UL
-fitted_bym_usual03_df[, 3] = exp(apply(fitted_bym_usual03, 2, function(x) quantile(x, probs=0.975)))/(1+exp(apply(fitted_bym_usual03, 2, function(x) quantile(x, probs=0.975))))*100
+fitted_bym_usual03_df <- cbind(fitted_bym_usual_03,fitted_bym_usual_03_CrI )
 
 # Renaming columns
 colnames(fitted_bym_usual03_df) <- c("fitted_mean_bym_usual03", "fitted_lower_bym_usual03" , "fitted_upper_bym_usual03")
@@ -2916,10 +2927,10 @@ ridge01_runMCMC$WAIC
 
 #Betas
 #Calculating the Beta means
-means_betas_ridge01 <- apply(ridge01_samples[,1:14],2, mean)
+means_betas_ridge01 <- apply(ridge01_samples[,1:6],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_betas_ridge01 <- t(apply(ridge01_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_betas_ridge01 <- t(apply(ridge01_samples[ ,1:6],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_betas_ridge01 <- t(matrix(c(means_betas_ridge01, CrI_betas_ridge01), ncol=14, byrow=T)) %>% as.data.frame()
@@ -2933,10 +2944,10 @@ exp(mean_CrI_betas_ridge01)
 ################### S : estimates? per region
 
 #Calculating the S means
-means_s_ridge01 <- apply(ridge01_samples[ ,17:34],2, mean)
+means_s_ridge01 <- apply(ridge01_samples[ ,8:25],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_s_ridge01 <- t(apply(ridge01_samples[ ,17:34],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_s_ridge01 <- t(apply(ridge01_samples[ ,8:25],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_s_ridge01 <- cbind(means_s_ridge01, CrI_s_ridge01) %>% as.data.frame()
@@ -2951,10 +2962,10 @@ exp(mean_CrI_s_ridge01)
 ################### Sigma
 
 #Calculating the sigma means
-means_sigma_ridge01 <- mean(ridge01_samples[ ,35])
+means_sigma_ridge01 <- mean(ridge01_samples[ ,26])
 
 #Calculating the Beta 95% CrI 
-CrI_sigma_ridge01 <- t(quantile(ridge01_samples[ ,35], probs=c(0.025,0.975)))
+CrI_sigma_ridge01 <- t(quantile(ridge01_samples[ ,26], probs=c(0.025,0.975)))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_sigma_ridge01 <- cbind(means_sigma_ridge01, CrI_sigma_ridge01) %>% as.data.frame()
@@ -3001,36 +3012,44 @@ colnames(mean_CrI_beta0_ridge01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 exp(mean_CrI_beta0_ridge01)
 
 
-
-
 # (11) Fitted values  ---------
 
 #Creating matrix to store fitted values
-fitted_ridge01 =matrix(NA, nrow=nrow(ridge01_samples), ncol= nrow(data.clean))
+fitted_ridge01 = matrix(NA, nrow=nrow(ridge01_samples), ncol= nrow(data.clean))
 
-#Loop to generate fitted values
+#Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
-  fitted_ridge01[,i]=ridge01_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge01_samples[,1:14]) + ridge01_samples[,17+i]
+  fitted_ridge01[,i] = ridge01_samples[,"beta0"] 
+                      + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge01_samples[,1:5])
+                      + ridge01_samples[, 7+i-1] 
+
 }
 
+# Fitted values - distribution
+fitted_bym_usual_03_dist <- data.clean$Expected * exp(fitted_ridge01)
+
+# Mean fitted values
+fitted_bym_usual_03 <- apply(test, 2, mean)
+
+# 95% CrI
+fitted_bym_usual_03_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+
+
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_ridge01_df <- array(dim= c( ncol(fitted_ridge01), 3)) %>% as.data.frame()
+fitted_ridge01_df <- cbind(fitted_bym_usual_03,fitted_bym_usual_03_CrI )
 
-# Fitted values
-fitted_ridge01_df[, 1] = exp(apply(fitted_ridge01, 2, mean))/(1+exp(apply(fitted_ridge01, 2, mean)))*100
-
-# 95% Cr I LL
-fitted_ridge01_df[, 2] = exp(apply(fitted_ridge01, 2, function(x) quantile(x, probs=0.025)))/(1+exp(apply(fitted_ridge01, 2, function(x) quantile(x, probs=0.025))))*100
-
-# 95% Cr I UL
-fitted_ridge01_df[, 3] = exp(apply(fitted_ridge01, 2, function(x) quantile(x, probs=0.975)))/(1+exp(apply(fitted_ridge01, 2, function(x) quantile(x, probs=0.975))))*100
-
-# Rename columns
+# Renaming columns
 colnames(fitted_ridge01_df) <- c("fitted_mean_ridge01", "fitted_lower_ridge01" , "fitted_upper_ridge01")
 
+#Top 6 rows
 head(fitted_ridge01_df)
 
+#Predicted vs observed cases
 cbind(data.clean$Cases,fitted_ridge01_df)
+
+
+
+
 ```
 
 **Ridge: Neighborhood structure 2: Distance-based neighbors (k = 3)**
@@ -3222,10 +3241,10 @@ ridge02_runMCMC$WAIC
 
 #Betas
 #Calculating the Beta means
-means_betas_ridge02 <- apply(ridge02_samples[,1:14],2, mean)
+means_betas_ridge02 <- apply(ridge02_samples[,1:6],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_betas_ridge02 <- t(apply(ridge02_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_betas_ridge02 <- t(apply(ridge02_samples[ ,1:6],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_betas_ridge02 <- t(matrix(c(means_betas_ridge02, CrI_betas_ridge02), ncol=14, byrow=T)) %>% as.data.frame()
@@ -3239,10 +3258,10 @@ exp(mean_CrI_betas_ridge02)
 ################### S : estimates? per region
 
 #Calculating the S means
-means_s_ridge02 <- apply(ridge02_samples[ ,17:34],2, mean)
+means_s_ridge02 <- apply(ridge02_samples[ ,8:25],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_s_ridge02 <- t(apply(ridge02_samples[ ,17:34],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_s_ridge02 <- t(apply(ridge02_samples[ ,8:25],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_s_ridge02 <- cbind(means_s_ridge02, CrI_s_ridge02) %>% as.data.frame()
@@ -3257,10 +3276,10 @@ exp(mean_CrI_s_ridge02)
 ################### Sigma
 
 #Calculating the sigma means
-means_sigma_ridge02 <- mean(ridge02_samples[ ,35])
+means_sigma_ridge02 <- mean(ridge02_samples[ ,26])
 
 #Calculating the Beta 95% CrI 
-CrI_sigma_ridge02 <- t(quantile(ridge02_samples[ ,35], probs=c(0.025,0.975)))
+CrI_sigma_ridge02 <- t(quantile(ridge02_samples[ ,26], probs=c(0.025,0.975)))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_sigma_ridge02 <- cbind(means_sigma_ridge02, CrI_sigma_ridge02) %>% as.data.frame()
@@ -3312,31 +3331,40 @@ exp(mean_CrI_beta0_ridge02)
 # (11) Fitted values  ---------
 
 #Creating matrix to store fitted values
-fitted_ridge02 =matrix(NA, nrow=nrow(ridge02_samples), ncol= nrow(data.clean))
+fitted_ridge02 = matrix(NA, nrow=nrow(ridge02_samples), ncol= nrow(data.clean))
 
-#Loop to generate fitted values
+#Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
-  fitted_ridge02[,i]=ridge02_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge02_samples[,1:14]) + ridge02_samples[,17+i]
+  fitted_ridge02[,i] = ridge02_samples[,"beta0"] 
+                      + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge02_samples[,1:5])
+                      + ridge02_samples[, 7+i-1] 
+
 }
 
+# Fitted values - distribution
+fitted_bym_usual_03_dist <- data.clean$Expected * exp(fitted_ridge02)
+
+# Mean fitted values
+fitted_bym_usual_03 <- apply(test, 2, mean)
+
+# 95% CrI
+fitted_bym_usual_03_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+
+
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_ridge02_df <- array(dim= c( ncol(fitted_ridge02), 3)) %>% as.data.frame()
+fitted_ridge02_df <- cbind(fitted_bym_usual_03,fitted_bym_usual_03_CrI )
 
-# Fitted values
-fitted_ridge02_df[, 1] = exp(apply(fitted_ridge02, 2, mean))/(1+exp(apply(fitted_ridge02, 2, mean)))*100
-
-# 95% Cr I LL
-fitted_ridge02_df[, 2] = exp(apply(fitted_ridge02, 2, function(x) quantile(x, probs=0.025)))/(1+exp(apply(fitted_ridge02, 2, function(x) quantile(x, probs=0.025))))*100
-
-# 95% Cr I UL
-fitted_ridge02_df[, 3] = exp(apply(fitted_ridge02, 2, function(x) quantile(x, probs=0.975)))/(1+exp(apply(fitted_ridge02, 2, function(x) quantile(x, probs=0.975))))*100
-
-# Rename columns
+# Renaming columns
 colnames(fitted_ridge02_df) <- c("fitted_mean_ridge02", "fitted_lower_ridge02" , "fitted_upper_ridge02")
 
+#Top 6 rows
 head(fitted_ridge02_df)
 
+#Predicted vs observed cases
 cbind(data.clean$Cases,fitted_ridge02_df)
+
+
+
 
 ```
 
@@ -3534,10 +3562,10 @@ ridge03_runMCMC$WAIC
 
 #Betas
 #Calculating the Beta means
-means_betas_ridge03 <- apply(ridge03_samples[,1:14],2, mean)
+means_betas_ridge03 <- apply(ridge03_samples[,1:6],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_betas_ridge03 <- t(apply(ridge03_samples[ ,1:14],2, function(x) quantile(x, probs=c(0.035,0.975))))
+CrI_betas_ridge03 <- t(apply(ridge03_samples[ ,1:6],2, function(x) quantile(x, probs=c(0.035,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_betas_ridge03 <- t(matrix(c(means_betas_ridge03, CrI_betas_ridge03), ncol=14, byrow=T)) %>% as.data.frame()
@@ -3551,10 +3579,10 @@ exp(mean_CrI_betas_ridge03)
 ################### S : estimates? per region
 
 #Calculating the S means
-means_s_ridge03 <- apply(ridge03_samples[ ,17:34],2, mean)
+means_s_ridge03 <- apply(ridge03_samples[ ,8:25],2, mean)
 
 #Calculating the Beta 95% CrI 
-CrI_s_ridge03 <- t(apply(ridge03_samples[ ,17:34],2, function(x) quantile(x, probs=c(0.035,0.975))))
+CrI_s_ridge03 <- t(apply(ridge03_samples[ ,8:25],2, function(x) quantile(x, probs=c(0.035,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_s_ridge03 <- cbind(means_s_ridge03, CrI_s_ridge03) %>% as.data.frame()
@@ -3569,10 +3597,10 @@ exp(mean_CrI_s_ridge03)
 ################### Sigma
 
 #Calculating the sigma means
-means_sigma_ridge03 <- mean(ridge03_samples[ ,35])
+means_sigma_ridge03 <- mean(ridge03_samples[ ,26])
 
 #Calculating the Beta 95% CrI 
-CrI_sigma_ridge03 <- t(quantile(ridge03_samples[ ,35], probs=c(0.035,0.975)))
+CrI_sigma_ridge03 <- t(quantile(ridge03_samples[ ,26], probs=c(0.035,0.975)))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_sigma_ridge03 <- cbind(means_sigma_ridge03, CrI_sigma_ridge03) %>% as.data.frame()
@@ -3625,31 +3653,40 @@ exp(mean_CrI_beta0_ridge03)
 # (11) Fitted values  ---------
 
 #Creating matrix to store fitted values
-fitted_ridge03 =matrix(NA, nrow=nrow(ridge03_samples), ncol= nrow(data.clean))
+fitted_ridge03 = matrix(NA, nrow=nrow(ridge03_samples), ncol= nrow(data.clean))
 
-#Loop to generate fitted values
+#Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
-  fitted_ridge03[,i]=ridge03_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge03_samples[,1:14]) + ridge03_samples[,17+i]
+  fitted_ridge03[,i] = ridge03_samples[,"beta0"] 
+                      + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge03_samples[,1:5])
+                      + ridge03_samples[, 7+i-1] 
+
 }
 
+# Fitted values - distribution
+fitted_bym_usual_03_dist <- data.clean$Expected * exp(fitted_ridge03)
+
+# Mean fitted values
+fitted_bym_usual_03 <- apply(test, 2, mean)
+
+# 95% CrI
+fitted_bym_usual_03_CrI <- t(apply(test, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+
+
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_ridge03_df <- array(dim= c( ncol(fitted_ridge03), 3)) %>% as.data.frame()
+fitted_ridge03_df <- cbind(fitted_bym_usual_03,fitted_bym_usual_03_CrI )
 
-# Fitted values
-fitted_ridge03_df[, 1] = exp(apply(fitted_ridge03, 2, mean))/(1+exp(apply(fitted_ridge03, 2, mean)))*100
-
-# 95% Cr I LL
-fitted_ridge03_df[, 2] = exp(apply(fitted_ridge03, 2, function(x) quantile(x, probs=0.025)))/(1+exp(apply(fitted_ridge03, 2, function(x) quantile(x, probs=0.025))))*100
-
-# 95% Cr I UL
-fitted_ridge03_df[, 3] = exp(apply(fitted_ridge03, 2, function(x) quantile(x, probs=0.975)))/(1+exp(apply(fitted_ridge03, 2, function(x) quantile(x, probs=0.975))))*100
-
-# Rename columns
+# Renaming columns
 colnames(fitted_ridge03_df) <- c("fitted_mean_ridge03", "fitted_lower_ridge03" , "fitted_upper_ridge03")
 
+#Top 6 rows
 head(fitted_ridge03_df)
 
+#Predicted vs observed cases
 cbind(data.clean$Cases,fitted_ridge03_df)
+
+
+
 
 ```
 
