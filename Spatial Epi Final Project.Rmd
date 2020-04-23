@@ -287,7 +287,7 @@ library(tidyr)
 library(dplyr)
 
 data %>% 
- select(Cases, Pop_density, Prop_male, 
+ dplyr::select(Cases, Pop_density, 
          Pct_0.24, Pct_15.24, Pct_25.64, Pct_65, 
          Log_income, Prop_labor, Prop_male_labor, Num_household,
          Log_sec, Log_postsec, Num_hosp, Num_beds) %>% ## select variables to plot
@@ -296,6 +296,18 @@ data %>%
     facet_wrap(~key, scales = "free") +    
     geom_histogram(bins = 5) +
     xlab("") + ylab("Frequency")
+
+#hist(log(data.clean$Pop_density))
+data.clean %>% 
+ dplyr::select(Cases, Pop_density, 
+         Prop_0.24, Prop_25.64, Prop_65, 
+          Prop_labor,  Log_postsec,  Prop_female, beds_per_hosp) %>% ## select variables to plot
+  gather() %>%                             
+  ggplot(aes(value)) +                     
+    facet_wrap(~key, scales = "free") +    
+    geom_histogram(bins = 5) +
+    xlab("") + ylab("Frequency")
+
 
 # Histogram of SIR and new covariates ----------------------------------------------------------
 sir <- ggplot(data = data, aes(SIR)) + geom_histogram() +
@@ -846,9 +858,9 @@ data.clean <- data %>%
          SIR,
          # Deaths,
          # Mean.age = Age,
-         # Prop.male = P.male,
+          #Prop.male = P.male,
          # Area_km2,
-         Pop_density,
+         #Pop_density,
          Prop_labor,
          # Prop_female_labor,
          beds_per_hosp,
@@ -857,8 +869,8 @@ data.clean <- data %>%
          Prop_65,
          Prop_female,
          # Log_sec,
-         Log_postsec,
-          household_poverty_rate)
+         Log_postsec)
+         #,household_poverty_rate)
          # Household_size,
          # Prop_poor) #highly correlated with log income
                       #very little variability in household size
@@ -986,27 +998,29 @@ adj.5 <- unlist(adj.5)
 
 # Defining the usual fixed priors model ------------------------------------------------------
 usual_code <- nimbleCode({ 
-
+  
   # Defining our priors
- beta0 ~ dnorm(0, sd = 500)
+  beta0 ~ dnorm(0, sd = 100)
   
   for(j in 1:p){
-    beta[j] ~ dnorm(0, sd = 500)  #Betas for the covariates
+    beta[j] ~ dnorm(0, sd = 100)  #Betas for the covariates
   }
-
+  
+  sigma2 ~ dinvgamma(10, 0.01)
   #sigma2 ~ dinvgamma(1, 10) 
-  tau2 ~ dinvgamma(2, 0.10) 
+  # tau2 ~ dinvgamma(2, 0.10) 
   #here i set up a prior for tau directly, it makes the MCMC converge better
   
   # Defining transformed parameters
-  #tau2 <- 1/sigma2
+  tau2 <- 1/sigma2
   
   s[1:N] ~ dcar_normal(adj[1:L], weights[1:L], num[1:N], tau2, zero_mean = 1) #CAR prior
   # Spatial effects (dcar is long vector, weights, n neighbors, zero mean = 1 constrains sum to 0)
-
+  
   # Defining likelihood
   for(i in 1:N) { 
-    log(mu[i]) <- log(E[i]) + beta0 + inprod(X[i, 1:p], beta[1:p]) + s[i]
+    log(r[i]) <- beta0 + inprod(X[i, 1:p], beta[1:p]) + s[i]
+    mu[i] <- E[i]*r[i]
     y[i] ~ dpois(mu[i])
   }
 })
@@ -1024,8 +1038,8 @@ set.seed(1234)
 
 # (1) Define constants that go into CAR prior into a list
 Consts_usual_01 = list(N = nrow(data.clean),                  # Number of areas
-                       p = ncol(data.clean[5:13]),            # Number of covariates
-                       X = as.matrix(data.clean[, c(5:13)]),  # Matrix of covariates
+                       p = ncol(data.clean[5:ncol(data.clean)]),            # Number of covariates
+                       X = as.matrix(data.clean[, c(5:ncol(data.clean))]),  # Matrix of covariates
                        L = length(adj),                       # Edges (length of adj vector)
                        E = data.clean$Expected,
                        adj = adj,                             # Adjacency matrix
@@ -1036,11 +1050,11 @@ Consts_usual_01 = list(N = nrow(data.clean),                  # Number of areas
 outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
-Inits_usual <- list(beta0 = 1351,
-                    beta = rep(0, ncol(data.clean[, 5:13])), 
-                    #sigma2 = 10, 
-                    tau2 = 0.3137,
-                    s = rnorm(num.nb)) # S sampled from N dist (do we sample ours from poisson?)
+Inits_usual <- list(beta0 = 0,
+                    beta = rep(0, ncol(data.clean[, 5:ncol(data.clean)])), 
+                    sigma2 = 1, 
+                    #tau2 = 0.1,
+                    s = rnorm(length(num.nb)) )# S sampled from N dist (do we sample ours from poisson?)
 
 
 # Defining model -------------------------------------------------------------------------------
@@ -1053,7 +1067,7 @@ usual01_Cmodel <- compileNimble(usual01_model,
                               showCompilerOutput = TRUE)      
 
 # (3) Configure the MCMC chain
-usual01_conf <- configureMCMC(usual01_model, monitors = c( 'beta0', 'beta', 'tau2', 's'))
+usual01_conf <- configureMCMC(usual01_model, monitors = c( 'beta0', 'beta', 'sigma2', 's'))
 
 # (4) Do something
 usual01_conf$printSamplers()
@@ -1065,21 +1079,22 @@ usual01_MCMC <- buildMCMC(usual01_conf, enableWAIC = T)
 usual01_CMCMC <- compileNimble(usual01_MCMC, project = usual01_Cmodel)  
 
 # (7) Run the model
-usual01_runMCMC <- runMCMC(usual01_CMCMC, niter = 200000, nburnin = 10000, thin = 25, nchains = 2, WAIC = T)
+usual01_runMCMC <- runMCMC(usual01_CMCMC, niter = 500000, nburnin = 15000, thin = 20, nchains = 2, WAIC = T)
 
 # (8) Check convergence
 usual01_samples = rbind(usual01_runMCMC$samples[[1]], usual01_runMCMC$samples[[2]])
+
 ```
 
 
 ```{r}
 # Plot the MCMC chains----------
 #beta0
-par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
+par(mfrow=c(1,1), mar=c(5, 4, 4, 2) + 0.1)
 plot(main ="Intercept", usual01_samples[,"beta0"], type ="l")
 
 # Betas (Covariates) - log scale
-par(mfrow=c(4,4), mar=c(2,4.5,2.1,1)+0.1)
+par(mfrow=c(3,3), mar=c(3, 3, 3, 2) + 0.1)
 plot(main = paste(names(data.clean[5])),  usual01_samples[,"beta[1]"] , type = "l", ylab = "") 
 plot(main = paste(names(data.clean[6])),  usual01_samples[,"beta[2]"] , type = "l", ylab = "")
 plot(main = paste(names(data.clean[7])),  usual01_samples[,"beta[3]"] , type = "l", ylab = "")
@@ -1088,7 +1103,7 @@ plot(main = paste(names(data.clean[9])),  usual01_samples[,"beta[5]"] , type = "
 plot(main = paste(names(data.clean[10])), usual01_samples[,"beta[6]"] , type = "l", ylab = "")
 plot(main = paste(names(data.clean[11])), usual01_samples[,"beta[7]"] , type = "l", ylab = "")
 plot(main = paste(names(data.clean[12])), usual01_samples[,"beta[8]"] , type = "l", ylab = "")
-plot(main = paste(names(data.clean[13])), usual01_samples[,"beta[9]"] , type = "l", ylab = "")
+#plot(main = paste(names(data.clean[13])), usual01_samples[,"beta[9]"] , type = "l", ylab = "")
 #plot(main = paste(names(data.clean[14])), usual01_samples[,"beta[10]"] , type = "l", ylab = "")
 #plot(main = paste(names(data.clean[15])), usual01_samples[,"beta[11]"] , type = "l", ylab = "")
 #plot(main = paste(names(data.clean[16])),usual01_samples[,"beta[12]"] , type = "l", ylab = "")
@@ -1242,7 +1257,7 @@ fitted_usual01 = matrix(NA, nrow=nrow(usual01_samples), ncol= nrow(data.clean))
 
 #Loop to generate fitted values
 for(i in 1:nrow(data.clean)){
-  fitted_usual01[,i] = usual01_samples[,"beta0"] + as.matrix(data.clean[i,5:21]) %*% t(usual01_samples[,1:14]) +
+  fitted_usual01[,i] = usual01_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(usual01_samples[,1:14]) +
                            usual01_samples[, 16+i-1] 
 
 }
@@ -1277,8 +1292,8 @@ cbind(data.clean$Cases,fitted_usual01_df)
 
 # (1) Define constants that go into CAR prior into a list
 Consts_usual_02 = list(N = nrow(data.clean),                  # Number of areas
-                       p = ncol(data.clean[5:21]),            # Number of covariates
-                       X = as.matrix(data.clean[, c(5:21)]),  # Matrix of covariates
+                       p = ncol(data.clean[5:ncol(data.clean)]),            # Number of covariates
+                       X = as.matrix(data.clean[, c(5:ncol(data.clean))]),  # Matrix of covariates
                        L = length(adj.3),                       # Edges (length of adj vector)
                        E = data.clean$Expected,
                        adj = adj.3,                             # Adjacency matrix
@@ -1290,7 +1305,7 @@ outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
 Inits_usual_02 <- list(beta0 = 0,
-                    beta = rep(0, ncol(data.clean[5:21])), 
+                    beta = rep(0, ncol(data.clean[5:ncol(data.clean)])), 
                     sigma2 = 1, 
                     s = rnorm(num.nb.3)) # S sampled from N dist (do we sample ours from poisson?)
 
@@ -1491,7 +1506,7 @@ fitted_usual02 = matrix(NA, nrow=nrow(usual02_samples), ncol= nrow(data.clean))
 
 #Loop to generate fitted values
 for(i in 1:nrow(data.clean)){
-  fitted_usual02[,i] = usual02_samples[,"beta0"] + as.matrix(data.clean[i,5:21]) %*% t(usual02_samples[,1:14]) +
+  fitted_usual02[,i] = usual02_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(usual02_samples[,1:14]) +
                            usual02_samples[, 16+i-1] 
 
 }
@@ -1531,8 +1546,8 @@ cbind(data.clean$Cases,fitted_usual02_df)
 
 # (1) Define constants that go into CAR prior into a list
 Consts_usual_03 = list(N = nrow(data.clean),                  # Number of areas
-                       p = ncol(data.clean[5:21]),            # Number of covariates
-                       X = as.matrix(data.clean[, c(5:21)]),  # Matrix of covariates
+                       p = ncol(data.clean[5:ncol(data.clean)]),            # Number of covariates
+                       X = as.matrix(data.clean[, c(5:ncol(data.clean))]),  # Matrix of covariates
                        L = length(adj.5),                       # Edges (length of adj vector)
                        E = data.clean$Expected,
                        adj = adj.5,                             # Adjacency matrix
@@ -1544,7 +1559,7 @@ outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
 Inits_usual_03 <- list(beta0 = 0,
-                    beta = rep(0, ncol(data.clean[5:21])), 
+                    beta = rep(0, ncol(data.clean[5:ncol(data.clean)])), 
                     sigma2 = 1, 
                     s = rnorm(num.nb.5)) # S sampled from N dist (do we sample ours from poisson?)
 
@@ -1745,7 +1760,7 @@ fitted_usual03 =matrix(NA, nrow=nrow(usual03_samples), ncol= nrow(data.clean))
 
 #Loop to generate fitted values
 for(i in 1:nrow(data.clean)){
-  fitted_usual03[,i] = usual03_samples[,"beta0"] + as.matrix(data.clean[i,5:21]) %*% t(usual03_samples[,1:14]) +
+  fitted_usual03[,i] = usual03_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(usual03_samples[,1:14]) +
                            usual03_samples[, 16+i-1] 
 
 }
@@ -1824,8 +1839,8 @@ usual_code_bym <- nimbleCode({
 
 # (1) Define constants that go into CAR prior into a list
 Consts_usual_bym_01 = list(N = nrow(data.clean),                  # Number of areas
-                       p = ncol(data.clean[5:21]),            # Number of covariates
-                       X = as.matrix(data.clean[, c(5:21)]),  # Matrix of covariates
+                       p = ncol(data.clean[5:ncol(data.clean)]),            # Number of covariates
+                       X = as.matrix(data.clean[, c(5:ncol(data.clean))]),  # Matrix of covariates
                        L = length(adj),                       # Edges (length of adj vector)
                        E = data.clean$Expected,
                        adj = adj,                             # Adjacency matrix
@@ -1838,7 +1853,7 @@ outcome <- list(y = data.clean$Cases) # Observed cases
 # (3) Define initial values for the MCMC chain
 Inits_usual_bym_01 <- list(
                            beta0 = 0,
-                           beta = rep(0, ncol(data.clean[5:21])), 
+                           beta = rep(0, ncol(data.clean[5:ncol(data.clean)])), 
                            sigma2 = 1, 
                            s = rnorm(num.nb), # S sampled from N dist (do we sample ours from poisson?)
                            v =  rep(0, nrow(data.clean)))
@@ -2071,7 +2086,7 @@ fitted_bym_usual01 =matrix(NA, nrow=nrow(bym_usual01_samples), ncol= nrow(data.c
 
 #Loop to generate fitted values
 for(i in 1:nrow(data.clean)){
-  fitted_bym_usual01[,i] = bym_usual01_samples[,"beta0"] + as.matrix(data.clean[i,5:21]) %*% t(bym_usual01_samples[,1:14]) +
+  fitted_bym_usual01[,i] = bym_usual01_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual01_samples[,1:14]) +
                            bym_usual01_samples[, 16+i-1] + bym_usual01_samples[ , 35+i-1]
 
 }
@@ -2108,8 +2123,8 @@ cbind(data.clean$Cases,fitted_bym_usual01_df)
 
 # (1) Define constants that go into CAR prior into a list
 Consts_usual_bym_02 = list(N = nrow(data.clean),                  # Number of areas
-                       p = ncol(data.clean[5:21]),            # Number of covariates
-                       X = as.matrix(data.clean[, c(5:21)]),  # Matrix of covariates
+                       p = ncol(data.clean[5:ncol(data.clean)]),            # Number of covariates
+                       X = as.matrix(data.clean[, c(5:ncol(data.clean))]),  # Matrix of covariates
                        L = length(adj.3),                       # Edges (length of adj vector)
                        E = data.clean$Expected,
                        adj = adj.3,                             # Adjacency matrix
@@ -2122,7 +2137,7 @@ outcome <- list(y = data.clean$Cases) # Observed cases
 # (3) Define initial values for the MCMC chain
 Inits_usual_bym_02 <- list(
                            beta0 = 0,
-                           beta = rep(0, ncol(data.clean[5:21])), 
+                           beta = rep(0, ncol(data.clean[5:ncol(data.clean)])), 
                            sigma2 = 1, 
                            s = rnorm(num.nb.3), # S sampled from N dist (do we sample ours from poisson?)
                            v =  rep(0, nrow(data.clean))
@@ -2354,7 +2369,7 @@ fitted_bym_usual02 =matrix(NA, nrow=nrow(bym_usual02_samples), ncol= nrow(data.c
 
 #Loop to generate fitted values
 for(i in 1:nrow(data.clean)){
-  fitted_bym_usual02[,i] = bym_usual02_samples[,"beta0"] + as.matrix(data.clean[i,5:21]) %*% t(bym_usual02_samples[,1:14]) + 
+  fitted_bym_usual02[,i] = bym_usual02_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual02_samples[,1:14]) + 
                            bym_usual02_samples[, 16+i-1] + bym_usual02_samples[ , 35+i-1]
 }
 
@@ -2393,8 +2408,8 @@ cbind(data.clean$Cases,fitted_bym_usual02_df)
 
 # (1) Define constants that go into CAR prior into a list
 Consts_usual_bym_03 = list(N = nrow(data.clean),                  # Number of areas
-                       p = ncol(data.clean[5:21]),            # Number of covariates
-                       X = as.matrix(data.clean[, c(5:21)]),  # Matrix of covariates
+                       p = ncol(data.clean[5:ncol(data.clean)]),            # Number of covariates
+                       X = as.matrix(data.clean[, c(5:ncol(data.clean))]),  # Matrix of covariates
                        L = length(adj.5),                       # Edges (length of adj vector)
                        E = data.clean$Expected,
                        adj = adj.5,                             # Adjacency matrix
@@ -2407,7 +2422,7 @@ outcome <- list(y = data.clean$Cases) # Observed cases
 # (3) Define initial values for the MCMC chain
 Inits_usual_bym_03 <- list(
                            beta0 = 0,
-                           beta = rep(0, ncol(data.clean[5:21])), 
+                           beta = rep(0, ncol(data.clean[5:ncol(data.clean)])), 
                            sigma2 = 1, 
                            s = rnorm(num.nb.5), # S sampled from N dist (do we sample ours from poisson?)
                            v =  rep(0, nrow(data.clean))
@@ -2639,7 +2654,7 @@ fitted_bym_usual03 =matrix(NA, nrow=nrow(bym_usual03_samples), ncol= nrow(data.c
 
 #Loop to generate fitted values
 for(i in 1:nrow(data.clean)){
-  fitted_bym_usual03[,i] = bym_usual03_samples[,"beta0"] + as.matrix(data.clean[i,5:21]) %*% t(bym_usual03_samples[,1:14])  +
+  fitted_bym_usual03[,i] = bym_usual03_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual03_samples[,1:14])  +
                            bym_usual03_samples[, 16+i-1] + bym_usual03_samples[ , 35+i-1]
 }
 
@@ -2698,8 +2713,11 @@ ridge_code <- nimbleCode({
   
   # Defining likelihood
   for(i in 1:N) { 
-    log(mu[i]) <- log(E[i]) + beta0 + inprod(X[i, 1:p], beta[1:p]) + s[i]
-    y[i] ~ dpois(mu[i]) 
+
+    log(r[i]) <- beta0 + inprod(X[i, 1:p], beta[1:p]) + s[i]
+    mu[i] <- E[i]*r[i]
+    y[i] ~ dpois(mu[i])
+
   }
 })
 
@@ -2714,8 +2732,8 @@ ridge_code <- nimbleCode({
 
 # (1) Define constants that go into CAR prior into a list
 Consts_ridge_01 = list(N = nrow(data.clean),                  # Number of areas
-                     p = ncol(data.clean[5:15]),            # Number of covariates
-                     X = as.matrix(data.clean[, c(5:13)]),  # Matrix of covariates
+                     p = ncol(data.clean[5:ncol(data.clean)]),            # Number of covariates
+                     X = as.matrix(data.clean[, c(5:ncol(data.clean))]),  # Matrix of covariates
                      L = length(adj),                       # Edges (length of adj vector)
                      E = data.clean$Expected,
                      adj = adj,                             # Adjacency matrix
@@ -2726,7 +2744,7 @@ Consts_ridge_01 = list(N = nrow(data.clean),                  # Number of areas
 outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
-Inits_ridge <- list(beta0=500, beta=rep(0, ncol(data.clean[5:15])),
+Inits_ridge <- list(beta0=500, beta=rep(0, ncol(data.clean[5:ncol(data.clean)])),
                     sigma=0.10, lambda=0.5, s=rnorm(nrow(data.clean)))
 
 # Defining model ---------------------------------------------------------------------------------
@@ -2989,7 +3007,7 @@ fitted_ridge01 =matrix(NA, nrow=nrow(ridge01_samples), ncol= nrow(data.clean))
 
 #Loop to generate fitted values
 for(i in 1:nrow(data.clean)){
-  fitted_ridge01[,i]=ridge01_samples[,"beta0"] + as.matrix(data.clean[i,5:21]) %*% t(ridge01_samples[,1:14]) + ridge01_samples[,17+i]
+  fitted_ridge01[,i]=ridge01_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge01_samples[,1:14]) + ridge01_samples[,17+i]
 }
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
@@ -3021,8 +3039,8 @@ cbind(data.clean$Cases,fitted_ridge01_df)
 
 # (1) Define constants that go into CAR prior into a list
 Consts_ridge_02 = list(N = nrow(data.clean),                  # Number of areas
-                     p = ncol(data.clean[5:21]),            # Number of covariates
-                     X = as.matrix(data.clean[, c(5:21)]),  # Matrix of covariates
+                     p = ncol(data.clean[5:ncol(data.clean)]),            # Number of covariates
+                     X = as.matrix(data.clean[, c(5:ncol(data.clean))]),  # Matrix of covariates
                      L = length(adj.3),                       # Edges (length of adj vector)
                      E = data.clean$Expected,
                      adj = adj.3,                             # Adjacency matrix
@@ -3033,7 +3051,7 @@ Consts_ridge_02 = list(N = nrow(data.clean),                  # Number of areas
 outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
-Inits_ridge <- list(beta0=1, beta=rep(0, ncol(data.clean[5:21])),
+Inits_ridge <- list(beta0=1, beta=rep(0, ncol(data.clean[5:ncol(data.clean)])),
                     sigma=1, nu=1, lambda=0.5, s=rnorm(nrow(data.clean)))
 
 
@@ -3295,7 +3313,7 @@ fitted_ridge02 =matrix(NA, nrow=nrow(ridge02_samples), ncol= nrow(data.clean))
 
 #Loop to generate fitted values
 for(i in 1:nrow(data.clean)){
-  fitted_ridge02[,i]=ridge02_samples[,"beta0"] + as.matrix(data.clean[i,5:21]) %*% t(ridge02_samples[,1:14]) + ridge02_samples[,17+i]
+  fitted_ridge02[,i]=ridge02_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge02_samples[,1:14]) + ridge02_samples[,17+i]
 }
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
@@ -3329,8 +3347,8 @@ cbind(data.clean$Cases,fitted_ridge02_df)
 
 # (1) Define constants that go into CAR prior into a list
 Consts_ridge_03 = list(N = nrow(data.clean),                  # Number of areas
-                     p = ncol(data.clean[5:21]),            # Number of covariates
-                     X = as.matrix(data.clean[, c(5:21)]),  # Matrix of covariates
+                     p = ncol(data.clean[5:ncol(data.clean)]),            # Number of covariates
+                     X = as.matrix(data.clean[, c(5:ncol(data.clean))]),  # Matrix of covariates
                      L = length(adj.5),                       # Edges (length of adj vector)
                      E = data.clean$Expected,
                      adj = adj.5,                             # Adjacency matrix
@@ -3341,7 +3359,7 @@ Consts_ridge_03 = list(N = nrow(data.clean),                  # Number of areas
 outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
-Inits_ridge <- list(beta0=1, beta=rep(0, ncol(data.clean[5:21])),
+Inits_ridge <- list(beta0=1, beta=rep(0, ncol(data.clean[5:ncol(data.clean)])),
                     sigma=1, nu=1, lambda=0.5, s=rnorm(nrow(data.clean)))
 
 
@@ -3608,7 +3626,7 @@ fitted_ridge03 =matrix(NA, nrow=nrow(ridge03_samples), ncol= nrow(data.clean))
 
 #Loop to generate fitted values
 for(i in 1:nrow(data.clean)){
-  fitted_ridge03[,i]=ridge03_samples[,"beta0"] + as.matrix(data.clean[i,5:21]) %*% t(ridge03_samples[,1:14]) + ridge03_samples[,17+i]
+  fitted_ridge03[,i]=ridge03_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge03_samples[,1:14]) + ridge03_samples[,17+i]
 }
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
