@@ -258,6 +258,8 @@ data$Pop_density = data$Total_pop/data$Area_km2
 data$Prop_labor = data$Count_labor/data$Total_pop
 data$Prop_male = data$Male_count/data$Total_pop
 data$Prop_female = data$Female_count/data$Total_pop
+data$Prop_poor = data$poor_individuals_000s/data$Total_pop
+data$Prop_poor_household = data$poor_households/data$Num_household
 
 ## 3) Log-transformation of monthly income and education variables
 data$Prop_sec = data$Pct_Sec/100
@@ -346,7 +348,8 @@ shp_HK$SecEduc = data$Prop_sec
 shp_HK$PostSec = data$Prop_postsec
 shp_HK$PropLabor = data$Prop_labor
 shp_HK$PropMaleLabor = data$Pct.Male.Labor
-
+shp_HK$PropPoor = data$Prop_poor
+shp_HK$PropPoorHousehold = data$Prop_poor_household
 
 # Converting shapefile data to dataframe object -------------------------------------------------
 
@@ -843,29 +846,58 @@ data.clean <- data %>%
          # Deaths,
          # Mean.age = Age,
          # Prop.male = P.male,
-         Area_km2,
+         # Area_km2,
          Pop_density,
          Prop_labor,
-         Prop_female_labor,
+         # Prop_female_labor,
          Num_hosp,
          Num_beds,
          Num_household,
-         Pct_0.24,
+         Prop_0.24,
          Prop_25.64,
          Prop_65,
          Prop_female,
          Log_income,
-         Log_sec,
-         Log_postsec,
-         household_poverty_rate,
-         Household_size,
-         Mean_median_age
-         )
+         # Log_sec,
+         Log_postsec)
+         # Household_poverty_rate,
+         # Household_size,
+         # Prop_poor) #highly correlated with log income
+                      #very little variability in household size
+```
 
-# Building vectors that will have neighborhood structure ###########################
+## Poisson Model
+```{r}
+## Poisson model
+cor(subset(data.clean, select = -District)) 
+# Note: Female pop highly collinear with pop of 65+ and post-sec
 
+# Poisson regression
+poi.fit <- glm(Cases ~ Pop_density + Prop_labor + Prop_0.24 + Prop_25.64 + Prop_65 + Prop_female + Log_income + Log_postsec + Num_hosp + Num_beds + Num_household + offset(log(Expected)), data = data.clean, family = poisson(link="log"))
+summary(poi.fit)
+
+# Checking assumption of a Poisson model
+par(mfrow = c(1,2))
+hist(poi.fit$residuals, main="COVID-19", xlab = "Raw residuals") # a bit skewed to the right
+abline(v = 0, lty = 2, col = "red")
+plot(rstandard(poi.fit), ylab = "standardized residuals") #some overdispersed residuals
+abline(h = 0, lty = 2, col = "red")
+par(mfrow = c(1,1))
+
+# Overdispersion
+library(AER)
+library(car)
+dispersiontest(poi.fit, alternative = "greater") #based from the test, there is overdispersion (indicates residual risk even after adjusting for the covariates)
+
+# Model fit
+plot(x = poi.fit$fitted.values, y = data.clean$Cases, 
+     bty="n", xlab="Fitted", ylab="Observed", main = "COVID-19")
+abline(a=0,b=1,lwd=2)
+```
+
+## Building number of neighbors and adjacency lists
+```{r}
 # Converting neighborhood objects to matrix ----------------------------------------
-
 # 1) Having contiguous boundary point
 HK.nbmat.adj <- nb2mat(HK.nb, style = 'B', zero.policy = TRUE) 
 
@@ -874,7 +906,6 @@ HK.nbmat.3 <- nb2mat(HK.nb3, style = 'B', zero.policy = TRUE)
 
 # 3) Having 5 nearest neighbors
 HK.nbmat.5 <- nb2mat(HK.nb5, style = 'B', zero.policy = TRUE) 
-
 
 
 # Number of neighbors per district -------------------------------------------------
@@ -904,8 +935,6 @@ for(i in 1:n){
 #num.nb.5 <- rowSums(HK.nbmat.5)
 
 
-
-
 # Adjacency vectors -----------------------------------------------------------------
 
 # 1) Having contiguous boundary point
@@ -921,9 +950,6 @@ for(i in 2:n){
 #  adj[[i]] <- c(which(HK.nbmat.adj[i,] == 1))
 #}
 
-
-
-
 # 2) Having 3 nearest neighbors 
 adj.3 <- list()
 for(i in 1:n){
@@ -937,8 +963,7 @@ adj.3 <- unlist(adj.3)
 #  adj.3 <- c(adj.3, c(which(HK.nbmat.3[i,] == 1)))
 #}
 
-
- #3) Having 5 nearest neighbors 
+#3) Having 5 nearest neighbors 
 adj.5 <- list()
 for(i in 1:n){
   adj.5[[i]] <- c(which(HK.nbmat.5[i,] == 1))
@@ -950,17 +975,12 @@ adj.5 <- unlist(adj.5)
 #for(i in 2:n){
 #  adj.5 <- c(adj.5, c(which(HK.nbmat.5[i,] == 1)))
 #}
-
-
-
 ```
 
 
-## ICAR
+## CAR Model
 
 **Nimble: iCAR Usual fixed priors model**
-
-
 ```{r  usual code}
 ###################################
 #    Usual fixed priors model     # 
@@ -970,28 +990,26 @@ adj.5 <- unlist(adj.5)
 usual_code <- nimbleCode({ 
 
   # Defining our priors
- beta0 ~ dnorm(0, sd = 100)
+ beta0 ~ dnorm(0, sd = 500)
   
   for(j in 1:p){
-    beta[j] ~ dnorm(0, sd = 100)  # Betas for the covariates
+    beta[j] ~ dnorm(0, sd = 500)  #Betas for the covariates
   }
 
-  sigma2 ~ dinvgamma(1, 0.01)     # Full conditional is good b/c full conditional is IG  --> makes MCMC easier
+  #sigma2 ~ dinvgamma(1, 10) 
+  tau2 ~ dinvgamma(2, 0.10) 
+  #here i set up a prior for tau directly, it makes the MCMC converge better
   
   # Defining transformed parameters
-  tau2 <- 1/sigma2
-  #nu <- sqrt(nu2)                 # Don't need nu
+  #tau2 <- 1/sigma2
+  
   s[1:N] ~ dcar_normal(adj[1:L], weights[1:L], num[1:N], tau2, zero_mean = 1) #CAR prior
   # Spatial effects (dcar is long vector, weights, n neighbors, zero mean = 1 constrains sum to 0)
 
   # Defining likelihood
-  for(i in 1:N) { # inprod (beta1X + beta 2X)?
+  for(i in 1:N) { 
     log(mu[i]) <- log(E[i]) + beta0 + inprod(X[i, 1:p], beta[1:p]) + s[i]
-    y[i] ~ dpois(mu[i]) # we do dpois rmb to define offset inside this or put in log of mean
-    # Notes: Don't need to define prior for mu (nu?), the SD is defined only from the mean for Poisson
-    # Victoire: mu[i] <- beta0 + inprod(X[i,1:p], beta[1:p]) + s[i]   # We still need to define mu
-    # Victoire: y[i] ~ dnorm(mu[i], sd = nu)  # Outcome follows N distribution
-
+    y[i] ~ dpois(mu[i])
   }
 })
 ```
@@ -1008,8 +1026,8 @@ set.seed(1234)
 
 # (1) Define constants that go into CAR prior into a list
 Consts_usual_01 = list(N = nrow(data.clean),                  # Number of areas
-                       p = ncol(data.clean[5:21]),            # Number of covariates
-                       X = as.matrix(data.clean[, c(5:21)]),  # Matrix of covariates
+                       p = ncol(data.clean[5:15]),            # Number of covariates
+                       X = as.matrix(data.clean[, c(5:15)]),  # Matrix of covariates
                        L = length(adj),                       # Edges (length of adj vector)
                        E = data.clean$Expected,
                        adj = adj,                             # Adjacency matrix
@@ -1020,14 +1038,14 @@ Consts_usual_01 = list(N = nrow(data.clean),                  # Number of areas
 outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
-Inits_usual <- list(beta0 = 1,
-                    beta = rep(0, ncol(data.clean[5:21])), 
-                    sigma2 = 1, 
+Inits_usual <- list(beta0 = 150,
+                    beta = rep(0, ncol(data.clean[5:15])), 
+                    #sigma2 = 10, 
+                    tau2 = 0.05,
                     s = rnorm(num.nb)) # S sampled from N dist (do we sample ours from poisson?)
 
 
-
-# Defining model --------------------------------------------------------------------------------------------
+# Defining model -------------------------------------------------------------------------------
 
 # (1) Define the usual fixed prior model for nimble
 usual01_model <- nimbleModel(code = usual_code, constants = Consts_usual_01, data = outcome, inits = Inits_usual)
@@ -1037,7 +1055,7 @@ usual01_Cmodel <- compileNimble(usual01_model,
                               showCompilerOutput = TRUE)      
 
 # (3) Configure the MCMC chain
-usual01_conf <- configureMCMC(usual01_model, monitors = c( 'beta0', 'beta', 'sigma2', 's'))
+usual01_conf <- configureMCMC(usual01_model, monitors = c( 'beta0', 'beta', 'tau2', 's'))
 
 # (4) Do something
 usual01_conf$printSamplers()
@@ -1049,14 +1067,14 @@ usual01_MCMC <- buildMCMC(usual01_conf, enableWAIC = T)
 usual01_CMCMC <- compileNimble(usual01_MCMC, project = usual01_Cmodel)  
 
 # (7) Run the model
-usual01_runMCMC <- runMCMC(usual01_CMCMC, nburnin = 10000, niter = 200000, nchains = 2, thin = 25, WAIC = T)
+usual01_runMCMC <- runMCMC(usual01_CMCMC, niter = 200000, nburnin = 10000, thin = 25, nchains = 2, WAIC = T)
 
 # (8) Check convergence
 usual01_samples = rbind(usual01_runMCMC$samples[[1]], usual01_runMCMC$samples[[2]])
+```
 
 
-
-
+```{r}
 # Plot the MCMC chains----------
 #beta0
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
@@ -1073,11 +1091,11 @@ plot(main = paste(names(data.clean[10])), usual01_samples[,"beta[6]"] , type = "
 plot(main = paste(names(data.clean[11])), usual01_samples[,"beta[7]"] , type = "l", ylab = "")
 plot(main = paste(names(data.clean[12])), usual01_samples[,"beta[8]"] , type = "l", ylab = "")
 plot(main = paste(names(data.clean[13])), usual01_samples[,"beta[9]"] , type = "l", ylab = "")
-plot(main = paste(names(data.clean[14])),usual01_samples[,"beta[10]"] , type = "l", ylab = "")
-plot(main = paste(names(data.clean[15])),usual01_samples[,"beta[11]"] , type = "l", ylab = "")
-plot(main = paste(names(data.clean[16])),usual01_samples[,"beta[12]"] , type = "l", ylab = "")
-plot(main = paste(names(data.clean[17])),usual01_samples[,"beta[13]"] , type = "l", ylab = "")
-plot(main = paste(names(data.clean[18])),usual01_samples[,"beta[14]"] , type = "l", ylab = "")
+plot(main = paste(names(data.clean[14])), usual01_samples[,"beta[10]"] , type = "l", ylab = "")
+plot(main = paste(names(data.clean[15])), usual01_samples[,"beta[11]"] , type = "l", ylab = "")
+#plot(main = paste(names(data.clean[16])),usual01_samples[,"beta[12]"] , type = "l", ylab = "")
+#plot(main = paste(names(data.clean[17])),usual01_samples[,"beta[13]"] , type = "l", ylab = "")
+#plot(main = paste(names(data.clean[18])),usual01_samples[,"beta[14]"] , type = "l", ylab = "")
 
 #sigma squared
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
@@ -1104,8 +1122,6 @@ plot(main = paste(data.clean$District[15]), usual01_samples[,"s[15]"], type = "l
 plot(main = paste(data.clean$District[16]), usual01_samples[,"s[16]"], type = "l")
 plot(main = paste(data.clean$District[17]), usual01_samples[,"s[17]"], type = "l")
 plot(main = paste(data.clean$District[18]), usual01_samples[,"s[18]"], type = "l")
-
-
 
 
 # Plot the density curves for posterior -------------
@@ -2665,13 +2681,13 @@ cbind(data.clean$Cases,fitted_bym_usual03_df)
 ridge_code <- nimbleCode({ 
   
   # Defining our priors
-  beta0 ~ dnorm(0, sd = 10)
+  beta0 ~ dnorm(0, sd = 1000)
   
   for(j in 1:p){
-    beta[j] ~ dnorm(0, sd=nu*sqrt(1/lambda))  # Betas for the covariates
+    beta[j] ~ dnorm(0, sd=1*sqrt(1/lambda))  # Betas for the covariates
   }
-   nu ~ T(dt(0, 1, 1),0,) 
- # nu <- 1                  # Half-Cauchy priors for conditional std-dev & tuning param
+  #nu ~ T(dt(0, 1, 1),0,) 
+  #nu <- 1                  # Half-Cauchy priors for conditional std-dev & tuning param
   sigma ~ T(dt(0, 1, 1),0,) 
   lambda ~ T(dt(0, 1, 1),0,)
 
@@ -2700,8 +2716,8 @@ ridge_code <- nimbleCode({
 
 # (1) Define constants that go into CAR prior into a list
 Consts_ridge_01 = list(N = nrow(data.clean),                  # Number of areas
-                     p = ncol(data.clean[5:21]),            # Number of covariates
-                     X = as.matrix(data.clean[, c(5:21)]),  # Matrix of covariates
+                     p = ncol(data.clean[5:15]),            # Number of covariates
+                     X = as.matrix(data.clean[, c(5:15)]),  # Matrix of covariates
                      L = length(adj),                       # Edges (length of adj vector)
                      E = data.clean$Expected,
                      adj = adj,                             # Adjacency matrix
@@ -2712,24 +2728,21 @@ Consts_ridge_01 = list(N = nrow(data.clean),                  # Number of areas
 outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
-Inits_ridge <- list(beta0=1, beta=rep(0, ncol(data.clean[5:21])),
-                    sigma=1, nu=1, lambda=0.5, s=rnorm(nrow(data.clean)))
+Inits_ridge <- list(beta0=500, beta=rep(0, ncol(data.clean[5:15])),
+                    sigma=0.10, lambda=0.5, s=rnorm(nrow(data.clean)))
 
-
-
-
-
-# Defining model --------------------------------------------------------------------------------------------
+# Defining model ---------------------------------------------------------------------------------
 
 # (1) Define ridge nimble model
-ridge01_model=nimbleModel(code=ridge_code, constants=Consts_ridge_01, data=outcome, inits=Inits_ridge)
+ridge01_model = nimbleModel(code=ridge_code, constants=Consts_ridge_01, data=outcome,
+                            inits=Inits_ridge)
 
 # (2) Compile ridge model for nimble
 ridge01_Cmodel=compileNimble(ridge01_model)
 
 # (3) Configure the MCMC chain
 ridge01_conf <- configureMCMC(ridge01_model, 
-                              monitors = c('beta0',"beta", 'nu' ,'sigma', "lambda", 's'))
+                              monitors = c('beta0',"beta", 'sigma', "lambda", 's'))
 
 # (4) Do something
 ridge01_conf$printSamplers()
@@ -2745,11 +2758,10 @@ ridge01_runMCMC=runMCMC(ridge01_CMCMC, nburnin=50000, niter=200000, nchains=2, t
 
 # (8) Check convergence
 ridge01_samples=rbind(ridge01_runMCMC$samples[[1]], ridge01_runMCMC$samples[[2]])
+```
 
 
-
-
-
+```{r}
 # Plot the MCMC chains----------
 
 
