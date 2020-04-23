@@ -1060,7 +1060,9 @@ Consts_usual_01 = list(N = nrow(data.clean),                  # Number of areas
 outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
+
 Inits_usual <- list(beta0 = -21,
+
                     beta = rep(0, ncol(data.clean[, 5:ncol(data.clean)])), 
                     sigma2 = 1, 
                     #tau2 = 0.1,
@@ -1276,10 +1278,12 @@ for(i in 1:nrow(data.clean)){
 fitted_usual_01_dist <- data.clean$Expected * exp(fitted_usual01)
 
 # Mean fitted values
+
 fitted_usual_01 <- apply(fitted_usual_01_dist, 2, mean)
 
 # 95% CrI
 fitted_usual_01_CrI <- t(apply(fitted_usual_01_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+
 
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
@@ -1781,6 +1785,7 @@ fitted_usual_03 <- apply(fitted_usual_03_dist, 2, mean)
 
 # 95% CrI
 fitted_usual_03_CrI <- t(apply(fitted_usual_03_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+
 
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
@@ -2390,11 +2395,13 @@ for(i in 1:nrow(data.clean)){
 # Fitted values - distribution
 fitted_bym_usual_02_dist <- data.clean$Expected * exp(fitted_bym_usual02)
 
+
 # Mean fitted values
 fitted_bym_usual_02 <- apply(fitted_bym_usual_02_dist, 2, mean)
 
 # 95% CrI
 fitted_bym_usual_02_CrI <- t(apply(fitted_bym_usual_02_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+
 
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
@@ -2679,11 +2686,13 @@ for(i in 1:nrow(data.clean)){
 # Fitted values - distribution
 fitted_bym_usual_03_dist <- data.clean$Expected * exp(fitted_bym_usual03)
 
+
 # Mean fitted values
 fitted_bym_usual_03 <- apply(fitted_bym_usual_03_dist, 2, mean)
 
 # 95% CrI
 fitted_bym_usual_03_CrI <- t(apply(fitted_bym_usual_03_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+
 
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
@@ -3033,6 +3042,7 @@ for(i in 1:nrow(data.clean)){
 # Fitted values - distribution
 fitted_bym_usual_03_dist <- data.clean$Expected * exp(fitted_ridge01)
 
+
 # Mean fitted values
 fitted_bym_usual_03 <- apply(fitted_bym_usual_03_dist, 2, mean)
 
@@ -3042,6 +3052,8 @@ fitted_bym_usual_03_CrI <- t(apply(fitted_bym_usual_03_dist, 2, function(x) quan
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
 fitted_ridge01_df <- cbind(fitted_bym_usual_03,fitted_bym_usual_03_CrI )
+
+
 
 # Renaming columns
 colnames(fitted_ridge01_df) <- c("fitted_mean_ridge01", "fitted_lower_ridge01" , "fitted_upper_ridge01")
@@ -3349,6 +3361,7 @@ for(i in 1:nrow(data.clean)){
 # Fitted values - distribution
 fitted_bym_usual_03_dist <- data.clean$Expected * exp(fitted_ridge02)
 
+
 # Mean fitted values
 fitted_bym_usual_03 <- apply(fitted_bym_usual_03_dist, 2, mean)
 
@@ -3358,6 +3371,7 @@ fitted_bym_usual_03_CrI <- t(apply(fitted_bym_usual_03_dist, 2, function(x) quan
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
 fitted_ridge02_df <- cbind(fitted_bym_usual_03,fitted_bym_usual_03_CrI )
+
 
 # Renaming columns
 colnames(fitted_ridge02_df) <- c("fitted_mean_ridge02", "fitted_lower_ridge02" , "fitted_upper_ridge02")
