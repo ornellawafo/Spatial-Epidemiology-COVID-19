@@ -886,8 +886,7 @@ for(i in 1:nrow(data.clean)){
 
 }
 
-# Fitted values - distribution
-fitted_usual_01_dist <- data.clean$Expected * exp(fitted_usual01)
+
 
 
 # Mean fitted SIR
@@ -1119,17 +1118,17 @@ for(i in 1:nrow(data.clean)){
     t(usual02_samples[,1:8]) + usual02_samples[, 10+i-1] 
 }
 
-# Fitted values - distribution
-fitted_usual02_dist <- data.clean$Expected * exp(fitted_usual02)
+
 
 # Mean fitted SIR
 fitted_SIR_usual02 <- exp(apply(fitted_usual02, 2, mean))
 
-# Mean fitted Cases
-fitted_usual02 <- fitted_SIR_usual02*data.clean$Expected
-
 # 95% CrI SIR
 fitted_usual02_CrI_SIR <- t(exp(apply(fitted_usual02, 2, function(x) quantile(x, probs=c(0.025, 0.975)))))
+
+# Mean fitted Cases
+fitted_usual_02 <- fitted_SIR_usual02*data.clean$Expected
+
 
 # 95% CrI Cases
 fitted_usual02_CrI <-  data.clean$Expected *fitted_usual02_CrI_SIR
@@ -1138,7 +1137,7 @@ fitted_usual02_CrI <-  data.clean$Expected *fitted_usual02_CrI_SIR
 fitted_usual02_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2), 
                                 "Fitted SIR"     =  round(fitted_SIR_usual02,2), 
                                 "Observed Cases" =  round(data.clean$Cases), 
-                                "Fitted Cases" =  round(fitted_usual02), 
+                                "Fitted Cases" =  round(fitted_usual_02), 
                                 "CrI LL"    =  round(fitted_usual02_CrI[,1]),
                                 "CrI UL"    =  round(fitted_usual02_CrI[,2]))
 
@@ -1362,18 +1361,15 @@ for(i in 1:nrow(data.clean)){
 
     t(usual03_samples[,1:8]) + usual03_samples[, 10+i-1] 
 }
-# Fitted values - distribution
-fitted_usual03_dist <- data.clean$Expected * exp(fitted_usual03)
-
 
 # Mean fitted SIR
 fitted_SIR_usual03 <- exp(apply(fitted_usual03, 2, mean))
 
-# Mean fitted Cases
-fitted_usual03 <- fitted_SIR_usual03*data.clean$Expected
-
 # 95% CrI SIR
 fitted_usual03_CrI_SIR <- t(exp(apply(fitted_usual03, 2, function(x) quantile(x, probs=c(0.025, 0.975)))))
+
+# Mean fitted Cases
+fitted_usual_03 <- fitted_SIR_usual03*data.clean$Expected
 
 # 95% CrI Cases
 fitted_usual03_CrI <-  data.clean$Expected *fitted_usual_03_CrI_SIR
@@ -1382,7 +1378,7 @@ fitted_usual03_CrI <-  data.clean$Expected *fitted_usual_03_CrI_SIR
 fitted_usual03_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2), 
                                 "Fitted SIR"     =  round(fitted_SIR_usual03,2), 
                                 "Observed Cases" =  round(data.clean$Cases), 
-                                "Fitted Cases" =  round(fitted_usual03), 
+                                "Fitted Cases" =  round(fitted_usual_03), 
                                 "CrI LL"    =  round(fitted_usual03_CrI[,1]),
                                 "CrI UL"    =  round(fitted_usual03_CrI[,2]))
 
@@ -1650,11 +1646,12 @@ for(i in 1:nrow(data.clean)){
 # Mean fitted SIR
 fitted_SIR_bym_usual01 <- exp(apply(fitted_bym_usual01, 2, mean))
 
-# Mean fitted Cases
-fitted_bym_usual01 <- fitted_SIR_bym_usual01*data.clean$Expected
-
 # 95% CrI SIR
 fitted_bym_usual01_CrI_SIR <- t(exp(apply(fitted_bym_usual01, 2, function(x) quantile(x, probs=c(0.025, 0.975)))))
+
+
+# Mean fitted Cases
+fitted_bym_usual_01 <- fitted_SIR_bym_usual01*data.clean$Expected
 
 # 95% CrI Cases
 fitted_bym_usual01_CrI <-  data.clean$Expected *fitted_bym_usual01_CrI_SIR
@@ -1663,7 +1660,7 @@ fitted_bym_usual01_CrI <-  data.clean$Expected *fitted_bym_usual01_CrI_SIR
 fitted_bym_usual01_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2), 
                                 "Fitted SIR"     =  round(fitted_SIR_bym_usual01,2), 
                                 "Observed Cases" =  round(data.clean$Cases), 
-                                "Fitted Cases" =  round(fitted_bym_usual01), 
+                                "Fitted Cases" =  round(fitted_bym_usual_01), 
                                 "CrI LL"    =  round(fitted_bym_usual01_CrI[,1]),
                                 "CrI UL"    =  round(fitted_bym_usual01_CrI[,2]))
 
@@ -1909,20 +1906,21 @@ fitted_bym_usual02_dist <- data.clean$Expected * exp(fitted_bym_usual02)
 # Mean fitted SIR
 fitted_SIR_bym_usual02 <- exp(apply(fitted_bym_usual02, 2, mean))
 
+# 95% CrI Cases
+fitted_bym_usual02_CrI <-  data.clean$Expected *fitted_bym_usual02_CrI_SIR
+
 # Mean fitted Cases
-fitted_bym_usual02 <- fitted_SIR_bym_usual02*data.clean$Expected
+fitted_bym_usual_02 <- fitted_SIR_bym_usual02*data.clean$Expected
 
 # 95% CrI SIR
 fitted_bym_usual02_CrI_SIR <- t(exp(apply(fitted_bym_usual02, 2, function(x) quantile(x, probs=c(0.025, 0.975)))))
 
-# 95% CrI Cases
-fitted_bym_usual02_CrI <-  data.clean$Expected *fitted_bym_usual02_CrI_SIR
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
 fitted_bym_usual02_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2), 
                                 "Fitted SIR"     =  round(fitted_SIR_bym_usual02,2), 
                                 "Observed Cases" =  round(data.clean$Cases), 
-                                "Fitted Cases" =  round(fitted_bym_usual02), 
+                                "Fitted Cases" =  round(fitted_bym_usual_02), 
                                 "CrI LL"    =  round(fitted_bym_usual02_CrI[,1]),
                                 "CrI UL"    =  round(fitted_bym_usual02_CrI[,2]))
 
@@ -2160,18 +2158,16 @@ for(i in 1:nrow(data.clean)){
   + bym_usual03_samples[, 10+i-1] 
   + bym_usual03_samples[ , 29+i-1]
 }
-# Fitted values - distribution
-fitted_bym_usual03_dist <- data.clean$Expected * exp(fitted_bym_usual03)
 
 
 # Mean fitted SIR
 fitted_SIR_bym_usual03 <- exp(apply(fitted_bym_usual03, 2, mean))
 
-# Mean fitted Cases
-fitted_bym_usual03 <- fitted_SIR_bym_usual03*data.clean$Expected
-
 # 95% CrI SIR
 fitted_bym_usual03_CrI_SIR <- t(exp(apply(fitted_bym_usual03, 2, function(x) quantile(x, probs=c(0.025, 0.975)))))
+
+# Mean fitted Cases
+fitted_bym_usual_03 <- fitted_SIR_bym_usual03*data.clean$Expected
 
 # 95% CrI Cases
 fitted_bym_usual03_CrI <-  data.clean$Expected *fitted_bym_usual03_CrI_SIR
