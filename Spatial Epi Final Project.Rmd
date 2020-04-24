@@ -2426,79 +2426,82 @@ ridge01_runMCMC$WAIC
 ```{r Ridge Adjacency Summaries}
 # (10) Posterior summaries: Means and CrI  --------------------------------------------------------
 
-#Calculating the Beta means (beta0 included, last variable)
+################### Beta's
+
+# 1- Calculating the Beta means (beta0 included, last variable)
 means_betas_ridge01 <- apply(ridge01_samples[,1:9],2, mean)
 
-#Calculating the Beta 95% CrI 
+# 2- Calculating the Beta 95% CrI 
 CrI_betas_ridge01 <- t(apply(ridge01_samples[ ,1:9],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
-#Combining the means and CIs into a dataframe
+# 3- Combining the means and CIs into a dataframe
 mean_CrI_betas_ridge01 <- t(matrix(c(means_betas_ridge01, CrI_betas_ridge01), ncol=9, nrow = 3, byrow=T)) %>% as.data.frame()
 
-#Renaming the columns
+# 4- Renaming the columns
 colnames(mean_CrI_betas_ridge01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
-# Converting means and CrIs from log to regular scale
+# 5- Converting means and CrIs from log to regular scale
 exp(mean_CrI_betas_ridge01)
 
 ################### Spatial effect per region
 
-#Calculating the S means
+# 1- Calculating the S means
 means_s_ridge01 <- apply(ridge01_samples[ ,11:28],2, mean)
 
-#Calculating the Beta 95% CrI 
+# 2- Calculating the S 95% CrI 
 CrI_s_ridge01 <- t(apply(ridge01_samples[ ,11:28],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
-#Combining the means and CIs into a dataframe
+# 3- Combining the means and CIs into a dataframe
 mean_CrI_s_ridge01 <- cbind(means_s_ridge01, CrI_s_ridge01) %>% as.data.frame()
 
-#Renaming the columns
+# 4- Renaming the columns
 colnames(mean_CrI_s_ridge01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
-# Converting means and CrIs from log to regular scale
+# 5- Converting means and CrIs from log to regular scale
 exp(mean_CrI_s_ridge01)
 
 ################### Sigma
 
-#Calculating the sigma means
+# 1- Calculating the sigma means
 means_sigma_ridge01 <- mean(ridge01_samples[ ,29])
 
-#Calculating the Beta 95% CrI 
+# 2- Calculating the sigma 95% CrI 
 CrI_sigma_ridge01 <- t(quantile(ridge01_samples[ ,29], probs=c(0.025,0.975)))
 
-#Combining the means and CIs into a dataframe
+# 3- Combining the means and CIs into a dataframe
 mean_CrI_sigma_ridge01 <- cbind(means_sigma_ridge01, CrI_sigma_ridge01) %>% as.data.frame()
 
-#Renaming the columns
+# 4- Renaming the columns
 colnames(mean_CrI_sigma_ridge01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
-# Consigmaerting means and CrIs from log to regular scale
+# 5- Converting means and CrIs from log to regular scale
 exp(mean_CrI_sigma_ridge01)
 
 ################## Lambda
 
-mean_beta0_ridge01 <- mean(ridge01_samples[ ,"lambda"])
+# 1- Calculating the lambda means
+mean_lambda_ridge01 <- mean(ridge01_samples[ ,"lambda"])
 
-#Calculating the Beta 95% CrI 
-CrI_beta0_ridge01 <- t(quantile(ridge01_samples[ , "lambda"], probs=c(0.025,0.975)))
+# 2- Calculating the Beta 95% CrI 
+CrI_lambda_ridge01 <- t(quantile(ridge01_samples[ , "lambda"], probs=c(0.025,0.975)))
 
-#Combining the means and CIs into a dataframe
-mean_CrI_beta0_ridge01 <- cbind(mean_beta0_ridge01, CrI_beta0_ridge01) %>% as.data.frame()
+# 3- Combining the means and CIs into a dataframe
+mean_CrI_lambda_ridge01 <- cbind(mean_lambda_ridge01, CrI_lambda_ridge01) %>% as.data.frame()
 
-#Renaming the columns
-colnames(mean_CrI_beta0_ridge01) <- c("Mean", "95% CrI LL", "95% CrI UL")
+# 4- Renaming the columns
+colnames(mean_CrI_lambda_ridge01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
-# Converting means and CrIs from log to regular scale
-exp(mean_CrI_beta0_ridge01)
+# 5- Converting means and CrIs from log to regular scale
+exp(mean_CrI_lambda_ridge01)
 
 # (11) Fitted values  ----------------------------------------------------------------------------
-
+ 
 # Creating matrix to store fitted values
 fitted_ridge01 = matrix(NA, nrow=nrow(ridge01_samples), ncol= nrow(data.clean))
 
 # Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
-  fitted_ridge01[,i] = ridge01_samples[,"beta0"] + 
+    fitted_ridge01[,i] = ridge01_samples[,"beta0"] + 
     as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge01_samples[,1:8]) + 
     ridge01_samples[, 11+i-1] }
 
@@ -2712,7 +2715,7 @@ exp(mean_CrI_s_ridge02)
 
 ################### Sigma
 
-#Calculating the sigma means
+# Calculating the sigma means 
 means_sigma_ridge02 <- mean(ridge02_samples[ ,29])
 
 #Calculating the Beta 95% CrI 
