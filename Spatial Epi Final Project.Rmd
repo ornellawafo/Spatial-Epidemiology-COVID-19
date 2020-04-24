@@ -208,9 +208,6 @@ summary(data.clean)
 ```{r Correlation matrix and pairs plot, echo = F}
 # Correlation matrix
 cor(subset(data.clean, select = -District))
-
-# Pairs plot
-pairs(subset(data.clean, select = -District))
 ```
 
 ```{r Histograms of selected variables, echo = F}
@@ -627,41 +624,7 @@ poi.fit6 <- glm(Cases ~ household_poverty_rate + offset(log(Expected)),
 poi.fit7 <- glm(Cases ~ st_pop_density + Prop_female + Prop_0.24 + Prop_25.64 + Prop_65 + 
                 Prop_labor + beds_per_hosp + household_poverty_rate + offset(log(Expected)), 
                 data = data.clean, family = poisson(link="log"))
-
-# Summaries of regression
-summary(poi.fit1)
-summary(poi.fit2)
-summary(poi.fit3)
-summary(poi.fit4)
-summary(poi.fit5)
-summary(poi.fit6)
-summary(poi.fit7)
-
-# Table of univariate and multivariate comparison
-coef.uni <- round(c(poi.fit1$coefficient[2], poi.fit2$coefficient[2], poi.fit3$coefficient[2],
-                    poi.fit3$coefficient[3], poi.fit3$coefficient[4], poi.fit4$coefficient[2],
-                    poi.fit5$coefficient[2], poi.fit6$coefficient[2]))
-coef.uni.se <- c(0.047992, 5.394, 136.9, 136.9, 136.9, 2.353, 0.0002422, -0.16196)
-coef.multi <- round(c(poi.fit7$coefficient[2], poi.fit7$coefficient[3], poi.fit7$coefficient[4],
-                      poi.fit7$coefficient[5], poi.fit7$coefficient[6], poi.fit7$coefficient[7],
-                      poi.fit7$coefficient[8], poi.fit7$coefficient[9]))
-coef.multi.se <- c(9.583e-02, 1.434e+01, 1.720e+02, 1.670e+02, 1.704e+02, 6.470e+00, 1.645e-04, 4.499e-02)
-uni.analysis <- data.frame("Univariate estimate" = coef.uni, "SE" = coef.uni.se,
-                           "Multivariate estimate" = coef.multi, "SE" = coef.multi.se)
 ```
-
-**Table 1.** Comparison of parameter estimates of simple and multiple linear regressions
-
-| Variable | Univariate estimate, $\hat{\beta}$ (SE) | Multivariate estimate, $\hat{\beta}$ (SE) |
-|:-------- | :---------------------- | :---------------------- |
-| st_pop_density | `r round(poi.fit1$coefficient[2], 2)` (0.047992) | `r round(Q3d.regression$coefficient[2], 2)` [-1.78, -0.49] |
-| Prop_female  | `r round(poi.fit2$coefficient[2], 2)` [-1.60, 1.55] | `r round(Q3d.regression$coefficient[3], 2)` [1.56, 2.86] |
-| Prop_0.24 | `r round(poi.fit3$coefficient[2], 2)` [6.29, 7.93] | `r round(Q3d.regression$coefficient[4], 2)` [-0.19, 1.95] |
-| Prop_25.64 | `r round(poi.fit3$coefficient[2], 2)` [2.71, 3.23] | `r round(Q3d.regression$coefficient[5], 2)` [2.62, 3.62] |
-| Prop_65 | `r round(poi.fit3$coefficient[2], 2)`
-| Prop_labor | `r round(poi.fit4$coefficient[2], 2)`
-| beds_per_hosp | `r round(poi.fit5$coefficient[2], 2)`
-| household_poverty_rate | `r round(poi.fit6$coefficient[2], 2)`
 
 ```{r Morans test, echo = F, results = T}
 # Moran test for SIR -----------------------------------------------------------------------------
