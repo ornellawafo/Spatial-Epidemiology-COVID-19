@@ -2813,11 +2813,8 @@ plot(main = paste(data.clean$District[18]), density(ridge02_samples[,"s[18]"]))
 
 ```{r Summaries}
 
-
-
 # (9) WAIC ---------
 ridge02_runMCMC$WAIC
-
 
 
 
@@ -3013,7 +3010,9 @@ ridge03_samples=rbind(ridge03_runMCMC$samples[[1]], ridge03_runMCMC$samples[[2]]
 
 
 
+```
 
+```{r Ridge K=5 Plots}
 # Plot the MCMC chains----------
 
 
@@ -3134,7 +3133,9 @@ plot(main = paste(data.clean$District[18]), density(ridge03_samples[,"s[18]"]))
 
 
 
+```
 
+```{r Ridge K=5 Summaries}
 
 
 # (9) WAIC ---------
