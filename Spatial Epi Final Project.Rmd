@@ -2020,7 +2020,7 @@ plot(main = paste(data.clean$District[18]), density(bym_usual02_samples[,"s[18]"
 **Neighborhood structure 3: Distance-based neighbors (k = 5)**
 
 
-```{r Nimble BYMCAR K5}
+```{r BYMCAR K=5 Model}
 
 # Defining the data that goes into the model ----------------------------------------------------------------
 
@@ -2070,7 +2070,10 @@ bym_usual03_runMCMC <- runMCMC(bym_usual03_CMCMC, nburnin = 10000, niter = 20000
 
 # (8) Check convergence
 bym_usual03_samples = rbind(bym_usual03_runMCMC$samples[[1]], bym_usual03_runMCMC$samples[[2]])
+```
 
+
+```{r BYM K=5 Summaries}
 # Results ----------------------------------------------------------------------------------------
 
 # (9) WAIC ---------------------------------------------------------------------------------------
@@ -2190,7 +2193,7 @@ head(fitted_bym_usual03_df)
 ```
 
 
-```{r MCMC chains, echo = F}
+```{r BYM K=5 MCMC chains, echo = F}
 # beta0
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
 plot(main ="Intercept", bym_usual03_samples[,"beta0"], type = "l")
@@ -2234,7 +2237,7 @@ plot(main = paste(data.clean$District[18]), bym_usual03_samples[,"s[18]"], type 
 ```
 
 
-```{r Posterior density curves, echo = F}
+```{r BYM K=5 Posterior density curves, echo = F}
 # beta0
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
 plot(main ="Intercept", density(bym_usual03_samples[,"beta0"]))
@@ -2370,7 +2373,7 @@ ridge01_runMCMC=runMCMC(ridge01_CMCMC, nburnin=50000, niter=200000, nchains=2, t
 ridge01_samples=rbind(ridge01_runMCMC$samples[[1]], ridge01_runMCMC$samples[[2]])
 ```
 
-```{r}
+```{r Ridge Adjacency Plots}
 # Plot the MCMC chains----------
 
 #sigma squared
@@ -2491,9 +2494,9 @@ plot(main = paste(data.clean$District[18]), density(ridge01_samples[,"s[18]"]))
 
 
 
+```
 
-
-
+```{r Ridge AdjacencySummaries}
 
 # (9) WAIC ---------
 ridge01_runMCMC$WAIC
@@ -2690,7 +2693,7 @@ ridge02_samples=rbind(ridge02_runMCMC$samples[[1]], ridge02_runMCMC$samples[[2]]
 
 ```
 
-```{r Plots}
+```{r Ridge K = 3 Plots}
 
 # Plot the MCMC chains----------
 
@@ -2811,7 +2814,7 @@ plot(main = paste(data.clean$District[18]), density(ridge02_samples[,"s[18]"]))
 
 ```
 
-```{r Summaries}
+```{r Ridge K = 3 Summaries}
 
 # (9) WAIC ---------
 ridge02_runMCMC$WAIC
