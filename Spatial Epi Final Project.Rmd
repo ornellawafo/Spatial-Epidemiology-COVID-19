@@ -772,7 +772,7 @@ usual_code <- nimbleCode({
 
 **Neighborhood structure 1: Adjacency-based neighbors**
 
-```{r iCAR Adjacency-based, echo = F, results = F}
+```{r iCAR Adjacency-based Model, echo = F, results = F}
 # Defining the data that goes into the model -----------------------------------------------------
 
 # (1) Define constants that go into CAR prior into a list
@@ -820,6 +820,10 @@ usual01_runMCMC <- runMCMC(usual01_CMCMC, niter = 200000, nburnin = 15000, thin 
 
 # (8) Check convergence
 usual01_samples = rbind(usual01_runMCMC$samples[[1]], usual01_runMCMC$samples[[2]])
+
+```
+
+```{r iCAR Adjacency  Summaries}
 # Results ----------------------------------------------------------------------------------------
 
 # (9) WAIC ---------------------------------------------------------------------------------------
@@ -886,32 +890,41 @@ fitted_usual01 = matrix(NA, nrow=nrow(usual01_samples), ncol= nrow(data.clean))
 # Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
   fitted_usual01[,i] = usual01_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% 
-    t(usual01_samples[,1:8]) + usual01_samples[, 8+i-1] 
+
+    t(usual01_samples[,1:8]) + usual01_samples[, 10+i-1] 
+
 }
 
-# Fitted values - distribution
-fitted_usual_01_dist <- data.clean$Expected * exp(fitted_usual01)
 
-# Mean fitted values
-fitted_usual_01 <- apply(fitted_usual_01_dist, 2, mean)
 
-# 95% CrI
-fitted_usual_01_CrI <- t(apply(fitted_usual_01_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+
+# Mean fitted SIR
+fitted_SIR_usual01 <- exp(apply(fitted_usual01, 2, mean))
+
+# Mean fitted Cases
+fitted_usual_01 <- fitted_SIR_usual01*data.clean$Expected
+
+# 95% CrI SIR
+fitted_usual_01_CrI_SIR <- t(exp(apply(fitted_usual01, 2, function(x) quantile(x, probs=c(0.025, 0.975)))))
+
+# 95% CrI Cases
+fitted_usual_01_CrI <-  data.clean$Expected *fitted_usual_01_CrI_SIR
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_usual01_df <- cbind(fitted_usual_01,fitted_usual_01_CrI )
+fitted_usual01_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2), 
+                                "Fitted SIR"     =  round(fitted_SIR_usual01,2), 
+                                "Observed Cases" =  round(data.clean$Cases), 
+                                "Fitted Cases" =  round(fitted_usual_01), 
+                                "CrI LL"    =  round(fitted_usual_01_CrI[,1]),
+                                "CrI UL"    =  round(fitted_usual_01_CrI[,2]))
 
-# Renaming columns
-colnames(fitted_usual01_df) <- c("fitted_mean_usual01", "fitted_lower_usual01" , "fitted_upper_usual01")
 
 # Top 6 rows
 head(fitted_usual01_df)
 
-# Predicted vs observed cases
-cbind(Observed=data.clean$Cases,fitted_usual01_df)
 ```
 
-```{r MCMC chains, echo = F}
+```{r iCAR Adjacency  MCMC chains, echo = F}
 # beta0
 par(mfrow=c(1,1), mar=c(5, 4, 4, 2) + 0.1)
 plot(main ="Intercept", usual01_samples[,"beta0"], type ="l")
@@ -953,7 +966,7 @@ plot(main = paste(data.clean$District[17]), usual01_samples[,"s[17]"], type = "l
 plot(main = paste(data.clean$District[18]), usual01_samples[,"s[18]"], type = "l")
 ```
 
-```{r Posterior density curves, echo = F}
+```{r iCAR Adjacency  Posterior density curves, echo = F}
 # beta0
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
 plot(main ="Intercept", density(usual01_samples[,"beta0"]))
@@ -996,7 +1009,7 @@ plot(main = paste(data.clean$District[18]), density(usual01_samples[,"s[18]"]))
 ```
 
 **Neighborhood structure 2: Distance-based neighbors (k = 3)**
-```{r iCAR K3}
+```{r iCAR K=3  Model}
 # Defining the data that goes into the model ----------------------------------------------------------------
 
 # (1) Define constants that go into CAR prior into a list
@@ -1043,7 +1056,9 @@ usual02_runMCMC <- runMCMC(usual02_CMCMC, nburnin = 10000, niter = 200000, nchai
 
 # (8) Check convergence
 usual02_samples = rbind(usual02_runMCMC$samples[[1]], usual02_runMCMC$samples[[2]])
+```
 
+```{r iCAR K=3  Summaries}
 # Results ----------------------------------------------------------------------------------------
 
 # (9) WAIC ---------------------------------------------------------------------------------------
@@ -1055,6 +1070,7 @@ usual02_runMCMC$WAIC
 
 # Calculating the Beta means
 means_betas_usual_02=apply(usual02_samples[,1:8],2, mean)
+
 
 # Calculating the Beta 95% CrI 
 CrI_betas_usual_02=t(apply(usual02_samples[ ,1:8],2, function(x) quantile(x, probs=c(0.025,0.975))))
@@ -1110,32 +1126,40 @@ fitted_usual02 = matrix(NA, nrow=nrow(usual02_samples), ncol= nrow(data.clean))
 # Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
   fitted_usual02[,i] = usual02_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% 
-    t(usual02_samples[,1:8]) + usual02_samples[, 8+i-1] 
+    t(usual02_samples[,1:8]) + usual02_samples[, 10+i-1] 
 }
 
-# Fitted values - distribution
-fitted_usual_02_dist <- data.clean$Expected * exp(fitted_usual02)
 
-# Mean fitted values
-fitted_usual_02 <- apply(fitted_usual_02_dist, 2, mean)
 
-# 95% CrI
-fitted_usual_02_CrI <- t(apply(fitted_usual_02_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+# Mean fitted SIR
+fitted_SIR_usual02 <- exp(apply(fitted_usual02, 2, mean))
 
-# Creating dataframe to store fitted values and quantiles in regular svale
-fitted_usual02_df <- cbind(fitted_usual_02,fitted_usual_02_CrI)
+# 95% CrI SIR
+fitted_usual02_CrI_SIR <- t(exp(apply(fitted_usual02, 2, function(x) quantile(x, probs=c(0.025, 0.975)))))
 
-# Renaming columns
-colnames(fitted_usual02_df) <- c("fitted_mean_usual02", "fitted_lower_usual02" , "fitted_upper_usual02")
+# Mean fitted Cases
+fitted_usual_02 <- fitted_SIR_usual02*data.clean$Expected
+
+
+# 95% CrI Cases
+fitted_usual02_CrI <-  data.clean$Expected *fitted_usual02_CrI_SIR
+
+# Creating Dataframe to store fitted values and quantiles in regular svale
+fitted_usual02_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2), 
+                                "Fitted SIR"     =  round(fitted_SIR_usual02,2), 
+                                "Observed Cases" =  round(data.clean$Cases), 
+                                "Fitted Cases" =  round(fitted_usual_02), 
+                                "CrI LL"    =  round(fitted_usual02_CrI[,1]),
+                                "CrI UL"    =  round(fitted_usual02_CrI[,2]))
+
 
 # Top 6 rows
 head(fitted_usual02_df)
 
-# Predicted vs observed cases
-cbind(data.clean$Cases,fitted_usual02_df)
+ 
 ```
 
-```{r MCMC chains, echo = F}
+```{r iCAR K=3  MCMC chains, echo = F}
 # beta0
 par(mfrow=c(1,1), mar=c(5, 4, 4, 2) + 0.1)
 plot(main ="Intercept", usual02_samples[,"beta0"], type ="l")
@@ -1154,6 +1178,7 @@ plot(main = paste(names(data.clean[12])), usual02_samples[,"beta[8]"] , type = "
 # sigma2
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
 plot(main ="Sigma Squared", usual02_samples[,"sigma2"], type = "l")
+
 
 # Spatial effects for each region  
 par(mfrow=c(4,5), mar=c(2,3,2.1,1)+0.1)
@@ -1177,7 +1202,7 @@ plot(main = paste(data.clean$District[17]), usual02_samples[,"s[17]"], type = "l
 plot(main = paste(data.clean$District[18]), usual02_samples[,"s[18]"], type = "l")
 ```
 
-```{r Posterior density curves, echo = F}
+```{r iCAR K=3  Posterior density curves, echo = F}
 # beta0
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
 plot(main ="Intercept", density(usual02_samples[,"beta0"]))
@@ -1227,7 +1252,7 @@ plot(main = paste(data.clean$District[18]), density(usual02_samples[,"s[18]"]))
 
 **Neighborhood structure 3: Distance-based neighbors (k = 5)**
 
-```{r iCAR K5}
+```{r iCAR K=5  Model}
 # Defining the data that goes into the model ----------------------------------------------------------------
 
 # (1) Define constants that go into CAR prior into a list
@@ -1275,14 +1300,19 @@ usual03_runMCMC <- runMCMC(usual03_CMCMC, nburnin = 50000, niter = 200000, nchai
 # (8) Check convergence
 usual03_samples = rbind(usual03_runMCMC$samples[[1]], usual03_runMCMC$samples[[2]])
 
+```
+
+```{r iCAR K=5  Summaries}
 # Results ----------------------------------------------------------------------------------------
 
 # (9) WAIC ---------------------------------------------------------------------------------------
 usual03_runMCMC$WAIC
 
+
 # (10) Posterior summaries------------------------------------------------------------------------
 
 ################### Betas - covariate estimates
+
 
 # Calculating the Beta means
 means_betas_usual_03=apply(usual03_samples[,1:8],2, mean)
@@ -1331,6 +1361,7 @@ mean_CrI_beta0_usual_03 <- cbind(mean_beta0_usual03, CrI_beta0_usual_03) %>% as.
 colnames(mean_CrI_beta0_usual_03) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
 # Converting means and CrIs from log to regular scale
+
 exp(mean_CrI_beta0_usual_03)
 
 # (11) Fitted values -----------------------------------------------------------------------------
@@ -1341,32 +1372,37 @@ fitted_usual03 = matrix(NA, nrow=nrow(usual03_samples), ncol= nrow(data.clean))
 # Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
   fitted_usual03[,i] = usual03_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% 
-    t(usual03_samples[,1:8]) + usual03_samples[, 8+i-1] 
+
+    t(usual03_samples[,1:8]) + usual03_samples[, 10+i-1] 
 }
 
-# Fitted values - distribution
-fitted_usual_03_dist <- data.clean$Expected * exp(fitted_usual03)
+# Mean fitted SIR
+fitted_SIR_usual03 <- exp(apply(fitted_usual03, 2, mean))
 
-# Mean fitted values
-fitted_usual_03 <- apply(fitted_usual_03_dist, 2, mean)
+# 95% CrI SIR
+fitted_usual03_CrI_SIR <- t(exp(apply(fitted_usual03, 2, function(x) quantile(x, probs=c(0.025, 0.975)))))
 
-# 95% CrI
-fitted_usual_03_CrI <- t(apply(fitted_usual_03_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+# Mean fitted Cases
+fitted_usual_03 <- fitted_SIR_usual03*data.clean$Expected
+
+# 95% CrI Cases
+fitted_usual03_CrI <-  data.clean$Expected *fitted_usual_03_CrI_SIR
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_usual03_df <- cbind(fitted_usual_03,fitted_usual_03_CrI )
+fitted_usual03_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2), 
+                                "Fitted SIR"     =  round(fitted_SIR_usual03,2), 
+                                "Observed Cases" =  round(data.clean$Cases), 
+                                "Fitted Cases" =  round(fitted_usual_03), 
+                                "CrI LL"    =  round(fitted_usual03_CrI[,1]),
+                                "CrI UL"    =  round(fitted_usual03_CrI[,2]))
 
-# Renaming columns
-colnames(fitted_usual03_df) <- c("fitted_mean_usual03", "fitted_lower_usual03" , "fitted_upper_usual03")
 
 # Top 6 rows
 head(fitted_usual03_df)
 
-# Predicted vs observed cases
-cbind(data.clean$Cases,fitted_usual03_df)
 ```
 
-```{r MCMC chains, echo = F}
+```{r iCAR K=5  MCMC chains, echo = F}
 # beta0
 par(mfrow=c(1,1), mar=c(5, 4, 4, 2) + 0.1)
 plot(main ="Intercept", usual03_samples[,"beta0"], type ="l")
@@ -1408,7 +1444,7 @@ plot(main = paste(data.clean$District[17]), usual03_samples[,"s[17]"], type = "l
 plot(main = paste(data.clean$District[18]), usual03_samples[,"s[18]"], type = "l")
 ```
 
-```{r Posterior density curves, echo = F}
+```{r iCAR K=5  Posterior density curves, echo = F}
 # beta0
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
 plot(main ="Intercept", density(usual03_samples[,"beta0"]))
@@ -1481,7 +1517,7 @@ usual_code_bym <- nimbleCode({
 
 **Neighborhood structure 1: Adjacency-based neighbors**
 
-```{r Nimble BYMCAR Adjacency}
+```{r  BYM Adjacency}
 # Defining the data that goes into the model ----------------------------------------------------------------
 
 # (1) Define constants that go into CAR prior into a list
@@ -1531,12 +1567,7 @@ bym_usual01_runMCMC <- runMCMC(bym_usual01_CMCMC, nburnin = 10000, niter = 20000
 # (8) Check convergence
 bym_usual01_samples = rbind(bym_usual01_runMCMC$samples[[1]], bym_usual01_runMCMC$samples[[2]])
 
-# Results ----------------------------------------------------------------------------------------
-
-# (9) WAIC ---------------------------------------------------------------------------------------
-bym_usual01_runMCMC$WAIC
-
-# (10) Posterior summaries------------------------------------------------------------------------
+# (10) Posterior summaries--------------------------------------------------------------------
 
 ################### betas : covariates
 
@@ -1558,10 +1589,10 @@ exp(mean_CrI_betas_bym_usual01)
 ################### S : estimates? per region
 
 # Calculating the S means
-means_s_bym_usual01 <- apply(bym_usual01_samples[ ,8:25],2, mean)
+means_s_bym_usual01 <- apply(bym_usual01_samples[ ,10:27],2, mean)
 
 # Calculating the Beta 95% CrI 
-CrI_s_bym_usual01 <- t(apply(bym_usual01_samples[ ,8:25],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_s_bym_usual01 <- t(apply(bym_usual01_samples[ ,10:27],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 # Combining the means and CIs into a dataframe
 mean_CrI_s_bym_usual01 <- cbind(means_s_bym_usual01, CrI_s_bym_usual01) %>% as.data.frame()
@@ -1575,10 +1606,10 @@ exp(mean_CrI_s_bym_usual01)
 ################### V : estimates? per region
 
 # Calculating the V means
-means_v_bym_usual01 <- apply(bym_usual01_samples[ ,27:ncol(bym_usual01_samples)],2, mean)
+means_v_bym_usual01 <- apply(bym_usual01_samples[ ,29:ncol(bym_usual01_samples)],2, mean)
 
 # Calculating the V 95% CrI 
-CrI_v_bym_usual01 <- t(apply(bym_usual01_samples[ ,27:ncol(bym_usual01_samples)],2, function(x) quantile(x, probs=c(0.025,0.975))))
+CrI_v_bym_usual01 <- t(apply(bym_usual01_samples[ ,29:ncol(bym_usual01_samples)],2, function(x) quantile(x, probs=c(0.025,0.975))))
 
 #Combining the means and CIs into a dataframe
 mean_CrI_v_bym_usual01 <- cbind(means_v_bym_usual01, CrI_v_bym_usual01) %>% as.data.frame()
@@ -1586,19 +1617,18 @@ mean_CrI_v_bym_usual01 <- cbind(means_v_bym_usual01, CrI_v_bym_usual01) %>% as.d
 #Renaming the columns
 colnames(mean_CrI_v_bym_usual01) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
-# Converting means and CrIs from log to regular scale
-exp(mean_CrI_v_bym_usual01)
 
 ################## beta 0 
 
 # Calculating the beta0 means
-mean_beta0_bym_usual01 <- mean(bym_usual01_samples[ ,7])
+mean_beta0_bym_usual01 <- mean(bym_usual01_samples[ , "beta0"])
 
 # Calculating the Beta 95% CrI 
-CrI_beta0_bym_usual01 <- t(quantile(bym_usual01_samples[ , 7], probs=c(0.025,0.975)))
+CrI_beta0_bym_usual01 <- t(quantile(bym_usual01_samples[ , "beta0"], probs=c(0.025,0.975)))
 
 # Combining the means and CIs into a dataframe
 mean_CrI_beta0_bym_usual01 <- cbind(mean_beta0_bym_usual01, CrI_beta0_bym_usual01) %>% as.data.frame()
+
 
 # Renaming the columns
 colnames(mean_CrI_beta0_bym_usual01) <- c("Mean", "95% CrI LL", "95% CrI UL")
@@ -1613,35 +1643,43 @@ fitted_bym_usual01 = matrix(NA, nrow=nrow(bym_usual01_samples), ncol= nrow(data.
 
 # Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
-  fitted_bym_usual01[,i] = bym_usual01_samples[,"beta0"] 
-                      + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual01_samples[,1:5])
-                      + bym_usual01_samples[, 7+i-1] 
-                      + bym_usual01_samples[ , 9+i-1]
+  fitted_bym_usual01[,i] = bym_usual01_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual01_samples[,1:8]) 
+  + bym_usual01_samples[, 10+i-1] 
+  + bym_usual01_samples[ , 29+i-1]
+    
 }
 
-# Fitted values - distribution
-fitted_bym_usual_01_dist <- data.clean$Expected * exp(fitted_bym_usual01)
 
-# Mean fitted values
-fitted_bym_usual_01 <- apply(fitted_bym_usual_01, 2, mean)
 
-# 95% CrI
-fitted_bym_usual_01_CrI <- t(apply(fitted_bym_usual_01, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+# Mean fitted SIR
+fitted_SIR_bym_usual01 <- exp(apply(fitted_bym_usual01, 2, mean))
+
+# 95% CrI SIR
+fitted_bym_usual01_CrI_SIR <- t(exp(apply(fitted_bym_usual01, 2, function(x) quantile(x, probs=c(0.025, 0.975)))))
+
+
+# Mean fitted Cases
+fitted_bym_usual_01 <- fitted_SIR_bym_usual01*data.clean$Expected
+
+# 95% CrI Cases
+fitted_bym_usual01_CrI <-  data.clean$Expected *fitted_bym_usual01_CrI_SIR
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_bym_usual01_df <- cbind(fitted_bym_usual_01,fitted_bym_usual_01_CrI )
+fitted_bym_usual01_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2), 
+                                "Fitted SIR"     =  round(fitted_SIR_bym_usual01,2), 
+                                "Observed Cases" =  round(data.clean$Cases), 
+                                "Fitted Cases" =  round(fitted_bym_usual_01), 
+                                "CrI LL"    =  round(fitted_bym_usual01_CrI[,1]),
+                                "CrI UL"    =  round(fitted_bym_usual01_CrI[,2]))
 
-# Renaming columns
-colnames(fitted_bym_usual01_df) <- c("fitted_mean_bym_usual01", "fitted_lower_bym_usual01" , "fitted_upper_bym_usual01")
 
 # Top 6 rows
 head(fitted_bym_usual01_df)
 
-# Predicted vs observed cases
-cbind(data.clean$Cases,fitted_bym_usual01_df)
+ 
 ```
 
-```{r MCMC chains, echo = F}
+```{r BYM Adjacency MCMC chains, echo = F}
 # beta0
 par(mfrow=c(1,1), mar=c(5, 4, 4, 2) + 0.1)
 plot(main ="Intercept", bym_usual01_samples[,"beta0"], type ="l")
@@ -1683,7 +1721,7 @@ plot(main = paste(data.clean$District[17]), bym_usual01_samples[,"s[17]"], type 
 plot(main = paste(data.clean$District[18]), bym_usual01_samples[,"s[18]"], type = "l")
 ```
 
-```{r Posterior density curve, echo = F}
+```{r BYM Adjacency Posterior density curve, echo = F}
 # beta0
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
 plot(main ="Intercept", density(bym_usual01_samples[,"beta0"]))
@@ -1727,7 +1765,7 @@ plot(main = paste(data.clean$District[18]), density(bym_usual01_samples[,"s[18]"
 
 **Neighborhood structure 2: Distance-based neighbors (k = 3)**
 
-```{r Nimble BYMCAR K3}
+```{r Nimble BYMCAR K3 Model}
 # Defining the data that goes into the model ----------------------------------------------------------------
 
 # (1) Define constants that go into CAR prior into a list
@@ -1777,12 +1815,17 @@ bym_usual02_runMCMC <- runMCMC(bym_usual02_CMCMC, nburnin = 10000, niter = 20000
 # (8) Check convergence
 bym_usual02_samples = rbind(bym_usual02_runMCMC$samples[[1]], bym_usual02_runMCMC$samples[[2]])
 
+```
+
+```{r BYMCAR K=3 Summaries}
 # Results ----------------------------------------------------------------------------------------
+
 
 # (9) WAIC ---------------------------------------------------------------------------------------
 bym_usual02_runMCMC$WAIC
 
 # (10) Posterior summaries------------------------------------------------------------------------
+
 
 ################### betas : covariates
 
@@ -1794,6 +1837,7 @@ CrI_betas_bym_usual02 <- t(apply(bym_usual02_samples[ ,1:8],2, function(x) quant
 
 # Combining the means and CIs into a dataframe
 mean_CrI_betas_bym_usual02 <- t(matrix(c(means_betas_bym_usual02, CrI_betas_bym_usual02), ncol=8, byrow=T)) %>% as.data.frame()
+
 
 # Renaming the columns
 colnames(mean_CrI_betas_bym_usual02) <- c("Mean", "95% CrI LL", "95% CrI UL")
@@ -1808,6 +1852,7 @@ means_s_bym_usual02 <- apply(bym_usual02_samples[ , 8:25],2, mean)
 
 # Calculating the Beta 95% CrI 
 CrI_s_bym_usual02 <- t(apply(bym_usual02_samples[ , 8:25],2, function(x) quantile(x, probs=c(0.025,0.975))))
+
 
 # Combining the means and CIs into a dataframe
 mean_CrI_s_bym_usual02 <- cbind(means_s_bym_usual02, CrI_s_bym_usual02) %>% as.data.frame()
@@ -1825,6 +1870,7 @@ means_v_bym_usual02 <- apply(bym_usual02_samples[ ,27:ncol(bym_usual02_samples)]
 
 # Calculating the V 95% CrI 
 CrI_v_bym_usual02 <- t(apply(bym_usual02_samples[ ,27:ncol(bym_usual02_samples)],2, function(x) quantile(x, probs=c(0.025,0.975))))
+
 
 # Combining the means and CIs into a dataframe
 mean_CrI_v_bym_usual02 <- cbind(means_v_bym_usual02, CrI_v_bym_usual02) %>% as.data.frame()
@@ -1859,32 +1905,39 @@ fitted_bym_usual02 = matrix(NA, nrow=nrow(bym_usual02_samples), ncol= nrow(data.
 
 # Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
-  fitted_bym_usual02[,i] = bym_usual02_samples[,"beta0"] 
-                      + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual02_samples[,1:8])
-                      + bym_usual02_samples[, 7+i-1] 
-                      + bym_usual02_samples[ , 9+i-1]
+  fitted_bym_usual02[,i] = bym_usual02_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual02_samples [, 1:8]) 
+  + bym_usual02_samples[ , 10+i-1] 
+  + bym_usual02_samples[ , 29+i-1]
 }
-
 # Fitted values - distribution
-fitted_bym_usual_02_dist <- data.clean$Expected * exp(fitted_bym_usual02)
+fitted_bym_usual02_dist <- data.clean$Expected * exp(fitted_bym_usual02)
 
-# Mean fitted values
-fitted_bym_usual_02 <- apply(fitted_bym_usual_02_dist, 2, mean)
 
-# 95% CrI
-fitted_bym_usual_02_CrI <- t(apply(fitted_bym_usual_02_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+# Mean fitted SIR
+fitted_SIR_bym_usual02 <- exp(apply(fitted_bym_usual02, 2, mean))
+
+# 95% CrI Cases
+fitted_bym_usual02_CrI <-  data.clean$Expected *fitted_bym_usual02_CrI_SIR
+
+# Mean fitted Cases
+fitted_bym_usual_02 <- fitted_SIR_bym_usual02*data.clean$Expected
+
+# 95% CrI SIR
+fitted_bym_usual02_CrI_SIR <- t(exp(apply(fitted_bym_usual02, 2, function(x) quantile(x, probs=c(0.025, 0.975)))))
+
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_bym_usual02_df <- cbind(fitted_bym_usual_02,fitted_bym_usual_02_CrI )
+fitted_bym_usual02_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2), 
+                                "Fitted SIR"     =  round(fitted_SIR_bym_usual02,2), 
+                                "Observed Cases" =  round(data.clean$Cases), 
+                                "Fitted Cases" =  round(fitted_bym_usual_02), 
+                                "CrI LL"    =  round(fitted_bym_usual02_CrI[,1]),
+                                "CrI UL"    =  round(fitted_bym_usual02_CrI[,2]))
 
-# Renaming columns
-colnames(fitted_bym_usual02_df) <- c("fitted_mean_bym_usual02", "fitted_lower_bym_usual02" , "fitted_upper_bym_usual02")
 
 # Top 6 rows
 head(fitted_bym_usual02_df)
 
-# Predicted vs observed cases
-cbind(data.clean$Cases,fitted_bym_usual02_df)
 ```
 
 ```{r MCMC chains, echo = F}
@@ -1971,9 +2024,11 @@ plot(main = paste(data.clean$District[17]), density(bym_usual02_samples[,"s[17]"
 plot(main = paste(data.clean$District[18]), density(bym_usual02_samples[,"s[18]"]))
 ```
 
+
 **Neighborhood structure 3: Distance-based neighbors (k = 5)**
 
-```{r Nimble BYMCAR K5}
+
+```{r BYM K=5 Model}
 
 # Defining the data that goes into the model ----------------------------------------------------------------
 
@@ -2023,7 +2078,9 @@ bym_usual03_runMCMC <- runMCMC(bym_usual03_CMCMC, nburnin = 10000, niter = 20000
 
 # (8) Check convergence
 bym_usual03_samples = rbind(bym_usual03_runMCMC$samples[[1]], bym_usual03_runMCMC$samples[[2]])
+```
 
+```{r BYM K=5 Summaries}
 # Results ----------------------------------------------------------------------------------------
 
 # (9) WAIC ---------------------------------------------------------------------------------------
@@ -2099,42 +2156,48 @@ colnames(mean_CrI_beta0_bym_usual03) <- c("Mean", "95% CrI LL", "95% CrI UL")
 # Converting means and CrIs from log to regular scale
 exp(mean_CrI_beta0_bym_usual03)
 
-# (11) Fitted values -----------------------------------------------------------------------------
+# (11) Fitted values  ----------------------------------------------------------------------------
 
 # Creating matrix to store fitted values
 fitted_bym_usual03 = matrix(NA, nrow=nrow(bym_usual03_samples), ncol= nrow(data.clean))
 
 # Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
-  fitted_bym_usual03[,i] = bym_usual03_samples[,"beta0"] 
-                      + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual03_samples[,1:8])
-                      + bym_usual03_samples[, 7+i-1] 
-                      + bym_usual03_samples[ , 9+i-1]
+  fitted_bym_usual03[,i] = bym_usual03_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(bym_usual03_samples[,1:8])
+  + bym_usual03_samples[, 10+i-1] 
+  + bym_usual03_samples[ , 29+i-1]
 }
 
-# Fitted values - distribution
-fitted_bym_usual_03_dist <- data.clean$Expected * exp(fitted_bym_usual03)
 
-# Mean fitted values
-fitted_bym_usual_03 <- apply(fitted_bym_usual_03_dist, 2, mean)
+# Mean fitted SIR
+fitted_SIR_bym_usual03 <- exp(apply(fitted_bym_usual03, 2, mean))
 
-# 95% CrI
-fitted_bym_usual_03_CrI <- t(apply(fitted_bym_usual_03_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+# 95% CrI SIR
+fitted_bym_usual03_CrI_SIR <- t(exp(apply(fitted_bym_usual03, 2, function(x) quantile(x, probs=c(0.025, 0.975)))))
+
+# Mean fitted Cases
+fitted_bym_usual_03 <- fitted_SIR_bym_usual03*data.clean$Expected
+
+# 95% CrI Cases
+fitted_bym_usual03_CrI <-  data.clean$Expected *fitted_bym_usual03_CrI_SIR
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_bym_usual03_df <- cbind(fitted_bym_usual_03,fitted_bym_usual_03_CrI )
+fitted_bym_usual03_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2), 
+                                "Fitted SIR"     =  round(fitted_SIR_bym_usual03,2), 
+                                "Observed Cases" =  round(data.clean$Cases), 
+                                "Fitted Cases" =  round(fitted_bym_usual_03), 
+                                "CrI LL"    =  round(fitted_bym_usual03_CrI[,1]),
+                                "CrI UL"    =  round(fitted_bym_usual03_CrI[,2]))
 
-# Renaming columns
-colnames(fitted_bym_usual03_df) <- c("fitted_mean_bym_usual03", "fitted_lower_bym_usual03" , "fitted_upper_bym_usual03")
 
 # Top 6 rows
 head(fitted_bym_usual03_df)
 
-# Predicted vs observed cases
-cbind(data.clean$Cases,fitted_bym_usual03_df)
+
+
 ```
 
-```{r MCMC chains, echo = F}
+```{r BYM K=5 MCMC chains, echo = F}
 # beta0
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
 plot(main ="Intercept", bym_usual03_samples[,"beta0"], type = "l")
@@ -2153,6 +2216,7 @@ plot(main = paste(names(data.clean[12])), bym_usual03_samples[,"beta[8]"] , type
 # sigma2
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
 plot(main ="Sigma Squared", bym_usual03_samples[,"sigma2"], type ="l")
+
 
 # Spatial effects for each region  
 par(mfrow=c(4,5), mar=c(2,3,2.1,1)+0.1)
@@ -2176,7 +2240,7 @@ plot(main = paste(data.clean$District[17]), bym_usual03_samples[,"s[17]"], type 
 plot(main = paste(data.clean$District[18]), bym_usual03_samples[,"s[18]"], type = "l")
 ```
 
-```{r Posterior density curves, echo = F}
+```{r BYM K=5 Posterior density curves, echo = F}
 # beta0
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
 plot(main ="Intercept", density(bym_usual03_samples[,"beta0"]))
@@ -2249,8 +2313,8 @@ ridge_code <- nimbleCode({
   
   # Defining likelihood
   for(i in 1:N) { 
-    log(mu[i]) <- beta0 + inprod(X[i, 1:p], beta[1:p]) + log(E[i]) + s[i]
-    #mu[i] <- E[i]*r[i]
+    log(r[i]) <- beta0 + inprod(X[i, 1:p], beta[1:p]) + log(E[i]) + s[i]
+    mu[i] <- E[i]*r[i]
     y[i] ~ dpois(mu[i])
   }
 })
@@ -2301,7 +2365,7 @@ ridge01_MCMC=buildMCMC(ridge01_conf, enableWAIC=T)
 ridge01_CMCMC=compileNimble(ridge01_MCMC, project=ridge01_Cmodel)
 
 # (7) Run the model
-ridge01_runMCMC=runMCMC(ridge01_CMCMC, nburnin=10000, niter=200000, nchains=2, thin=25, WAIC=T)
+ridge01_runMCMC=runMCMC(ridge01_CMCMC, nburnin=10000, niter=500000, nchains=2, thin=25, WAIC=T)
 
 # (8) Check convergence
 ridge01_samples=rbind(ridge01_runMCMC$samples[[1]], ridge01_runMCMC$samples[[2]])
@@ -2311,8 +2375,6 @@ ridge01_runMCMC$WAIC
 ```
 
 ```{r MCMC chains}
-# Plot the MCMC chains----------
-
 #Beta0
 plot(main ="Intercept", ridge01_samples[,"beta0"], type = "l")
 
@@ -2333,7 +2395,6 @@ plot(main ="Sigma Squared", ridge01_samples[,"sigma"], type ="l")
 
 # lambda
 plot(main ="Lambda", ridge01_samples[,"lambda"], type = "l")
-
 
 # Spatial effects for each region  
 par(mfrow=c(4,5), mar=c(2,3,2.1,1)+0.1)
@@ -2473,44 +2534,40 @@ exp(mean_CrI_beta0_ridge01)
 
 # (11) Fitted values  ---------
 
-#Creating matrix to store fitted values
+# Creating matrix to store fitted values
 fitted_ridge01 = matrix(NA, nrow=nrow(ridge01_samples), ncol= nrow(data.clean))
 
-#Loop to generate fitted values: log(ri)
+# Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
-  fitted_ridge01[,i] = ridge01_samples[,"beta0"] 
-                      + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge01_samples[,1:8])
-                      + log(data.clean$Expected[i]) +
-                      + ridge01_samples[, 11+i-1] }
+  fitted_ridge01[,i] = ridge01_samples[,"beta0"] + 
+    as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge01_samples[,1:8]) + 
+    ridge01_samples[, 11+i-1] }
 
 # Fitted values - distribution
-fitted_car_ridge_01_mean <- exp(fitted_ridge01)
+fitted_ridge_01_dist <- data.clean$Expected * exp(fitted_ridge01)
 
-# Mean fitted values
-fitted_car_ridge_01_mean <- apply(fitted_car_ridge_01_dist, 2, mean)
+# Mean fitted SIR
+fitted_SIR_ridge01 <- exp(apply(fitted_ridge01, 2, mean))
 
+# Mean fitted Cases
+fitted_ridge_01 <- fitted_SIR_ridge01*data.clean$Expected
 
+# 95% CrI SIR
+fitted_ridge_01_CrI_SIR <- t(exp(apply(fitted_ridge01, 2, function(x) quantile(x, probs=c(0.025, 0.975)))))
 
-# Fitted values - distribution
-fitted_car_ridge_01_mean <- exp(fitted_ridge01)
-
-# Mean fitted values
-fitted_car_ridge_01_mean <- apply(fitted_car_ridge_01_dist, 2, mean)
-
-# 95% CrI
-fitted_car_ridge_01_CrI <- t(apply(fitted_car_ridge_01_dist, 2, function(x) quantile(x, probs=c(0.025, 0.975))))
+# 95% CrI Cases
+fitted_ridge_01_CrI <-  data.clean$Expected *fitted_ridge_01_CrI_SIR
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
-fitted_ridge01_df <- cbind(fitted_car_ridge_01_mean, fitted_car_ridge_01_CrI)
+fitted_ridge01_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2), 
+                                "Fitted SIR"     =  round(fitted_SIR_ridge01,2), 
+                                "Observed Cases" =  round(data.clean$Cases), 
+                                "Fitted Cases" =  round(fitted_ridge_01), 
+                                "CrI LL"    =  round(fitted_ridge_01_CrI[,1]),
+                                "CrI UL"    =  round(fitted_ridge_01_CrI[,2]))
 
-# Renaming columns
-colnames(fitted_ridge01_df) <- c("fitted_mean_ridge01", "fitted_lower_ridge01" , "fitted_upper_ridge01")
-
-#Top 6 rows
+# Top 6 rows
 head(fitted_ridge01_df)
-
-#Predicted vs observed cases
-cbind(data.clean$Cases,fitted_ridge01_df) #similar fitted values
 ```
 
 **Ridge: Neighborhood structure 2: Distance-based neighbors (k = 3)**
@@ -2535,7 +2592,7 @@ outcome <- list(y = data.clean$Cases) # Observed cases
 
 # (3) Define initial values for the MCMC chain
 Inits_ridge <- list(beta0=0, beta=rep(0, ncol(data.clean[5:ncol(data.clean)])),
-                    sigma=2, lambda=50, s=rnorm(nrow(data.clean)))
+                    sigma=2, lambda=1, s=rnorm(nrow(data.clean)))
 
 
 # Defining model ------------------------------------------------------------------------------
@@ -2570,9 +2627,8 @@ ridge02_samples=rbind(ridge02_runMCMC$samples[[1]], ridge02_runMCMC$samples[[2]]
 ridge02_runMCMC$WAIC
 ```
 
-```{r MCMC chains}
-# Plot the MCMC chains----------
 
+```{r MCMC chains}
 #Beta0
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
 plot(main ="Intercept", ridge02_samples[,"beta0"], type = "l")
@@ -2617,6 +2673,7 @@ plot(main = paste(data.clean$District[17]), ridge02_samples[,"s[17]"], type = "l
 plot(main = paste(data.clean$District[18]), ridge02_samples[,"s[18]"], type = "l")
 ```
 
+
 ```{r Posterior distributions}
 # Plot the density curves for posterior -------------
 
@@ -2659,7 +2716,6 @@ plot(main = paste(data.clean$District[15]), density(ridge02_samples[,"s[15]"]))
 plot(main = paste(data.clean$District[16]), density(ridge02_samples[,"s[16]"]))
 plot(main = paste(data.clean$District[17]), density(ridge02_samples[,"s[17]"]))
 plot(main = paste(data.clean$District[18]), density(ridge02_samples[,"s[18]"]))
-
 
 # (10) Posterior summaries: Means and CrI  ---------
 
@@ -2734,42 +2790,45 @@ colnames(mean_CrI_beta0_ridge02) <- c("Mean", "95% CrI LL", "95% CrI UL")
 # Converting means and CrIs from log to regular scale
 exp(mean_CrI_beta0_ridge02)
 
+# (11) Fitted values ---------------------------------------------------------------------------
 
-# (11) Fitted values  ---------
-
-#Creating matrix to store fitted values
+# Creating matrix to store fitted values
 fitted_ridge02 = matrix(NA, nrow=nrow(ridge02_samples), ncol= nrow(data.clean))
 
-#Loop to generate fitted values: log(ri)
+# Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
   fitted_ridge02[,i] = ridge02_samples[,"beta0"] 
                       + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge02_samples[,1:8])
-                      + log(data.clean$Expected[i])
                       + ridge02_samples[, 11+i-1] }
 
-# Fitted values - distribution
-fitted_car_ridge_03_dist <- exp(fitted_ridge02)
+# Mean fitted SIR
+fitted_SIR_ridge02 <- exp(apply(fitted_ridge02, 2, mean))
 
-# Mean fitted values
-fitted_car_ridge_03_mean <- apply(fitted_car_ridge_03_dist, 2, mean)
+# Mean fitted Cases
+fitted_ridge_02 <- fitted_SIR_ridge02*data.clean$Expected
 
-# 95% CrI
-fitted_car_ridge_03_CrI <- t(apply(fitted_car_ridge_03_dist, 2, 
-                                   function(x) quantile(x, probs=c(0.025, 0.975))))
+# 95% CrI SIR
+fitted_ridge_02_CrI_SIR <- t(exp(apply(fitted_ridge02, 2, 
+                                       function(x) quantile(x, probs=c(0.025, 0.975)))))
 
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
 fitted_ridge02_df <- cbind(fitted_car_ridge_03_mean, fitted_car_ridge_03_CrI)
 
+# 95% CrI Cases
+fitted_ridge_02_CrI <-  data.clean$Expected *fitted_ridge_02_CrI_SIR
 
-# Renaming columns
-colnames(fitted_ridge02_df) <- c("fitted_mean_ridge02", "fitted_lower_ridge02" , "fitted_upper_ridge02")
+# Creating Dataframe to store fitted values and quantiles in regular svale
+fitted_ridge02_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2), 
+                                "Fitted SIR"     =  round(fitted_SIR_ridge02,2), 
+                                "Observed Cases" =  round(data.clean$Cases), 
+                                "Fitted Cases" =  round(fitted_ridge_02), 
+                                "CrI LL"    =  round(fitted_ridge_02_CrI[,1]),
+                                "CrI UL"    =  round(fitted_ridge_02_CrI[,2]))
 
-#Top 6 rows
+# Top 6 rows
 head(fitted_ridge02_df)
 
-#Predicted vs observed cases
-cbind(data.clean$Cases,fitted_ridge02_df)
 ```
 
 **Ridge: Neighborhood structure 3: Distance-based neighbors (k = 5)**
@@ -2819,7 +2878,7 @@ ridge03_MCMC=buildMCMC(ridge03_conf, enableWAIC=T)
 ridge03_CMCMC=compileNimble(ridge03_MCMC, project=ridge03_Cmodel)
 
 # (7) Run the model
-ridge03_runMCMC=runMCMC(ridge03_CMCMC, nburnin=10000, niter=500000, nchains=2, thin=25, WAIC=T)
+ridge03_runMCMC=runMCMC(ridge03_CMCMC, nburnin=10000, niter=200000, nchains=2, thin=25, WAIC=T)
 
 # (8) Check convergence
 ridge03_samples=rbind(ridge03_runMCMC$samples[[1]], ridge03_runMCMC$samples[[2]])
@@ -2891,7 +2950,7 @@ plot(main = paste(names(data.clean[12])),density(ridge03_samples[,"beta[8]"]))
 
 #sigma squared
 par(mfrow=c(1,1), mar=c(2,4.5,2.1,1)+0.1)
-plot(main ="Sigma Squared", density(ridge03_samples[,"sigma2"]))
+plot(main ="Sigma Squared", density(ridge03_samples[,"sigma"]))
 
 #Lambda
 plot(main ="Lambda", density(ridge03_samples[,"lambda"]))
@@ -2920,7 +2979,6 @@ plot(main = paste(data.clean$District[18]), density(ridge03_samples[,"s[18]"]))
 
 # (10) Posterior summaries: Means and CrI  ---------
 
-#Betas
 #Calculating the Beta means
 means_betas_ridge03 <- apply(ridge03_samples[,1:9],2, mean)
 
@@ -3001,31 +3059,36 @@ fitted_ridge03 = matrix(NA, nrow=nrow(ridge03_samples), ncol= nrow(data.clean))
 for(i in 1:nrow(data.clean)){
   fitted_ridge03[,i] = ridge03_samples[,"beta0"] 
                       + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge03_samples[,1:8])
-                      + log(data.clean$Expected[i])
                       + ridge03_samples[, 7+i-1] }
 
-# Fitted values - distribution
-fitted_car_ridge_03_dist <- exp(fitted_ridge03)
 
-# Mean fitted values
-fitted_car_ridge_03_mean <- apply(fitted_car_ridge_03_dist, 2, mean)
+# Mean fitted SIR
+fitted_SIR_ridge03 <- exp(apply(fitted_ridge03, 2, mean))
 
-# 95% CrI
-fitted_car_ridge_03_CrI <- t(apply(fitted_car_ridge_03_dist, 2, 
-                                   function(x) quantile(x, probs=c(0.025, 0.975))))
+# Mean fitted Cases
+fitted_ridge_03 <- fitted_SIR_ridge03*data.clean$Expected
+
+# 95% CrI SIR
+fitted_ridge_03_CrI_SIR <- t(exp(apply(fitted_ridge03, 2, 
+                                       function(x) quantile(x, probs=c(0.025, 0.975)))))
 
 
 # Creating Dataframe to store fitted values and quantiles in regular svale
 fitted_ridge03_df <- cbind(fitted_car_ridge_03_mean, fitted_car_ridge_03_CrI)
 
-# Renaming columns
-colnames(fitted_ridge03_df) <- c("fitted_mean_ridge03", "fitted_lower_ridge03" , "fitted_upper_ridge03")
+# 95% CrI Cases
+fitted_ridge_03_CrI <-  data.clean$Expected *fitted_ridge_03_CrI_SIR
 
-#Top 6 rows
+# Creating Dataframe to store fitted values and quantiles in regular svale
+fitted_ridge03_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2), 
+                                "Fitted SIR"     =  round(fitted_SIR_ridge02,2), 
+                                "Observed Cases" =  round(data.clean$Cases), 
+                                "Fitted Cases" =  round(fitted_ridge_02), 
+                                "CrI LL"    =  round(fitted_ridge_02_CrI[,1]),
+                                "CrI UL"    =  round(fitted_ridge_02_CrI[,2]))
+
+# Top 6 rows
 head(fitted_ridge03_df)
-
-#Predicted vs observed cases
-cbind(data.clean$Cases,fitted_ridge03_df)
 
 ```
 
@@ -3797,13 +3860,19 @@ colnames(mean_CrI_beta0_ridge03_bym) <- c("Mean", "95% CrI LL", "95% CrI UL")
 exp(mean_CrI_beta0_ridge03_bym)
 
 
-# (11) Fitted values  ---------
+# (11) Fitted values -----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 #Creating matrix to store fitted values
 fitted_ridge03_bym = matrix(NA, nrow=nrow(ridge03_samples), ncol= nrow(data.clean))
+=======
+# Creating matrix to store fitted values
+fitted_ridge03 = matrix(NA, nrow=nrow(ridge03_samples), ncol= nrow(data.clean))
+>>>>>>> df7a8e67c9cc8177a1d823da47977260b87a4e3c
 
-#Loop to generate fitted values: log(ri)
+# Loop to generate fitted values: log(ri)
 for(i in 1:nrow(data.clean)){
+<<<<<<< HEAD
   fitted_ridge03_bym[,i] = ridge03_samples[,"beta0"] 
                       + as.matrix(data.clean[i,5:ncol(data.clean)]) %*% t(ridge03_samples[,1:8])
                       + log(data.clean$Expected[i])
@@ -3818,8 +3887,24 @@ fitted_car_ridge_03_mean_bym <- apply(fitted_car_ridge_03_dist_bym, 2, mean)
 # 95% CrI
 fitted_car_ridge_03_CrI_bym <- t(apply(fitted_car_ridge_03_dist_bym, 2, 
                                    function(x) quantile(x, probs=c(0.025, 0.975))))
+=======
+  fitted_ridge03[,i] = ridge03_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*%t(ridge03_samples[,1:8]) + 
+    ridge03_samples[, 10+i-1] 
+
+}
+
+# Fitted values - distribution
+fitted_ridge_03_dist <- data.clean$Expected * exp(fitted_ridge03)
 
 
+# Mean fitted SIR
+fitted_SIR_ridge03 <- exp(apply(fitted_ridge03, 2, mean))
+>>>>>>> df7a8e67c9cc8177a1d823da47977260b87a4e3c
+
+# Mean fitted Cases
+fitted_ridge_03 <- fitted_SIR_ridge03*data.clean$Expected
+
+<<<<<<< HEAD
 # Creating Dataframe to store fitted values and quantiles in regular svale
 fitted_ridge03_df_bym <- cbind(fitted_car_ridge_03_mean_bym, fitted_car_ridge_03_CrI_bym)
 
@@ -3831,6 +3916,27 @@ head(fitted_ridge03_df_bym)
 
 #Predicted vs observed cases
 cbind(data.clean$Cases,fitted_ridge03_df_bym)
+=======
+# 95% CrI SIR
+fitted_ridge_03_CrI_SIR <- t(exp(apply(fitted_ridge03, 2, function(x) quantile(x, probs=c(0.025, 0.975)))))
+
+# 95% CrI Cases
+fitted_ridge_03_CrI <-  data.clean$Expected *fitted_ridge_03_CrI_SIR
+
+# Creating Dataframe to store fitted values and quantiles in regular svale
+fitted_ridge03_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2), 
+                                "Fitted SIR"     =  round(fitted_SIR_ridge03,2), 
+                                "Observed Cases" =  round(data.clean$Cases), 
+                                "Fitted Cases" =  round(fitted_ridge_03), 
+                                "CrI LL"    =  round(fitted_ridge_03_CrI[,1]),
+                                "CrI UL"    =  round(fitted_ridge_03_CrI[,2]))
+
+
+# Top 6 rows
+head(fitted_ridge03_df)
+
+
+>>>>>>> df7a8e67c9cc8177a1d823da47977260b87a4e3c
 
 ```
 
