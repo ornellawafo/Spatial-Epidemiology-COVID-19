@@ -208,6 +208,9 @@ summary(data.clean)
 ```{r Correlation matrix and pairs plot, echo = F}
 # Correlation matrix
 cor(subset(data.clean, select = -District))
+
+# Pairs plot
+pairs(subset(data.clean, select = -District))
 ```
 
 ```{r Histograms of selected variables, echo = F}
@@ -603,6 +606,7 @@ HK.wnb5 <- nb2listw(HK.nb5, style = "B")
 ```
 
 ```{r Univariate Poisson models}
+# Coding glm regression --------------------------------------------------------------------------
 poi.fit1 <- glm(Cases ~ st_pop_density + offset(log(Expected)), 
                 data = data.clean, family = poisson(link = "log"))
 
@@ -624,18 +628,34 @@ poi.fit6 <- glm(Cases ~ household_poverty_rate + offset(log(Expected)),
 poi.fit7 <- glm(Cases ~ st_pop_density + Prop_female + Prop_0.24 + Prop_25.64 + Prop_65 + 
                 Prop_labor + beds_per_hosp + household_poverty_rate + offset(log(Expected)), 
                 data = data.clean, family = poisson(link="log"))
+
+# Summaries of regression ------------------------------------------------------------------------
+summary(poi.fit1)
+summary(poi.fit2)
+summary(poi.fit3)
+summary(poi.fit4)
+summary(poi.fit5)
+summary(poi.fit6)
+summary(poi.fit7)
+
+# Table of univariate and multivariate comparison ------------------------------------------------
+coef.uni <- signif(c(poi.fit1$coefficient[2], poi.fit2$coefficient[2], poi.fit3$coefficient[2],
+                    poi.fit3$coefficient[3], poi.fit3$coefficient[4], poi.fit4$coefficient[2],
+                    poi.fit5$coefficient[2], poi.fit6$coefficient[2]), 3)
+coef.uni.se <- round(c(0.047992, 5.394, 136.9, 136.9, 136.9, 2.353, 0.0002422, -0.16196), 3)
+coef.multi <- signif(c(poi.fit7$coefficient[2], poi.fit7$coefficient[3], poi.fit7$coefficient[4],
+                      poi.fit7$coefficient[5], poi.fit7$coefficient[6], poi.fit7$coefficient[7],
+                      poi.fit7$coefficient[8], poi.fit7$coefficient[9]), 3)
+coef.multi.se <- c(9.583e-02, 1.434e+01, 1.720e+02, 1.670e+02, 1.704e+02, 6.470e+00, 1.645e-04, 4.499e-02)
+uni.analysis <- data.frame("Univariate estimate" = coef.uni, "SE" = coef.uni.se,
+                           "Multivariate estimate" = coef.multi, "SE" = coef.multi.se)
 ```
 
 ```{r Morans test, echo = F, results = T}
 # Moran test for SIR -----------------------------------------------------------------------------
 moran.sir1 <- moran.test(data$SIR, HK.wnb, zero.policy = T)
-moran.sir2 <- moran.test(data$SIR, HK.wnb3)
-moran.sir3 <- moran.test(data$SIR, HK.wnb5)
-
-# Results of Moran's test for SIR
-moran.sir1
-moran.sir2
-moran.sir3
+moran.sir2 <- moran.test(data$SIR, HK.wnb3, zero.policy = T)
+moran.sir3 <- moran.test(data$SIR, HK.wnb5, zero.policy = T)
 
 # Moran test for glm residuals -------------------------------------------------------------------
 moran.lm1 <- lm.morantest(poi.fit1, HK.wnb, zero.policy = T)
@@ -646,14 +666,80 @@ moran.lm5 <- lm.morantest(poi.fit5, HK.wnb, zero.policy = T)
 moran.lm6 <- lm.morantest(poi.fit6, HK.wnb, zero.policy = T)
 moran.lm7 <- lm.morantest(poi.fit7, HK.wnb, zero.policy = T)
 
-# Results of Moran's test for SIR
-moran.lm1
-moran.lm2
-moran.lm3
-moran.lm4
-moran.lm5
-moran.lm6
-moran.lm7
+# Moran's test results ---------------------------------------------------------------------------
+
+# I statistic
+I.1 <-  round(as.numeric(moran.sir1$estimate[1]), 4)
+I.2 <-  round(as.numeric(moran.sir2$estimate[1]), 4)
+I.3 <-  round(as.numeric(moran.sir3$estimate[1]), 4)
+I.4 <-  round(as.numeric(moran.lm1$estimate[1]), 4)
+I.5 <-  round(as.numeric(moran.lm2$estimate[1]), 4)
+I.6 <-  round(as.numeric(moran.lm3$estimate[1]), 4)
+I.7 <-  round(as.numeric(moran.lm4$estimate[1]), 4)
+I.8 <-  round(as.numeric(moran.lm5$estimate[1]), 4)
+I.9 <-  round(as.numeric(moran.lm6$estimate[1]), 4)
+I.10 <- round(as.numeric(moran.lm7$estimate[1]), 4)
+
+# Expectation
+E.1 <- round(as.numeric(moran.sir1$estimate[2]), 4)
+E.2 <- round(as.numeric(moran.sir2$estimate[2]), 4)
+E.3 <- round(as.numeric(moran.sir3$estimate[2]), 4)
+E.4 <-  round(as.numeric(moran.lm1$estimate[2]), 4)
+E.5 <-  round(as.numeric(moran.lm2$estimate[2]), 4)
+E.6 <-  round(as.numeric(moran.lm3$estimate[2]), 4)
+E.7 <-  round(as.numeric(moran.lm4$estimate[2]), 4)
+E.8 <-  round(as.numeric(moran.lm5$estimate[2]), 4)
+E.9 <-  round(as.numeric(moran.lm6$estimate[2]), 4)
+E.10 <- round(as.numeric(moran.lm7$estimate[2]), 4)
+
+# Variance
+V.1 <- round(as.numeric(moran.sir1$estimate[3]), 4)
+V.2 <- round(as.numeric(moran.sir2$estimate[3]), 4)
+V.3 <- round(as.numeric(moran.sir3$estimate[3]), 4)
+V.4 <-  round(as.numeric(moran.lm1$estimate[3]), 4)
+V.5 <-  round(as.numeric(moran.lm2$estimate[3]), 4)
+V.6 <-  round(as.numeric(moran.lm3$estimate[3]), 4)
+V.7 <-  round(as.numeric(moran.lm4$estimate[3]), 4)
+V.8 <-  round(as.numeric(moran.lm5$estimate[3]), 4)
+V.9 <-  round(as.numeric(moran.lm6$estimate[3]), 4)
+V.10 <- round(as.numeric(moran.lm7$estimate[3]), 4)
+
+# Standard deviate
+sd.1 <- signif(as.numeric(moran.sir1$statistic), 4)
+sd.2 <- signif(as.numeric(moran.sir2$statistic), 4)
+sd.3 <- signif(as.numeric(moran.sir3$statistic), 4)
+sd.4 <- signif(as.numeric(moran.lm1$statistic), 4)
+sd.5 <- signif(as.numeric(moran.lm2$statistic), 4)
+sd.6 <- signif(as.numeric(moran.lm3$statistic), 4)
+sd.7 <- signif(as.numeric(moran.lm4$statistic), 4)
+sd.8 <- signif(as.numeric(moran.lm5$statistic), 4)
+sd.9 <- signif(as.numeric(moran.lm6$statistic), 4)
+sd.10 <-signif(as.numeric(moran.lm7$statistic), 4)
+
+# P-value
+p.1 <- signif(as.numeric(moran.sir1$p.value), 4)
+p.2 <- signif(as.numeric(moran.sir2$p.value), 4)
+p.3 <- signif(as.numeric(moran.sir3$p.value), 4)
+p.4 <- signif(as.numeric(moran.lm1$p.value), 4)
+p.5 <- signif(as.numeric(moran.lm2$p.value), 4)
+p.6 <- signif(as.numeric(moran.lm3$p.value), 4)
+p.7 <- signif(as.numeric(moran.lm4$p.value), 4)
+p.8 <- signif(as.numeric(moran.lm5$p.value), 4)
+p.9 <- signif(as.numeric(moran.lm6$p.value), 4)
+p.10 <-signif(as.numeric(moran.lm7$p.value), 4)
+
+# Table of Moran's test results -------------------------------------------------------------------
+moran.tests <- c("SIR (adjacency-based)", "SIR (distance-based k = 3)", "SIR (distance-based k = 5",
+                 "Y ~ st_pop_density", "Y ~ Prop_female", "Y ~ Prop_0.24 + Prop_25.64 + Prop_65", 
+                 "Y ~ Prop_labor", "Y ~ beds_per_hosp", "Y ~ household_poverty_rate", "Y ~ .")
+coef.I <- c(I.1, I.2, I.3, I.4, I.5, I.6, I.7, I.8, I.9, I.10)
+coef.E <- c(E.1, E.2, E.3, E.4, E.5, E.6, E.7, E.8, E.9, E.10)
+coef.V <- c(V.1, V.2, V.3, V.4, V.5, V.6, V.7, V.8, V.9, V.10)
+coef.sd <- c(sd.1, sd.2, sd.3, sd.4, sd.5, sd.6, sd.7, sd.8, sd.9, sd.10)
+coef.p <- c(p.1, p.2, p.3, p.4, p.5, p.6, p.7, p.8, p.9, p.10)
+moran.results <- data.frame("Model" = moran.tests, "I" = coef.I, "E(I)" = coef.E,
+                            "Var(I)" = coef.V, "Std deviate" = coef.sd, "P value" = coef.p)
+
 ```
 
 ## Poisson Model
