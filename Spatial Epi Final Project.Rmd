@@ -201,7 +201,7 @@ data.clean <- data %>%
 # Log_postsec)
 ```
 
-## Exploratory analysis
+# Exploratory analysis
 
 ```{r Summary of clean dataset, echo = F}
 # Summary of final cleaned dataset
@@ -260,6 +260,7 @@ data.clean %>%
     geom_histogram(bins = 5) +
     xlab("") + ylab("Frequency")
 ```
+
 
 ## Maps of the outcome and covariates
 
@@ -774,63 +775,10 @@ plot(x = poi.fit$fitted.values, y = data.clean$Cases,
 abline(a=0,b=1,lwd=2)
 ```
 
-## Building neighbors and adjacency list
-
-```{r Building neighbors and adjacency list for Nimble, echo = F}
-# Converting neighborhood objects to matrix -----------------------------------------
-
-# 1) Having contiguous boundary point
-HK.nbmat.adj <- nb2mat(HK.nb, style = 'B', zero.policy = TRUE) 
-
-# 2) Having 3 nearest neighbors
-HK.nbmat.3 <- nb2mat(HK.nb3, style = 'B', zero.policy = TRUE) 
-
-# 3) Having 5 nearest neighbors
-HK.nbmat.5 <- nb2mat(HK.nb5, style = 'B', zero.policy = TRUE) 
-
-# Number of neighbors per district --------------------------------------------------
-n <- nrow(data.clean)
-
-# 1) Having contiguous boundary point
-num.nb <- rowSums(HK.nbmat.adj)
-
-# 2) Having 3 nearest neighbors
-num.nb.3 <- rowSums(HK.nbmat.3)
-
-# 3) Having 5 nearest neighbors
-num.nb.5 <- rowSums(HK.nbmat.5)
-
-# Adjacency vectors -----------------------------------------------------------------
-
-# 1) Having contiguous boundary point
-adj <- c()
-adj <- which(HK.nbmat.adj[1,] == 1)
-for(i in 2:n){
-  adj <- c(adj, c(which(HK.nbmat.adj[i,] == 1)))
-}
-
-# 2) Having 3 nearest neighbors 
-adj.3 <- list()
-for(i in 1:n){
-  adj.3[[i]] <- c(which(HK.nbmat.3[i,] == 1))
-}
-adj.3 <- unlist(adj.3)
-
-#3) Having 5 nearest neighbors 
-adj.5 <- list()
-for(i in 1:n){
-  adj.5[[i]] <- c(which(HK.nbmat.5[i,] == 1))
-}
-adj.5 <- unlist(adj.5)
-```
 
 
-```{r labels for loops}
-betas <- paste0("beta[", 1:8, "]")
-s <- paste0("s[", 1:18, "]")
-v <- paste0("v[", 1:18, "]")
-```
 
+# Spatial Models
 ## Nimble Regression: iCAR
 **Nimble: iCAR Usual fixed priors model**
 
@@ -4222,7 +4170,7 @@ fitted_ridge03_bym_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2)
 # Top 6 rows
 head(fitted_ridge03_df)
 
-cbind(fitted_ridge03_df[,4:6],fitted_ridge01_df[,4:6])
+
 ```
 
 ```{r Ridge BYM K = 5 MCMC chains, echo = F}
@@ -4312,29 +4260,115 @@ plot(main = paste(data.clean$District[18]), density(ridge03_bym_samples[,"s[18]"
 ```
 
 
+
+## Building neighbors and adjacency list
+
+```{r Building neighbors and adjacency list for Nimble, echo = F}
+# Converting neighborhood objects to matrix -----------------------------------------
+
+# 1) Having contiguous boundary point
+HK.nbmat.adj <- nb2mat(HK.nb, style = 'B', zero.policy = TRUE) 
+
+# 2) Having 3 nearest neighbors
+HK.nbmat.3 <- nb2mat(HK.nb3, style = 'B', zero.policy = TRUE) 
+
+# 3) Having 5 nearest neighbors
+HK.nbmat.5 <- nb2mat(HK.nb5, style = 'B', zero.policy = TRUE) 
+
+# Number of neighbors per district --------------------------------------------------
+n <- nrow(data.clean)
+
+# 1) Having contiguous boundary point
+num.nb <- rowSums(HK.nbmat.adj)
+
+# 2) Having 3 nearest neighbors
+num.nb.3 <- rowSums(HK.nbmat.3)
+
+# 3) Having 5 nearest neighbors
+num.nb.5 <- rowSums(HK.nbmat.5)
+
+# Adjacency vectors -----------------------------------------------------------------
+
+# 1) Having contiguous boundary point
+adj <- c()
+adj <- which(HK.nbmat.adj[1,] == 1)
+for(i in 2:n){
+  adj <- c(adj, c(which(HK.nbmat.adj[i,] == 1)))
+}
+
+# 2) Having 3 nearest neighbors 
+adj.3 <- list()
+for(i in 1:n){
+  adj.3[[i]] <- c(which(HK.nbmat.3[i,] == 1))
+}
+adj.3 <- unlist(adj.3)
+
+#3) Having 5 nearest neighbors 
+adj.5 <- list()
+for(i in 1:n){
+  adj.5[[i]] <- c(which(HK.nbmat.5[i,] == 1))
+}
+adj.5 <- unlist(adj.5)
+```
+
+
+```{r labels for loops}
+betas <- paste0("beta[", 1:8, "]")
+s <- paste0("s[", 1:18, "]")
+v <- paste0("v[", 1:18, "]")
+```
+
+
+
+
 # Summary of Inferential Results - iCAR, BYMCAR, Ridge (3 pages)
 
-```{r WAICs}
+```{r WAICs by model}
 # WAIC by ICAR model
 WAIC.iCAR <- cbind(Adjescent= usual01_runMCMC$WAIC, K3= usual02_runMCMC$WAIC,K5= usual03_runMCMC$WAIC)
-WAIC.iCAR
+#WAIC.iCAR
 
 # WAIC by BYM CAR model
 WAIC.bymCAR <- cbind(Adjescent= bym_usual01_runMCMC$WAIC, K3= bym_usual02_runMCMC$WAIC,K5= bym_usual03_runMCMC$WAIC)
-WAIC.bymCAR
+#WAIC.bymCAR
 
 # WAIC by Ridge model - iCAR
 WAIC.Ridge.iCAR <- cbind(Adjescent = ridge01_runMCMC$WAIC,  K3= ridge02_runMCMC$WAIC,  K5 = ridge03_runMCMC$WAIC)
-WAIC.Ridge.iCAR
+#WAIC.Ridge.iCAR
 
 # WAIC by Ridge model - BYM CAR
-WAIC.Ridge.bymCAR <- cbind(Adjescent = ridge01_bym_runMCMC$WAIC,  K3= ridge01_bym_runMCMC$WAIC,  K5 = ridge01_bym_runMCMC$WAIC)
-WAIC.Ridge.bymCAR
+WAIC.Ridge.bymCAR <- cbind(Adjescent = ridge01_bym_runMCMC$WAIC,  K3= ridge02_bym_runMCMC$WAIC,  K5 = ridge03_bym_runMCMC$WAIC)
+#WAIC.Ridge.bymCAR
 
 
 WAICs <- rbind(WAIC.iCAR, WAIC.bymCAR,WAIC.Ridge.iCAR, WAIC.Ridge.bymCAR )
 rownames(WAICs) <- c("Nimble iCAR", "Nimble BYM CAR", "Ridge iCAR", "Ridge BYM CAR")
 WAICs
+
+#Differences between Fitted and Observed Case Counts
+differences_by_model <- with(data.clean, data.frame(nimble_car1 = (Cases -  fitted_usual01_cases    ),
+                                                    nimble_car2 = (Cases -  fitted_usual02_cases    ),
+                                                    nimble_car3 = (Cases -  fitted_usual03_cases    ),
+                                                    nimble_bym1 = (Cases -  fitted_bym_usual01_cases),
+                                                    nimble_bym2 = (Cases -  fitted_bym_usual02_cases),
+                                                    nimble_bym3 = (Cases -  fitted_bym_usual03_cases),
+                                                    ridge_car1  = (Cases -  fitted_ridge01_cases    ),
+                                                    ridge_car2  = (Cases -  fitted_ridge02_cases    ),
+                                                    ridge_car3  = (Cases -  fitted_ridge03_cases    ),
+                                                    ridge_bym1  = (Cases -  fitted_ridge01_bym_cases) ,
+                                                    ridge_bym2  = (Cases -  fitted_ridge02_bym_cases) ,
+                                                    ridge_bym3  = (Cases -  fitted_ridge03_bym_cases) ))
+
+# Mean Differences sorted in ascending order
+mean_differences_by_model <- differences_by_model %>% round () %>% colMeans()  %>% sort(dec=F) 
+mean_differences_by_model
+
+# Models sorted in ascending order of mean differences
+mean_differences_by_model%>% names()
+
+#They don't align so well with the WAICs but I don't think that's a big concern. It may just be additional info for the appendix
+
+#do you guys know whether we can obtain residuals from these models? She seems to like it when people plot the residuals back onto the map
 ```
 
 # Conclusion (1 page)
