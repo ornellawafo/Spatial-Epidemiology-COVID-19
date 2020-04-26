@@ -592,6 +592,7 @@ summary(HK.nb3)
 
 # 3) Having 5 nearest neighbors
 HK.nb5 <- knn2nb(knearneigh(coords, k = 5, longlat = TRUE), row.names = IDs, sym = T)
+summary(HK.nb5)
 
 # Plot neighbourhood structure -------------------------------------------------------------------
 plot(shp_HK, border="grey", main="Contiguous border", cex.main = 0.5)
@@ -776,9 +777,58 @@ abline(a=0,b=1,lwd=2)
 ```
 
 
-
-
 # Spatial Models
+
+## Building neighbors and adjacency list
+
+```{r Building neighbors and adjacency list for Nimble, echo = F}
+# Converting neighborhood objects to matrix -----------------------------------------
+
+# 1) Having contiguous boundary point
+HK.nbmat.adj <- nb2mat(HK.nb, style = 'B', zero.policy = TRUE) 
+
+# 2) Having 3 nearest neighbors
+HK.nbmat.3 <- nb2mat(HK.nb3, style = 'B', zero.policy = TRUE) 
+
+# 3) Having 5 nearest neighbors
+HK.nbmat.5 <- nb2mat(HK.nb5, style = 'B', zero.policy = TRUE) 
+
+# Number of neighbors per district --------------------------------------------------
+n <- nrow(data.clean)
+
+# 1) Having contiguous boundary point
+num.nb <- rowSums(HK.nbmat.adj)
+
+# 2) Having 3 nearest neighbors
+num.nb.3 <- rowSums(HK.nbmat.3)
+
+# 3) Having 5 nearest neighbors
+num.nb.5 <- rowSums(HK.nbmat.5)
+
+# Adjacency vectors -----------------------------------------------------------------
+
+# 1) Having contiguous boundary point
+adj <- c()
+adj <- which(HK.nbmat.adj[1,] == 1)
+for(i in 2:n){
+  adj <- c(adj, c(which(HK.nbmat.adj[i,] == 1)))
+}
+
+# 2) Having 3 nearest neighbors 
+adj.3 <- list()
+for(i in 1:n){
+  adj.3[[i]] <- c(which(HK.nbmat.3[i,] == 1))
+}
+adj.3 <- unlist(adj.3)
+
+#3) Having 5 nearest neighbors 
+adj.5 <- list()
+for(i in 1:n){
+  adj.5[[i]] <- c(which(HK.nbmat.5[i,] == 1))
+}
+adj.5 <- unlist(adj.5)
+```
+
 ## Nimble Regression: iCAR
 **Nimble: iCAR Usual fixed priors model**
 
@@ -818,11 +868,10 @@ usual_code <- nimbleCode({
 
 ```{r iCAR Adjacency-based Model, echo = F, results = F, message = F}
 # Defining the data that goes into the model -----------------------------------------------------
-
 # (1) Define constants that go into CAR prior into a list
-Consts_usual_01 = list(N = nrow(data.clean),                  # Number of areas
-                       p = ncol(data.clean[5:ncol(data.clean)]),            # Number of covariates
-                       X = as.matrix(data.clean[, c(5:ncol(data.clean))]),  # Matrix of covariates
+Consts_usual_01 = list(N = nrow(data.clean),                      # Number of areas
+                       p = ncol(data.clean[5:ncol(data.clean)]),  # Number of covariates
+                       X = as.matrix(data.clean[, c(5:ncol(data.clean))]),# Matrix of covariates
                        L = length(adj),                       # Edges (length of adj vector)
                        E = data.clean$Expected,               # Expected cases
                        adj = adj,                             # Adjacency matrix
@@ -940,9 +989,6 @@ for(i in 1:nrow(data.clean)){
   fitted_usual01[,i] = usual01_samples[,"beta0"] + as.matrix(data.clean[i,5:ncol(data.clean)]) %*%  t(usual01_samples[,1:8]) + usual01_samples[, s[i]] 
 
 }
-
-
-
 
 # Mean fitted SIR
 fitted_SIR_usual01 <- exp(apply(fitted_usual01, 2, mean))
@@ -2592,7 +2638,7 @@ plot(main ="Lambda", ridge01_samples[,"lambda"], type = "l")
 
 # Betas (Covariates) - log scale
 par(mfrow=c(4,4), mar=c(2,4.5,2.1,1)+0.1)
-plot(main = paste(names(data.clean[5])),  ridge01_samples[,"beta[1]"] , type = "l") # Why are all beta's = 1
+plot(main = paste(names(data.clean[5])),  ridge01_samples[,"beta[1]"] , type = "l")
 plot(main = paste(names(data.clean[6])),  ridge01_samples[,"beta[2]"] , type = "l")
 plot(main = paste(names(data.clean[7])),  ridge01_samples[,"beta[3]"] , type = "l")
 plot(main = paste(names(data.clean[8])),  ridge01_samples[,"beta[4]"] , type = "l")
@@ -2849,8 +2895,6 @@ exp(mean_CrI_beta0_ridge02)
 ```
 
 ```{r Ridge K = 3 Fitted Values}
-
-
 # (11) Fitted values -----------------------------------------------------------------------------
 
 # Creating matrix to store fitted values
@@ -2909,7 +2953,7 @@ plot(main ="Lambda", ridge02_samples[,"lambda"], type = "l")
 
 # Betas (Covariates) - log scale
 par(mfrow=c(4,4), mar=c(2,4.5,2.1,1)+0.1)
-plot(main = paste(names(data.clean[5])),  ridge02_samples[,"beta[1]"] , type = "l") # Why are all beta's = 1
+plot(main = paste(names(data.clean[5])),  ridge02_samples[,"beta[1]"] , type = "l") 
 plot(main = paste(names(data.clean[6])),  ridge02_samples[,"beta[2]"] , type = "l")
 plot(main = paste(names(data.clean[7])),  ridge02_samples[,"beta[3]"] , type = "l")
 plot(main = paste(names(data.clean[8])),  ridge02_samples[,"beta[4]"] , type = "l")
@@ -3166,8 +3210,6 @@ exp(mean_CrI_beta0_ridge03)
 ```
 
 ```{r Ridge K=5 Fitted Values}
-
-
 # (11) Fitted values -----------------------------------------------------------------------------
 
 # Creating matrix to store fitted values
@@ -3224,7 +3266,7 @@ plot(main ="Lambda", ridge03_samples[,"lambda"], type = "l")
 
 # Betas (Covariates) - log scale
 par(mfrow=c(4,4), mar=c(2,4.5,2.1,1)+0.1)
-plot(main = paste(names(data.clean[5])),  ridge03_samples[,"beta[1]"] , type = "l") # Why are all beta's = 1
+plot(main = paste(names(data.clean[5])),  ridge03_samples[,"beta[1]"] , type = "l") 
 plot(main = paste(names(data.clean[6])),  ridge03_samples[,"beta[2]"] , type = "l")
 plot(main = paste(names(data.clean[7])),  ridge03_samples[,"beta[3]"] , type = "l")
 plot(main = paste(names(data.clean[8])),  ridge03_samples[,"beta[4]"] , type = "l")
@@ -3660,7 +3702,6 @@ plot(main = paste(data.clean$District[18]), density(ridge01_bym_samples[,"s[18]"
 
 **Ridge: Neighborhood structure 2: Distance-based neighbors (k = 3)**
 
-
 ```{r Ridge BYM K = 3 Model, echo = F, results = F, message = F}
 # Model -> Compile model -> build MCMC object -> Compile MCMC object -> run MCMC
 
@@ -3970,14 +4011,14 @@ plot(main = paste(data.clean$District[18]), density(ridge02_bym_samples[,"s[18]"
 # Constants and initial values --------------------------------------------------------------------------
 
 # (1) Define constants that go into CAR prior into a list
-Consts_ridge03_bym = list(N = nrow(data.clean),                              # Number of areas
-                     p = ncol(data.clean[5:ncol(data.clean)]),            # Number of covariates
-                     X = as.matrix(data.clean[, c(5:ncol(data.clean))]),  # Matrix of covariates
-                     L = length(adj.5),                       # Edges (length of adj vector)
+Consts_ridge03_bym = list(N = nrow(data.clean),             # Number of areas
+                     p = ncol(data.clean[5:ncol(data.clean)]),  # Number ofcovariates
+                     X = as.matrix(data.clean[, c(5:ncol(data.clean))]),# Matrix of covariates
+                     L = length(adj.5),                   # Edges (length of adj vector)
                      E = data.clean$Expected,
-                     adj = adj.5,                             # Adjacency matrix
-                     num = num.nb.5,                          # Number of neighbors per district
-                     weights = rep(1, length(adj.5)))         # Giving weight of 1 for neighbors
+                     adj = adj.5,                         # Adjacency matrix
+                     num = num.nb.5,                      # Number of neighbors per district
+                     weights = rep(1, length(adj.5)))     # Giving weight of 1 for neighbors
 
 # (2) Define dependent variable (outcome)
 outcome <- list(y = data.clean$Cases) # Observed cases
@@ -4041,7 +4082,7 @@ mean_CrI_beta0_ridge03_bym <- cbind(mean_beta0_ridge03_bym, CrI_beta0_ridge03_by
 colnames(mean_CrI_beta0_ridge03_bym) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
 # Converting means and CrIs from log to regular scale
-exp(mean_CrI_beta0_ridge03_bym)
+round(exp(mean_CrI_beta0_ridge03_bym),2)
 
 ################## Covariate Estimates: Beta
 
@@ -4058,7 +4099,7 @@ mean_CrI_betas_ridge03_bym <- t(matrix(c(means_betas_ridge03_bym, CrI_betas_ridg
 colnames(mean_CrI_betas_ridge03_bym) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
 # Converting means and CrIs from log to regular scale
-exp(mean_CrI_betas_ridge03_bym)
+round(exp(mean_CrI_betas_ridge03_bym),2)
 
 
 ################### Spatial effect per region: S
@@ -4113,10 +4154,11 @@ mean_CrI_sigma_ridge03_bym <- cbind(means_sigma_ridge03_bym, CrI_sigma_ridge03_b
 colnames(mean_CrI_sigma_ridge03_bym) <- c("Mean", "95% CrI LL", "95% CrI UL")
 
 # Consigmaerting means and CrIs from log to regular scale
-exp(mean_CrI_sigma_ridge03_bym)
+round(mean_CrI_sigma_ridge03_bym,2)
 
-
-
+#Tau
+mean_CrI_tau_ridge03_bym <- 1/(mean_CrI_sigma_ridge03_bym)
+round(mean_CrI_tau_ridge03_bym,3)
 ################## Lambda
 
 mean_lambda_ridge03_bym <- mean(ridge03_bym_samples[ ,"lambda"])
@@ -4136,7 +4178,7 @@ exp(mean_CrI_lambda_ridge03_bym)
 ```
 
 ```{r Ridge BYM K = 5 Fitted Values}
-# (11) Fitted values  ----------------------------------------------------------------------------
+# (11) Fitted values  ----------------------------------------------------------------------
 
 #Creating matrix to store fitted values
 fitted_ridge03_bym = matrix(NA, nrow=nrow(ridge03_bym_samples), ncol= nrow(data.clean))
@@ -4168,8 +4210,8 @@ fitted_ridge03_bym_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2)
 
 
 # Top 6 rows
-head(fitted_ridge03_df)
-
+head(fitted_ridge03_bym_df)
+write.csv(fitted_ridge03_bym_df, file = "~/Desktop/fitted_values.csv")
 
 ```
 
@@ -4259,66 +4301,11 @@ plot(main = paste(data.clean$District[17]), density(ridge03_bym_samples[,"s[17]"
 plot(main = paste(data.clean$District[18]), density(ridge03_bym_samples[,"s[18]"]))
 ```
 
-
-
-## Building neighbors and adjacency list
-
-```{r Building neighbors and adjacency list for Nimble, echo = F}
-# Converting neighborhood objects to matrix -----------------------------------------
-
-# 1) Having contiguous boundary point
-HK.nbmat.adj <- nb2mat(HK.nb, style = 'B', zero.policy = TRUE) 
-
-# 2) Having 3 nearest neighbors
-HK.nbmat.3 <- nb2mat(HK.nb3, style = 'B', zero.policy = TRUE) 
-
-# 3) Having 5 nearest neighbors
-HK.nbmat.5 <- nb2mat(HK.nb5, style = 'B', zero.policy = TRUE) 
-
-# Number of neighbors per district --------------------------------------------------
-n <- nrow(data.clean)
-
-# 1) Having contiguous boundary point
-num.nb <- rowSums(HK.nbmat.adj)
-
-# 2) Having 3 nearest neighbors
-num.nb.3 <- rowSums(HK.nbmat.3)
-
-# 3) Having 5 nearest neighbors
-num.nb.5 <- rowSums(HK.nbmat.5)
-
-# Adjacency vectors -----------------------------------------------------------------
-
-# 1) Having contiguous boundary point
-adj <- c()
-adj <- which(HK.nbmat.adj[1,] == 1)
-for(i in 2:n){
-  adj <- c(adj, c(which(HK.nbmat.adj[i,] == 1)))
-}
-
-# 2) Having 3 nearest neighbors 
-adj.3 <- list()
-for(i in 1:n){
-  adj.3[[i]] <- c(which(HK.nbmat.3[i,] == 1))
-}
-adj.3 <- unlist(adj.3)
-
-#3) Having 5 nearest neighbors 
-adj.5 <- list()
-for(i in 1:n){
-  adj.5[[i]] <- c(which(HK.nbmat.5[i,] == 1))
-}
-adj.5 <- unlist(adj.5)
-```
-
-
 ```{r labels for loops}
 betas <- paste0("beta[", 1:8, "]")
 s <- paste0("s[", 1:18, "]")
 v <- paste0("v[", 1:18, "]")
 ```
-
-
 
 
 # Summary of Inferential Results - iCAR, BYMCAR, Ridge (3 pages)
@@ -4339,7 +4326,6 @@ WAIC.Ridge.iCAR <- cbind(Adjescent = ridge01_runMCMC$WAIC,  K3= ridge02_runMCMC$
 # WAIC by Ridge model - BYM CAR
 WAIC.Ridge.bymCAR <- cbind(Adjescent = ridge01_bym_runMCMC$WAIC,  K3= ridge02_bym_runMCMC$WAIC,  K5 = ridge03_bym_runMCMC$WAIC)
 #WAIC.Ridge.bymCAR
-
 
 WAICs <- rbind(WAIC.iCAR, WAIC.bymCAR,WAIC.Ridge.iCAR, WAIC.Ridge.bymCAR )
 rownames(WAICs) <- c("Nimble iCAR", "Nimble BYM CAR", "Ridge iCAR", "Ridge BYM CAR")
