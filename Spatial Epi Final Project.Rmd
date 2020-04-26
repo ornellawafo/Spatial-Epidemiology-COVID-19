@@ -182,8 +182,7 @@ data.clean <- data %>%
          Prop_25.64,
          Prop_65,
          Prop_female,
-         Log_postsec
-         )
+         Log_postsec)
 
 #Mean_median_age,
 #household_poverty_rate,
@@ -252,7 +251,7 @@ data.clean %>%
                Prop_0.24,
                Prop_25.64,
                Prop_65,
-               household_poverty_rate,
+               Log_postsec,
                beds_per_hosp) %>%
   gather() %>%                             
   ggplot(aes(value)) +                     
@@ -829,8 +828,7 @@ for(i in 1:n){
 adj.5 <- unlist(adj.5)
 ```
 
-## Nimble Regression: iCAR
-**Nimble: iCAR Usual fixed priors model**
+## Nimble Regression: iCAR with usual fixed priors
 
 ```{r Nimble: iCAR Usual fixed priors model, echo = F}
 
@@ -2392,6 +2390,7 @@ plot(main = paste(data.clean$District[18]), density(bym_usual03_samples[,"s[18]"
 ```
 
 
+
 ## Ridge Regression: iCAR
 
 ```{r Ridge iCAR: Usual fixed priors model, echo = F}
@@ -2437,6 +2436,7 @@ ridge_code <- nimbleCode({
 
 ```{r Ridge Adjacency-based Model, echo = F, results = F, message = F}
 # Model -> Compile model -> build MCMC object -> Compile MCMC object -> run MCMC
+set.seed(1234)
 
 # Constants and initial values --------------------------------------------------------------------------
 
@@ -4207,7 +4207,6 @@ fitted_ridge03_bym_df <- data.frame("Observed SIR"   =  round(data.clean$SIR, 2)
                                 "Fitted Cases" =  round(fitted_ridge03_bym_cases), 
                                 "CrI LL"    =  round(fitted_ridge03_bym_CrI[,1]),
                                 "CrI UL"    =  round(fitted_ridge03_bym_CrI[,2]))
-
 
 # Top 6 rows
 head(fitted_ridge03_bym_df)
