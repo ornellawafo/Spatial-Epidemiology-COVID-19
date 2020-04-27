@@ -279,25 +279,27 @@ shp_HK$Cases = data$Cases
 shp_HK$Expected = data$Expected
 shp_HK$SIR = data$SIR
 shp_HK$Rate = (data$Cases/data$Total_pop)*100000
-shp_HK$TotalPop = data$Total_pop
 shp_HK$PopDens = data$Pop_density
-shp_HK$LogPopDens = data$log_pop_density
-shp_HK$PropMale = data$Prop_male
 shp_HK$PropFemale = data$Prop_female
 shp_HK$Prop0_24 = data$Prop_0.24
 shp_HK$Prop25_64 = data$Prop_25.64
 shp_HK$Prop65 = data$Prop_65
-shp_HK$Income = data$Monthly_income
-shp_HK$Housing = data$Num_household
-shp_HK$Hosp = data$N.Hospital
-shp_HK$HospBeds = data$Num_beds
-shp_HK$SecEduc = data$Prop_sec
 shp_HK$PostSec = data$Prop_postsec
 shp_HK$PropLabor = data$Prop_labor
-shp_HK$PropMaleLabor = data$Pct.Male.Labor
-shp_HK$PropPoor = data$Prop_poor
-shp_HK$PropPoorHousehold = data$Prop_poor_household
 shp_HK$beds_per_hosp = data$beds_per_hosp
+
+#shp_HK$TotalPop = data$Total_pop
+#shp_HK$LogPopDens = data$log_pop_density
+#shp_HK$PropMale = data$Prop_male
+#shp_HK$Income = data$Monthly_income
+#shp_HK$Housing = data$Num_household
+#shp_HK$Hosp = data$N.Hospital
+#shp_HK$HospBeds = data$Num_beds
+#shp_HK$SecEduc = data$Prop_sec
+#shp_HK$PropMaleLabor = data$Pct.Male.Labor
+#shp_HK$PropPoor = data$Prop_poor
+#shp_HK$PropPoorHousehold = data$Prop_poor_household
+
 
 # Converting shapefile data to dataframe object -------------------------------------------------
 # Merge the "fortified" data with the data from our spatial object
@@ -466,7 +468,7 @@ plot.female =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-grid.arrange(plot.popdensity, plot.bedshosp, plot.female)
+grid.arrange(plot.popdensity, plot.bedshosp, plot.female, ncol = 3)
 
 
 # Age composition ################################################################################
@@ -528,7 +530,7 @@ plot.age3 =
         panel.background = element_blank()) +
     coord_fixed(1.3)
 
-grid.arrange(plot.age1, plot.age2, plot.age3)
+grid.arrange(plot.age1, plot.age2, plot.age3, ncol = 3)
 
 
 # SES ############################################################################################
